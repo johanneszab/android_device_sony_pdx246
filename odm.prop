@@ -1,0 +1,15 @@
+# Audio
+vendor.audio.usb.force.deep_buffer=true
+
+# Display
+ro.surface_flinger.enable_frame_rate_override=0
+
+# Radio
+telephony.lteOnCdmaDevice=0
+
+# Miscellaneous
+ro.com.android.dataroaming=false
+ro.com.android.prov_mobiledata=false
+ro.lmk.critical_available_threshold=12
+ro.vendor.qti.va_odm.support=1
+

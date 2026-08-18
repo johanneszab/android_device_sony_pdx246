@@ -1,0 +1,21 @@
+# Audio
+ro.audio.ihaladaptervendorextension_enabled=true
+
+# DPM
+persist.vendor.dpm.feature=11
+
+# Radio
+ro.telephony.sim_slots.count=2
+telephony.active_modems.max_count=2
+
+# Miscellaneous
+persist.nfc.debug_enabled=false
+ro.sys.perf.ktd_enable=true
+ro.sys.thermal.ambient_temperature_estimation_on=ON
+ro.sys.thermal.incoming_call=ON
+ro.sys.thermal.notify_5g_notification=ON
+ro.sys.thermal.notify_chargeoff=ON
+ro.sys.thermal.notify_iec_notification=ON
+ro.sys.thermal.notify_not_auto_dismiss=ON
+ro.system_ext.build.version.sdk_full=36.0
+
