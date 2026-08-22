@@ -10,13 +10,15 @@ from extract_utils.main import (
 )
 
 namespace_imports = [
-    'device/sony/XQ-ES54',
+    'device/sony/pdx246',
 ]
 
 module = ExtractUtilsModule(
-    'XQ-ES54',
+    'pdx246',
     'sony',
     namespace_imports=namespace_imports,
+    blob_fixups=blob_fixups,
+    lib_fixups=lib_fixups,
 )
 
 if __name__ == '__main__':
