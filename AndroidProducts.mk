@@ -4,9 +4,9 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/lineage_XQ-ES54.mk
+    $(LOCAL_DIR)/lineage_pdx246.mk
 
 COMMON_LUNCH_CHOICES := \
-    lineage_XQ-ES54-user \
-    lineage_XQ-ES54-userdebug \
-    lineage_XQ-ES54-eng
+    lineage_pdx246-user \
+    lineage_pdx246-userdebug \
+    lineage_pdx246-eng
