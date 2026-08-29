@@ -638,6 +638,7 @@ vendor/lib64/libarcsoft_super_night_raw.so
 vendor/lib64/libarcsoft_superportrait.so
 vendor/lib64/libarcsoft_video_hdr.so
 vendor/lib64/libbitmlenginev2.so
+vendor/lib64/libc++_shared.so
 vendor/lib64/libcameraidd.so
 vendor/lib64/libcammw_util.so
 vendor/lib64/libcamxcommonutils.so
