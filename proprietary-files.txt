@@ -777,8 +777,8 @@ vendor/lib64/libfastcvdsp_stub.so
 vendor/lib64/libfastcvopt.so
 
 # CNE
-#lib/vendor.qti.hardware.data.connectionaidl-V1-ndk.so
-#lib64/vendor.qti.hardware.data.connectionaidl-V1-ndk.so
+system/lib/vendor.qti.hardware.data.connectionaidl-V1-ndk.so
+system/lib64/vendor.qti.hardware.data.connectionaidl-V1-ndk.so
 system_ext/lib/com.quicinc.cne.api@1.0.so
 system_ext/lib/com.quicinc.cne.api@1.1.so
 system_ext/lib/com.quicinc.cne.constants@1.0.so
@@ -1281,8 +1281,8 @@ vendor/gpu/kbc/unified_kbcs_64.bin
 vendor/gpu/kbc/unified_ksqs.bin
 
 # DPM
-#lib/vendor.qti.diaghal-V1-ndk.so
-#lib64/vendor.qti.diaghal-V1-ndk.so
+system/lib/vendor.qti.diaghal-V1-ndk.so
+system/lib64/vendor.qti.diaghal-V1-ndk.so
 system_ext/bin/dpmd
 system_ext/etc/dpm/dpm.conf
 system_ext/etc/init/dpmd.rc
@@ -1561,24 +1561,24 @@ vendor/lib64/vendor.qti.hardware.vpp@1.2.so
 vendor/lib64/vendor.qti.hardware.vpp@1.3.so
 vendor/lib64/vendor.qti.hardware.vpp@2.0.so
 
-#lib/graphicbuffersource-aidl-ndk.so
-#lib/libaconfig_storage_read_api_cc.so
-#lib/libmedia_codeclist.so
-#lib/libmedia_codeclist_capabilities.so
-#lib/libstagefright_aidl_bufferpool2.so
-#lib/libstagefright_codecbase.so
-#lib/libstagefright_framecapture_utils.so
-#lib/libstagefright_graphicbuffersource_aidl.so
-#lib/libstagefright_surface_utils.so
-#lib64/graphicbuffersource-aidl-ndk.so
-#lib64/libaconfig_storage_read_api_cc.so
-#lib64/libmedia_codeclist.so
-#lib64/libmedia_codeclist_capabilities.so
-#lib64/libstagefright_aidl_bufferpool2.so
-#lib64/libstagefright_codecbase.so
-#lib64/libstagefright_framecapture_utils.so
-#lib64/libstagefright_graphicbuffersource_aidl.so
-#lib64/libstagefright_surface_utils.so
+system/lib/graphicbuffersource-aidl-ndk.so
+system/lib/libaconfig_storage_read_api_cc.so
+system/lib/libmedia_codeclist.so
+system/lib/libmedia_codeclist_capabilities.so
+system/lib/libstagefright_aidl_bufferpool2.so
+system/lib/libstagefright_codecbase.so
+system/lib/libstagefright_framecapture_utils.so
+system/lib/libstagefright_graphicbuffersource_aidl.so
+system/lib/libstagefright_surface_utils.so
+system/lib64/graphicbuffersource-aidl-ndk.so
+system/lib64/libaconfig_storage_read_api_cc.so
+system/lib64/libmedia_codeclist.so
+system/lib64/libmedia_codeclist_capabilities.so
+system/lib64/libstagefright_aidl_bufferpool2.so
+system/lib64/libstagefright_codecbase.so
+system/lib64/libstagefright_framecapture_utils.so
+system/lib64/libstagefright_graphicbuffersource_aidl.so
+system/lib64/libstagefright_surface_utils.so
 
 # Media configs
 vendor/etc/media_codecs.xml
