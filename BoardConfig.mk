@@ -82,6 +82,21 @@ BOARD_VENDOR_KERNEL_MODULES_LOAD := \
 BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := \
     $(DEVICE_PATH)/prebuilts/modules/modules.blocklist
 
+# First-stage modules live in the vendor_boot ramdisk, not vendor_dlkm: clk,
+# pinctrl, regulator and smmu have to be up before the dynamic partitions can
+# even be mounted. 210 of these are byte-identical to the vendor_dlkm copies;
+# stock ships both sets, so mirror that rather than trying to share one copy.
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES := \
+    $(wildcard $(DEVICE_PATH)/prebuilts/modules-vendor_boot/*.ko)
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := \
+    $(addprefix $(DEVICE_PATH)/prebuilts/modules-vendor_boot/,\
+        $(shell cat $(DEVICE_PATH)/prebuilts/modules-vendor_boot/modules.load.order))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := \
+    $(addprefix $(DEVICE_PATH)/prebuilts/modules-vendor_boot/,\
+        $(shell cat $(DEVICE_PATH)/prebuilts/modules-vendor_boot/modules.load.recovery.order))
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := \
+    $(DEVICE_PATH)/prebuilts/modules-vendor_boot/modules.blocklist
+
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
 BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
