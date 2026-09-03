@@ -62,6 +62,11 @@ PRODUCT_PACKAGES += \
 # Kernel
 PRODUCT_ENABLE_UFFD_GC := true
 
+# The kernel uses 4K pages (stock reports ro.product.cpu.pagesize.max=4096).
+# This has to come from the product variable; setting the property directly in
+# product.prop collides with the one the build generates.
+PRODUCT_MAX_PAGE_SIZE_SUPPORTED := 4096
+
 # NFC
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/nfc/libnfc-nxp-typef.conf:$(TARGET_COPY_OUT_VENDOR)/etc/libnfc-nxp-typef.conf

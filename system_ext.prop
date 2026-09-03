@@ -17,5 +17,4 @@ ro.sys.thermal.notify_5g_notification=ON
 ro.sys.thermal.notify_chargeoff=ON
 ro.sys.thermal.notify_iec_notification=ON
 ro.sys.thermal.notify_not_auto_dismiss=ON
-ro.system_ext.build.version.sdk_full=36.0
 

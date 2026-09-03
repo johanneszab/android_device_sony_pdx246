@@ -5,6 +5,11 @@
 
 DEVICE_PATH := device/sony/pdx246
 
+# Sony's ramdump tooling in kernel/sony/pdx246-modules ships a soong plugin.
+# Soong rejects plugins it does not already know about, and that repo is
+# repo-synced, so allow-list it here instead of patching it there.
+BUILD_BROKEN_PLUGIN_VALIDATION += soong-somc_platform_flag_default
+
 # A/B
 AB_OTA_UPDATER := true
 AB_OTA_PARTITIONS += \
@@ -17,11 +22,21 @@ AB_OTA_PARTITIONS += \
 BOARD_USES_RECOVERY_AS_BOOT := true
 
 # Architecture
+# Stock runs ro.zygote=zygote64_32, and ~100 vendor components (wfdservice,
+# the CAS/OMX HALs, the soundtrigger impl, ssgqmigd) ship 32-bit only, so the
+# second arch has to stay enabled.
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_VARIANT := generic
 TARGET_CPU_VARIANT_RUNTIME := kryo300
+
+TARGET_2ND_ARCH := arm
+TARGET_2ND_ARCH_VARIANT := armv8-a
+TARGET_2ND_CPU_ABI := armeabi-v7a
+TARGET_2ND_CPU_ABI2 := armeabi
+TARGET_2ND_CPU_VARIANT := generic
+TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
 
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := parrot
@@ -70,6 +85,29 @@ BOARD_SONY_DYNAMIC_PARTITIONS_PARTITION_LIST := \
     product
 BOARD_SONY_DYNAMIC_PARTITIONS_SIZE := 9122611200 # TODO: Fix hardcoded value
 
+# QTI/Sony vendor AIDs (2901-2999), taken from the stock vendor/etc/passwd.
+# The vendor init scripts reference these groups by name, so host_init_verifier
+# fails without them.
+TARGET_FS_CONFIG_GEN := $(DEVICE_PATH)/config.fs
+
+# Each of these is a real partition in the super image and is mounted
+# separately per rootdir/etc/fstab.default, so stage them outside of /system
+# instead of letting them default to system/<part>.
+TARGET_COPY_OUT_ODM := odm
+TARGET_COPY_OUT_PRODUCT := product
+TARGET_COPY_OUT_SYSTEM_EXT := system_ext
+TARGET_COPY_OUT_VENDOR := vendor
+TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
+
+# Filesystem type per dynamic partition, matching rootdir/etc/fstab.default.
+# Without these the images (and their NOTICE files) are never generated.
+BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := ext4
+
 # Platform
 TARGET_BOARD_PLATFORM := parrot
 
@@ -106,6 +144,13 @@ BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX_LOCATION := 1
 
 # VINTF
 DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
+
+# The vendor blobs serve a pile of QTI and Sony HALs that AOSP's framework
+# matrix knows nothing about. The qcom-caf matrix covers the common QTI ones;
+# the device matrix adds the Sony extensions and the rest.
+DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
+    hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
+    $(DEVICE_PATH)/framework_compatibility_matrix.xml
 
 # Inherit the proprietary files
 include vendor/sony/pdx246/BoardConfigVendor.mk

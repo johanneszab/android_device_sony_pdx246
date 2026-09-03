@@ -1,2 +1,11 @@
-<manifest version="None" type="None" target-level="None">
+<!--
+    target-level is the Shipping FCM Version of the *vendor* implementation,
+    not the system. Sony's own vendor/etc/vintf/manifest_parrot.xml and
+    manifest_ravelin.xml declare target-level="6", and the blobs serve the
+    FCM 6 generation of HALs (gnss@2.1, thermal@2.0, usb@1.2, composer@2.4,
+    allocator@4.0), so anything newer fails the deprecation check.
+
+    HAL entries come from the per-service fragments in vendor/etc/vintf/manifest/.
+-->
+<manifest version="1.0" type="device" target-level="6">
 </manifest>
