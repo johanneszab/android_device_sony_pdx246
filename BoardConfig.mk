@@ -68,6 +68,20 @@ BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilts/dtbo.img
 BOARD_KERNEL_SEPARATED_DTBO := 
 endif
 
+# Kernel modules
+# The device boots a stock GKI image, so the 265 vendor modules come from the
+# stock vendor_dlkm rather than being built from source. modules.load.order
+# preserves stock's load sequence -- the default (alphabetical) order breaks
+# drivers that must be probed in a particular sequence. depmod regenerates
+# modules.dep/alias/softdep at build time, so those are not carried over.
+BOARD_VENDOR_KERNEL_MODULES := \
+    $(wildcard $(DEVICE_PATH)/prebuilts/modules/*.ko)
+BOARD_VENDOR_KERNEL_MODULES_LOAD := \
+    $(addprefix $(DEVICE_PATH)/prebuilts/modules/,\
+        $(shell cat $(DEVICE_PATH)/prebuilts/modules/modules.load.order))
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := \
+    $(DEVICE_PATH)/prebuilts/modules/modules.blocklist
+
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
 BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
