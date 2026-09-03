@@ -216,7 +216,7 @@ blob_fixups: blob_fixups_user_type = {
      'vendor/lib64/libgarden.so',
      'vendor/lib64/libgarden_haltests_e2e.so'): blob_fixup()
         .replace_needed('android.hardware.gnss-V1-ndk_platform.so', 'android.hardware.gnss-V1-ndk.so'),
-    ('vendor/bin/hw/android.hardware.power-service', 'vendor/bin/hw/android.hardware.thermal@2.0-service.sony'): blob_fixup()
+    'vendor/bin/hw/android.hardware.thermal@2.0-service.sony': blob_fixup()
         .replace_needed('android.hardware.power-V1-ndk_platform.so', 'android.hardware.power-V1-ndk.so'),
     'vendor/bin/hw/android.hardware.secure_element_snxxx@1.2-service': blob_fixup()
         .replace_needed('android.hardware.nfc-V1-ndk_platform.so', 'android.hardware.nfc-V1-ndk.so'),

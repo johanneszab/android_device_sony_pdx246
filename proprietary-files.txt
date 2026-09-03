@@ -1649,8 +1649,6 @@ vendor/lib64/libqti-iopd-client.so
 vendor/lib64/vendor.qti.hardware.iop@1.0.so
 
 # Power
-vendor/bin/hw/android.hardware.power-service
-vendor/etc/init/android.hardware.power-service.rc
 vendor/etc/vintf/manifest/vendor.qti.hardware.power.powermodule.xml
 vendor/lib/hw/power.default.so
 vendor/lib/vendor.qti.hardware.power.powermodule@1.0.so

@@ -54,6 +54,18 @@ PRODUCT_PACKAGES += \
     android.hardware.fastboot@1.1-impl-mock \
     fastbootd
 
+# Power
+# The stock blob implements AIDL power V1, which no framework
+# compatibility matrix accepts. Build the QTI HAL, which is V6.
+PRODUCT_PACKAGES += \
+    android.hardware.power-service-qti
+
+# Vibrator
+# vendor/qcom/opensource/vibrator/aidl builds both the impl and the
+# service; the stock blob service is not usable against the source impl.
+PRODUCT_PACKAGES += \
+    vendor.qti.hardware.vibrator.service
+
 # Health
 PRODUCT_PACKAGES += \
     android.hardware.health@2.1-impl \

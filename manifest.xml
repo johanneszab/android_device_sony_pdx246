@@ -5,7 +5,59 @@
     FCM 6 generation of HALs (gnss@2.1, thermal@2.0, usb@1.2, composer@2.4,
     allocator@4.0), so anything newer fails the deprecation check.
 
-    HAL entries come from the per-service fragments in vendor/etc/vintf/manifest/.
+    Most HALs are declared by the per-service fragments the blobs ship in
+    vendor/etc/vintf/manifest/. The ones below cannot be: AOSP (or
+    vendor/qcom/opensource) defines a module that installs a fragment to the
+    same path, so shipping the stock copy is a duplicate-rule error in kati,
+    but those source modules are not in PRODUCT_PACKAGES, so their fragment
+    never actually lands and the HAL ends up undeclared. Declaring them here
+    avoids the path collision entirely. The implementations are the Sony blobs
+    in vendor/bin/hw.
 -->
 <manifest version="1.0" type="device" target-level="6">
+    <hal format="hidl">
+        <name>android.hardware.atrace</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IAtraceDevice</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl">
+        <name>android.hardware.biometrics.fingerprint</name>
+        <transport>hwbinder</transport>
+        <version>2.1</version>
+        <interface>
+            <name>IBiometricsFingerprint</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl">
+        <name>android.hardware.cas</name>
+        <transport>hwbinder</transport>
+        <version>1.2</version>
+        <interface>
+            <name>IMediaCasService</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl">
+        <name>android.hardware.sensors</name>
+        <transport>hwbinder</transport>
+        <version>2.1</version>
+        <interface>
+            <name>ISensors</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl">
+        <name>android.hardware.usb.gadget</name>
+        <transport>hwbinder</transport>
+        <version>1.2</version>
+        <interface>
+            <name>IUsbGadget</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </manifest>
