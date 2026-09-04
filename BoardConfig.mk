@@ -13,13 +13,18 @@ BUILD_BROKEN_PLUGIN_VALIDATION += soong-somc_platform_flag_default
 # A/B
 AB_OTA_UPDATER := true
 AB_OTA_PARTITIONS += \
-    system \
-    vendor \
-    vendor_dlkm \
-    system_ext \
+    boot \
+    dtbo \
     odm \
-    product
-BOARD_USES_RECOVERY_AS_BOOT := true
+    product \
+    recovery \
+    system \
+    system_ext \
+    vbmeta \
+    vbmeta_system \
+    vendor \
+    vendor_boot \
+    vendor_dlkm
 
 # Architecture
 # Stock runs ro.zygote=zygote64_32, and ~100 vendor components (wfdservice,
@@ -103,16 +108,16 @@ BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
 BOARD_DTBOIMG_PARTITION_SIZE := 25165824
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600
 BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296
-BOARD_SUPER_PARTITION_SIZE := 9126805504 # TODO: Fix hardcoded value
-BOARD_SUPER_PARTITION_GROUPS := sony_dynamic_partitions
-BOARD_SONY_DYNAMIC_PARTITIONS_PARTITION_LIST := \
+BOARD_SUPER_PARTITION_SIZE := 17179869184
+BOARD_SUPER_PARTITION_GROUPS := somc_dynamic_partitions
+BOARD_SOMC_DYNAMIC_PARTITIONS_PARTITION_LIST := \
     system \
     vendor \
     vendor_dlkm \
     system_ext \
     odm \
     product
-BOARD_SONY_DYNAMIC_PARTITIONS_SIZE := 9122611200 # TODO: Fix hardcoded value
+BOARD_SOMC_DYNAMIC_PARTITIONS_SIZE := 17175674880
 
 # QTI/Sony vendor AIDs (2901-2999), taken from the stock vendor/etc/passwd.
 # The vendor init scripts reference these groups by name, so host_init_verifier
@@ -162,6 +167,18 @@ VENDOR_SECURITY_PATCH := 2026-07-01
 # Verified Boot
 BOARD_AVB_ENABLE := true
 BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
+BOARD_AVB_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
+BOARD_AVB_ALGORITHM := SHA256_RSA4096
+BOARD_AVB_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
+
+# rootdir/etc/fstab.default mounts system, system_ext and product with
+# avb=vbmeta_system, so that chained vbmeta has to exist.
+BOARD_AVB_VBMETA_SYSTEM := system system_ext product
+BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := $(BOARD_AVB_KEY_PATH)
+BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := $(BOARD_AVB_ALGORITHM)
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 3
+
 BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
 BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA4096
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX := 1
@@ -169,7 +186,7 @@ BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
 BOARD_AVB_VENDOR_BOOT_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
 BOARD_AVB_VENDOR_BOOT_ALGORITHM := SHA256_RSA4096
 BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX := 1
-BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX_LOCATION := 1
+BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX_LOCATION := 2
 
 # VINTF
 DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
