@@ -226,4 +226,8 @@ prebuilt_etc {
     name: "fstab.default",
     src: "etc/fstab.default",
     vendor: true,
+    // Creates the fstab.default.vendor_ramdisk variant, which is what puts the
+    // fstab into vendor_boot's first_stage_ramdisk. Without it first-stage init
+    // has no fstab and cannot mount system/vendor out of super.
+    vendor_ramdisk_available: true,
 }

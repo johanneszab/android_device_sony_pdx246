@@ -60,6 +60,61 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.power-service-qti
 
+# Mount points
+# rootdir/etc/fstab.default mounts modem/dsp/bluetooth firmware and vm-system
+# under /vendor. The mount-point directories have to exist in the vendor image
+# or the mounts silently fail -- which is why adsprpcd loops on
+# "apps_dev_init failed ... No such device" (no DSP firmware) and the firmware
+# -dependent HALs abort. Same class of bug as the missing /metadata dir.
+PRODUCT_PACKAGES += \
+    vendor_bt_firmware_mountpoint \
+    vendor_dsp_mountpoint \
+    vendor_firmware_mnt_mountpoint \
+    vendor_vm-system_mountpoint
+
+# Audio
+# BRING-UP PLACEHOLDER: audioserver on Android 16 requires the AIDL audio HAL
+# (android.hardware.audio.core.IModule). Sony's stock HAL is HIDL
+# (android.hardware.audio.service_64), which is the wrong generation and
+# SIGABRTs on startup, so system_server hangs in AudioService.<init>. This
+# AOSP reference implementation registers the AIDL interfaces so the boot can
+# proceed. There is NO working audio with it -- the real fix is the QTI AIDL
+# HAL (audiohalservice.qti plus the PAL/AGM stack), as pdx257 does.
+PRODUCT_PACKAGES += \
+    com.android.hardware.audio
+
+# The reference effect HAL reads /vendor/etc/audio_effects_config.xml. AOSP's
+# copy is a prebuilt_etc gated behind a soong config bool that is off by
+# default, so copy the file directly rather than flipping that gate.
+PRODUCT_COPY_FILES += \
+    hardware/interfaces/audio/aidl/default/audio_effects_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects_config.xml
+
+# Sensors
+# The multihal binary was shipped as a blob but its init .rc was not, so no
+# service ever declared android.hardware.sensors@2.1::ISensors and
+# system_server blocked forever in SystemSensorManager.nativeCreate(). AOSP's
+# module provides the binary, the .rc and the VINTF fragment together, and
+# soong already claims those install paths, so build it rather than extract it.
+PRODUCT_PACKAGES += \
+    android.hardware.sensors@2.1-service.multihal
+
+# vndbinder
+# The QTI vendor blobs (rild, the telephony and camera HALs) talk over
+# /dev/binderfs/vndbinder, which needs vndservicemanager to be running. Without
+# it those services get ENOENT on the vndbinder lookups seen in the boot log.
+PRODUCT_PACKAGES += \
+    vndservicemanager
+
+# USB
+# The QTI gadget HAL reads /vendor/etc/usb_compositions.conf to map a
+# composition name (e.g. "adb") onto configfs functions and a VID/PID. Without
+# it the gadget is never bound and the device does not enumerate over USB at
+# all in Android. vendor/qcom/opensource/usb/hal defines the module; it just
+# was never in PRODUCT_PACKAGES. Shipping the stock blob instead collides with
+# that module's install rule, so build it from source as pdx257 does.
+PRODUCT_PACKAGES += \
+    usb_compositions.conf
+
 # Vibrator
 # vendor/qcom/opensource/vibrator/aidl builds both the impl and the
 # service; the stock blob service is not usable against the source impl.
@@ -134,6 +189,7 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
     fstab.default \
+    fstab.default.vendor_ramdisk \
     init.qcom.factory.rc \
     init.qcom.rc \
     init.qcom.usb.rc \
@@ -141,9 +197,6 @@ PRODUCT_PACKAGES += \
     init.qti.ufs.rc \
     init.target.rc \
     init.recovery.qcom.rc \
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/fstab.default:$(TARGET_VENDOR_RAMDISK_OUT)/first_stage_ramdisk/fstab.default
 
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \

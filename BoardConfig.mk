@@ -53,10 +53,45 @@ TARGET_SCREEN_DENSITY := 450
 # Kernel
 BOARD_BOOT_HEADER_VERSION := 4
 BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_CMDLINE := video=vfb:640x400,bpp=32,memsize=3072000 bootconfig
+# printk.devkmsg=on lifts the rate limit on userspace /dev/kmsg writes; without
+# it init's messages are dropped after the module-load flood and its errors
+# never reach ramoops. ignore_loglevel was dropped again: it printed every
+# kernel debug message and wrapped the 256K ramoops console buffer before the
+# interesting part of the boot. DEBUG ONLY.
+BOARD_KERNEL_CMDLINE := video=vfb:640x400,bpp=32,memsize=3072000 bootconfig printk.devkmsg=on
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_KERNEL_IMAGE_NAME := Image
+
+# This device boots a stock GKI kernel, so declare it. Among other things this
+# makes the build create the first_stage_ramdisk/ skeleton in the generic
+# ramdisk, which the GKI first-stage init pivots into -- without it there is no
+# first stage layout for the vendor ramdisk to land in. pdx257 sets this too.
+BOARD_USES_GENERIC_KERNEL_IMAGE := true
+
+# Stock and pdx257 both compress the ramdisks with LZ4; we were defaulting to
+# gzip.
+BOARD_RAMDISK_USE_LZ4 := true
+
+# Stock ships these four in vendor_boot's bootconfig section and init depends
+# on all of them. Without androidboot.hardware, ro.hardware is unset and init
+# never loads init.qcom.rc, so the whole vendor init sequence is skipped;
+# without androidboot.usbcontroller, init.recovery.qcom.rc cannot bring up the
+# USB gadget and adb never appears in recovery.
+BOARD_BOOTCONFIG += \
+    androidboot.hardware=qcom \
+    androidboot.memcg=1 \
+    androidboot.usbcontroller=a600000.dwc3
+
+# ---- DEBUG BUILD ONLY: revert both of these before any daily use ----
+# selinux=permissive because there is no device sepolicy yet and the stock
+# Sony blobs will generate denials. Stock also sets
+# androidboot.init_fatal_panic=true, which is deliberately omitted here so an
+# init failure logs and continues rather than panicking the kernel instantly,
+# which left us with nothing to read.
+BOARD_BOOTCONFIG += \
+    androidboot.selinux=permissive \
+    androidboot.init_fatal_reboot_target=recovery
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_KERNEL_SEPARATED_DTBO := true
 TARGET_KERNEL_CONFIG := pdx246_defconfig
@@ -103,6 +138,15 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := \
     $(DEVICE_PATH)/prebuilts/modules-vendor_boot/modules.blocklist
 
 # Partitions
+# The device has a real metadata partition (rootdir/etc/fstab.default mounts it
+# and it is in the bootloader's partition table). This flag makes the build
+# create the /metadata mount-point directory in the system image root; without
+# it, SwitchRoot("/system") cannot MS_MOVE the already-mounted /metadata into
+# the new root, and first-stage init aborts with
+#   "Unable to move mount at '/metadata' to '/system/metadata'"
+# which reboots the device to the bootloader before second-stage init starts.
+BOARD_USES_METADATA_PARTITION := true
+
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
 BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
 BOARD_DTBOIMG_PARTITION_SIZE := 25165824
@@ -156,6 +200,12 @@ TARGET_ODM_DLKM_PROP += $(DEVICE_PATH)/odm_dlkm.prop
 TARGET_VENDOR_DLKM_PROP += $(DEVICE_PATH)/vendor_dlkm.prop
 
 # Recovery
+# Stock's recovery.img is ramdisk-only (kernel_size: 0) -- the kernel is taken
+# from boot.img at boot time. Building a full boot-style recovery image with
+# the 45MB GKI kernel embedded is a structure the bootloader will not accept,
+# and it rejects the whole slot with the AVB red state ("device is corrupt").
+BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
+
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.default
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -165,28 +215,30 @@ TARGET_USERIMAGES_USE_F2FS := true
 VENDOR_SECURITY_PATCH := 2026-07-01
 
 # Verified Boot
+#
+# The rollback index must be >= the highest value the device has already
+# recorded, or the bootloader rejects the image with "Your device is corrupt"
+# (AVB red state) no matter what the disable flags say. Stock ships
+# 1782864000 == 2026-07-01, so derive it from VENDOR_SECURITY_PATCH.
+# PLATFORM_SECURITY_PATCH is 2025-11-05 here -- 238 days lower, which trips
+# anti-rollback.
 BOARD_AVB_ENABLE := true
 BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
 BOARD_AVB_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
 BOARD_AVB_ALGORITHM := SHA256_RSA4096
-BOARD_AVB_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
+BOARD_AVB_ROLLBACK_INDEX := $(shell date -u -d $(VENDOR_SECURITY_PATCH) +%s)
 
 # rootdir/etc/fstab.default mounts system, system_ext and product with
-# avb=vbmeta_system, so that chained vbmeta has to exist.
+# avb=vbmeta_system, so that chained vbmeta has to exist. It is also the only
+# chain stock uses, at rollback index location 2 -- boot, dtbo, recovery and
+# vendor_boot are plain hash descriptors in the main vbmeta. So deliberately
+# do NOT set BOARD_AVB_{RECOVERY,VENDOR_BOOT}_KEY_PATH: that would turn them
+# into chained partitions and claim index locations stock never used.
 BOARD_AVB_VBMETA_SYSTEM := system system_ext product
 BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := $(BOARD_AVB_KEY_PATH)
 BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := $(BOARD_AVB_ALGORITHM)
-BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
-BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 3
-
-BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
-BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA4096
-BOARD_AVB_RECOVERY_ROLLBACK_INDEX := 1
-BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
-BOARD_AVB_VENDOR_BOOT_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
-BOARD_AVB_VENDOR_BOOT_ALGORITHM := SHA256_RSA4096
-BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX := 1
-BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX_LOCATION := 2
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(BOARD_AVB_ROLLBACK_INDEX)
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 2
 
 # VINTF
 DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
