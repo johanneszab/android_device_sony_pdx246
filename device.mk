@@ -149,22 +149,32 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
     frameworks/native/data/etc/android.software.verified_boot.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.verified_boot.xml
 
-# Audio
-# BRING-UP PLACEHOLDER: audioserver on Android 16 requires the AIDL audio HAL
-# (android.hardware.audio.core.IModule). Sony's stock HAL is HIDL
-# (android.hardware.audio.service_64), which is the wrong generation and
-# SIGABRTs on startup, so system_server hangs in AudioService.<init>. This
-# AOSP reference implementation registers the AIDL interfaces so the boot can
-# proceed. There is NO working audio with it -- the real fix is the QTI AIDL
-# HAL (audiohalservice.qti plus the PAL/AGM stack), as pdx257 does.
-PRODUCT_PACKAGES += \
-    com.android.hardware.audio
-
-# The reference effect HAL reads /vendor/etc/audio_effects_config.xml. AOSP's
-# copy is a prebuilt_etc gated behind a soong config bool that is off by
-# default, so copy the file directly rather than flipping that gate.
-PRODUCT_COPY_FILES += \
-    hardware/interfaces/audio/aidl/default/audio_effects_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects_config.xml
+# Audio -- stock HIDL audio@7.0 HAL
+#
+# frameworks/av/media/libaudiohal/FactoryHal.cpp tries AIDL 1.0 first and then
+# falls back to HIDL 7.1 / 7.0 / 6.0, dlopening libaudiohal@<ver>.so. Android 16
+# did NOT drop HIDL audio -- DevicesFactoryHalHidl is still built, and this
+# device already runs camera on HIDL 2.7, bluetooth on 1.0 and drm on 1.2.
+#
+# So there is nothing to build here. The HAL, its impl libraries, the whole
+# PAL/AGM/AudioReach stack, the mixer paths, card-defs and ACDB calibration are
+# all Sony blobs from proprietary-files.txt, and they are the generation that
+# matches this ADSP (ACDB SW 1.41.0.0, Aug 2023). What was missing all along was
+# vendor/bin/hw/android.hardware.audio.service_64 -- the service that HOSTS the
+# @7.0-impl libraries. It is now extracted, together with its .rc.
+#
+# Deliberately NOT here:
+#   com.android.hardware.audio   the AOSP AIDL HAL. If it is present the
+#                                framework stops at AIDL and never reaches the
+#                                HIDL fallback. It also has no driver for this
+#                                codec and returns -ENODEV.
+#   audio.{r_submix,usb,bluetooth}.default   AOSP builds these, but Sony ships
+#                                them as blobs and the HIDL service dlopens the
+#                                blob copies via libhardware.
+#
+# The QTI AIDL source route is kept in patches/audio/ but is not selected -- its
+# AudioReach is a newer generation than this device's ACDB data. See
+# PORTING-NOTES.md "AUDIO: THE PREMISE WAS WRONG".
 
 # Wi-Fi userspace
 #

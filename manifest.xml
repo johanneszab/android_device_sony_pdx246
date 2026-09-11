@@ -42,4 +42,42 @@
             <instance>default</instance>
         </interface>
     </hal>
+
+    <!-- NO android.hardware.audio.core here on purpose.
+         It used to declare IModule/usb, which the com.android.hardware.audio
+         apex omitted. That apex is gone: audio is now the QTI AIDL HAL built
+         from source, and libaudiocorehal.default ships its own fragment
+         (manifest_audiocorehal_default.xml) declaring IConfig/default,
+         IModule/default, IModule/r_submix AND IModule/usb. Declaring usb here
+         as well makes checkvintf fail the build:
+           VINTF parse error: Cannot add manifest fragment
+           manifest_audiocorehal_default.xml: HAL "android.hardware.audio.core"
+           has a conflict: Conflicting FqInstance
+         Same trap as the soundtrigger vintf_fragment earlier: if the module
+         ships its own fragment, do not also declare it here. -->
+    <!-- Stock HIDL audio HAL (vendor/bin/hw/android.hardware.audio.service_64).
+         frameworks/av/media/libaudiohal/FactoryHal.cpp falls back from AIDL to
+         HIDL 7.1/7.0/6.0 and looks up exactly these two:
+             HIDL devices -> android.hardware.audio        / IDevicesFactory
+             HIDL effects -> android.hardware.audio.effect / IEffectsFactory
+         The service binary ships no VINTF fragment of its own, so unlike the
+         AGM/PAL services these DO have to be declared here. -->
+    <hal format="hidl">
+        <name>android.hardware.audio</name>
+        <transport>hwbinder</transport>
+        <version>7.0</version>
+        <interface>
+            <name>IDevicesFactory</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl">
+        <name>android.hardware.audio.effect</name>
+        <transport>hwbinder</transport>
+        <version>7.0</version>
+        <interface>
+            <name>IEffectsFactory</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
 </manifest>
