@@ -2253,9 +2253,6 @@ vendor/lib64/vendor.qti.hardware.ListenSoundModel@1.0.so
 vendor/lib64/vendor.qti.voiceprint@1.0.so
 
 # Thermal
-vendor/bin/hw/android.hardware.thermal@2.0-service.sony
-vendor/etc/init/android.hardware.thermal@2.0-service.sony.rc
-vendor/etc/vintf/manifest/android.hardware.thermal@2.0-service.sony.xml
 vendor/lib64/pixel-power-ext-V1-ndk_platform.so
 
 # Thermal (Qualcomm)

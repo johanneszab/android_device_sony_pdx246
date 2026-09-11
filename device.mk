@@ -28,10 +28,14 @@ PRODUCT_PACKAGES += \
     checkpoint_gc \
     otapreopt_script
 
-PRODUCT_PACKAGES += \
-    android.hardware.boot@1.2-impl \
-    android.hardware.boot@1.2-impl.recovery \
-    android.hardware.boot@1.2-service
+# android.hardware.boot: NOT CURRENTLY PROVIDED.
+# The matrix only accepts AIDL, so the HIDL @1.2 service is useless here, but
+# QTI's AIDL replacement does not build against our prebuilt kernel headers:
+#   libgptutils.qti: bionic/libc/include/sched.h:99: redefinition of
+#   'sched_param' (previous definition in the generated kernel headers'
+#   linux/sched/types.h)
+# It is only needed by update_engine for A/B slot management, not to boot, so
+# it is left out. REVISIT before OTAs are expected to work.
 
 PRODUCT_PACKAGES += \
     update_engine \
@@ -96,7 +100,7 @@ PRODUCT_COPY_FILES += \
 # module provides the binary, the .rc and the VINTF fragment together, and
 # soong already claims those install paths, so build it rather than extract it.
 PRODUCT_PACKAGES += \
-    android.hardware.sensors@2.1-service.multihal
+    android.hardware.sensors-service.multihal
 
 # vndbinder
 # The QTI vendor blobs (rild, the telephony and camera HALs) talk over
@@ -115,6 +119,12 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     usb_compositions.conf
 
+# Thermal
+# The stock android.hardware.thermal@2.0-service.sony blob is HIDL; the matrix
+# only accepts AIDL. Build QTI's AIDL thermal service instead.
+PRODUCT_PACKAGES += \
+    android.hardware.thermal-service.qti
+
 # Vibrator
 # vendor/qcom/opensource/vibrator/aidl builds both the impl and the
 # service; the stock blob service is not usable against the source impl.
@@ -123,8 +133,7 @@ PRODUCT_PACKAGES += \
 
 # Health
 PRODUCT_PACKAGES += \
-    android.hardware.health@2.1-impl \
-    android.hardware.health@2.1-service
+    android.hardware.health-service.qti
 
 # Kernel
 PRODUCT_ENABLE_UFFD_GC := true
@@ -199,8 +208,12 @@ PRODUCT_PACKAGES += \
     init.recovery.qcom.rc \
 
 # Soong namespaces
+# hardware/qcom-caf/{bootctrl,thermal} each declare their own soong_namespace,
+# so the AIDL boot and thermal services are invisible without opting in.
 PRODUCT_SOONG_NAMESPACES += \
-    $(LOCAL_PATH)
+    $(LOCAL_PATH) \
+    hardware/qcom-caf/bootctrl \
+    hardware/qcom-caf/thermal
 
 # Inherit the proprietary files
 $(call inherit-product, vendor/sony/pdx246/pdx246-vendor.mk)

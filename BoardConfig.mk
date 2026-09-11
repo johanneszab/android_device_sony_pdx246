@@ -191,6 +191,18 @@ BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := ext4
 
 # Platform
+# NOTE: BOARD_USES_QCOM_HARDWARE is deliberately NOT set. It gates
+# hardware/qcom-caf/common/BoardConfigQcom.mk (via BoardConfigLineage.mk), which
+# would set QCOM_HARDWARE_VARIANT/QCOM_SOONG_NAMESPACE and make the
+# hardware/qcom-caf/<variant> soong namespace visible. For parrot with
+# TARGET_KERNEL_VERSION 5.10 that variant resolves to hardware/qcom-caf/sm8450,
+# which is the Android 14/15-era CAF branch: it is HIDL-only (its allocator
+# service is android.hardware.graphics.allocator@4.0, and it has no AIDL audio
+# HAL at all), so it cannot supply any of the AIDL HALs Android 16 requires.
+# Turning it on also makes 55 module names ambiguous between vendor/sony/pdx246
+# (our blobs) and that namespace, every one of which would need pinning with
+# //vendor/sony/pdx246:<name> just to preserve today's behaviour.
+# Revisit only if we ever move the QTI HALs to source. See PORTING-NOTES.md.
 TARGET_BOARD_PLATFORM := parrot
 
 # Properties
