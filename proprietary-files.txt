@@ -184,7 +184,15 @@ vendor/lib64/libupmix-lib.so
 vendor/lib64/libznr.so
 
 # Audio configs
-etc/audio_effects.xml
+# NOT extracted: audio_effects.xml, libnfc-nci.conf and
+# seccomp_policy/mediacodec.policy. They were listed as bare 'etc/...'
+# paths, which extract-utils cannot resolve to a partition; the generated
+# rule used $(TARGET_COPY_OUT_ETC), which is NOT a real build variable, so
+# it expanded to empty and the copies never worked. The platform already
+# installs all three (AOSP framework-audio_effects.xml etc.), and adding
+# them for real collides with those soong modules:
+#   error: overriding commands for target .../system/etc/audio_effects.xml
+
 vendor/etc/audio/sku_parrot/audio_effects.conf
 vendor/etc/audio/sku_parrot/audio_effects.xml
 vendor/etc/audio/sku_parrot/audio_policy_configuration.xml
@@ -1377,9 +1385,27 @@ vendor/etc/seccomp_policy/vendor.qti.hardware.dsp.policy
 vendor/lib/vendor.qti.hardware.dsp@1.0.so
 vendor/lib64/vendor.qti.hardware.dsp@1.0.so
 
-# Face
-vendor/bin/hw/android.hardware.biometrics.face@1.0-service.face
-vendor/etc/init/android.hardware.biometrics.face@1.0-service.face.rc
+# Face -- DELIBERATELY NOT EXTRACTED.
+#
+# Sony's android.hardware.biometrics.face@1.0-service.face crash-loops forever:
+#   Face HAL started
+#   Check failed: status == STATUS_OK       -> SIGABRT
+#   servicemanager: Could not find android.hardware.biometrics.face.IFace/default
+#                   in the VINTF manifest. No alternative instances declared.
+#
+# Declaring the interface would not help. The Android 16 framework matrix
+# requires android.hardware.biometrics.face AIDL version 3-4, and this binary
+# links android.hardware.biometrics.face-V1-ndk (confirmed in
+# vendor/sony/pdx246/Android.bp) i.e. AIDL V1; and NOTHING would consume it anyway, because neither we nor
+# stock declare the android.hardware.biometrics.face FEATURE, so FaceService
+# never looks for it. Stock ships and enables this service without declaring
+# the interface either, so it presumably crash-loops there too.
+#
+# Shipping it only burns CPU and floods the log with a restart every 5 s.
+# To restore (e.g. if face unlock is ever attempted), re-add both lines AND
+# declare the AIDL interface at a version the framework matrix accepts:
+#   vendor/bin/hw/android.hardware.biometrics.face@1.0-service.face
+#   vendor/etc/init/android.hardware.biometrics.face@1.0-service.face.rc
 vendor/lib/libcamera2ndk_vendor.so
 vendor/lib64/libcamera2ndk_vendor.so
 vendor/lib64/vendor.qti.hardware.secureprocessor.common@1.0-helper.so
@@ -1401,8 +1427,14 @@ vendor/lib64/hw/vendor.qti.hardware.fm@1.0-impl.so
 vendor/lib64/libqmi.so
 vendor/lib64/vendor.qti.hardware.fm@1.0.so
 
+# Privileged permission allowlists (system_ext priv-apps we ship)
+system_ext/etc/permissions/wfd-system-ext-privapp-permissions-qti.xml
+system_ext/etc/permissions/telephony_system-ext_privapp-permissions-qti.xml
+
 # Gatekeeper
 vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
+vendor/lib/hw/android.hardware.gatekeeper@1.0-impl-qti.so
+vendor/lib64/hw/android.hardware.gatekeeper@1.0-impl-qti.so
 vendor/bin/hw/vendor.qti.hardware.secureprocessor@1.0
 vendor/etc/init/android.hardware.gatekeeper@1.0-service-qti.rc
 vendor/etc/init/vendor.qti.hardware.secureprocessor@1.0.rc
@@ -1512,7 +1544,6 @@ vendor/lib/hw/local_time.default.so
 vendor/lib64/hw/local_time.default.so
 
 # Media
-etc/seccomp_policy/mediacodec.policy
 system_ext/lib/vendor.qti.hardware.vpp@1.1.so
 vendor/lib/vendor.qti.hardware.vpp@1.1.so;MODULE_SUFFIX=_vendor
 system_ext/lib64/vendor.qti.hardware.vpp@1.1.so
@@ -1593,7 +1624,6 @@ vendor/lib64/se_extn_client.so
 vendor/lib64/vendor.somc.hardware.nfc@1.0.so
 
 # NFC configs
-etc/libnfc-nci.conf
 product/etc/libnfc-nxp_RF.conf
 vendor/etc/libnfc-SN220.conf
 vendor/etc/libnfc-mtp-SN100.conf

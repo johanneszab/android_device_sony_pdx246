@@ -1,5 +1,14 @@
 # Audio
-ro.audio.ihaladaptervendorextension_enabled=true
+# MUST stay false. DevicesFactoryHalAidl (frameworks/av/media/libaudiohal/impl)
+# only calls AServiceManager_waitForService() on
+# android.media.audio.IHalAdapterVendorExtension/default when this is true, and
+# that wait is unbounded. Nothing in our tree implements that interface: pdx257
+# sets this true because it also builds qtiaudiohalvendorextn, which we cannot
+# (its QTI AIDL audio HAL only exists in the 6.6-era CAF branches). With it
+# true, audioserver blocks forever, AudioService.<init> blocks behind it, and
+# system_server's Watchdog panics the device via /proc/sysrq-trigger at 66 s.
+# Stock pdx246 does not set this property at all.
+ro.audio.ihaladaptervendorextension_enabled=false
 
 # DPM
 persist.vendor.dpm.feature=11
