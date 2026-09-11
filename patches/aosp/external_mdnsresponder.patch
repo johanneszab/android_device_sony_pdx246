@@ -1,0 +1,12 @@
+diff --git a/Android.bp b/Android.bp
+index 46dab6b..ffaf0c4 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -186,5 +186,7 @@ cc_library {
+     visibility: [
+         "//bootable/recovery/minadbd:__subpackages__",
+         "//packages/modules/adb:__subpackages__",
++        // Qualcomm WFD/Miracast blobs (libmiracastsystem) link against this.
++        "//vendor:__subpackages__",
+     ],
+ }

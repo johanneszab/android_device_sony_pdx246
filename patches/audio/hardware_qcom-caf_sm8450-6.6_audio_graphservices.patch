@@ -1,0 +1,130 @@
+diff --git a/acdb/Android.bp b/acdb/Android.bp
+index 757bebd..e2ee76a 100644
+--- a/acdb/Android.bp
++++ b/acdb/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libar-acdb",
+     owner: "qti",
+     vendor: true,
+@@ -42,6 +48,12 @@ cc_library_shared {
+ }
+ 
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libats",
+     owner: "qti",
+     vendor: true,
+diff --git a/ar_osal/Android.bp b/ar_osal/Android.bp
+index 656aafe..c9f5781 100644
+--- a/ar_osal/Android.bp
++++ b/ar_osal/Android.bp
+@@ -9,6 +9,17 @@ cc_library_shared {
+     owner: "qti",
+     vendor: true,
+ 
++    // 64-bit only, added for device/sony/pdx246. This is the one audio source
++    // module compiled against the kernel UAPI headers, and pdx246 has a second
++    // arch (TARGET_2ND_ARCH := arm; stock runs zygote64_32 and ~100 vendor
++    // blobs are 32-bit only, so it cannot be dropped). LineageOS's
++    // generated_kernel_includes exports the kernel's arm64 usr/include for BOTH
++    // arches, and -I beats bionic's -isystem asm-arm, so the 32-bit build picks
++    // up arm64's asm/sigcontext.h and dies on:
++    //     error: unknown type name '__uint128_t'
++    // pdx257 never hits this because it is 64-bit only.
++    compile_multilib: "64",
++
+     cflags: [
+         "-D_ANDROID_",
+         "-DAR_OSAL_USE_CUTILS",
+@@ -34,6 +45,19 @@ cc_library_shared {
+     include_dirs: [
+         "system/memory/libion/include",
+         "system/memory/libion/kernel-headers",
++        // Added for device/sony/pdx246. ar_osal_shmem_db.c needs
++        // <linux/msm_audio.h>. It should arrive via the header_lib
++        // "qti_audio_kernel_uapi", but that name is defined twice: the real one
++        // in kernel/sony/<device>-modules/qcom/opensource/audio-kernel, and a
++        // global alias in hardware/qcom-caf/common that only re-exports the
++        // kernel's generated usr/include. The global alias wins, and for a
++        // device with TARGET_FORCE_PREBUILT_KERNEL the generated headers do not
++        // contain the audio UAPI at all (they live in the separate -modules
++        // repo), so the include fails. Pointing at the headers directly avoids
++        // both a soong-namespace duplicate and a Make-level
++        // "MODULE.TARGET.HEADER_LIBRARIES.qti_audio_kernel_uapi already defined"
++        // clash, and does not disturb pdx257.
++        "kernel/sony/pdx246-modules/qcom/opensource/audio-kernel/include/uapi/audio",
+     ],
+ 
+     local_include_dirs: ["api"],
+diff --git a/ar_util/Android.bp b/ar_util/Android.bp
+index cc878c7..6060d24 100644
+--- a/ar_util/Android.bp
++++ b/ar_util/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "liblx-ar_util",
+     owner: "qti",
+     vendor: true,
+diff --git a/gpr/Android.bp b/gpr/Android.bp
+index 7531b09..9c253d7 100644
+--- a/gpr/Android.bp
++++ b/gpr/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libar-gpr",
+     owner: "qti",
+     vendor: true,
+diff --git a/gsl/Android.bp b/gsl/Android.bp
+index baa484f..06d5733 100644
+--- a/gsl/Android.bp
++++ b/gsl/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libar-gsl",
+     owner: "qti",
+     vendor: true,
+diff --git a/spf/Android.bp b/spf/Android.bp
+index 4554eb0..8ea6a5c 100644
+--- a/spf/Android.bp
++++ b/spf/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libspf-headers",
+     vendor: true,
+ 

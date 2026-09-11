@@ -1,0 +1,20 @@
+// Give the audio HAL its own soong namespace.
+//
+// Added for device/sony/pdx246. Without this file, audio/ inherits the
+// namespace declared at hardware/qcom-caf/sm8450-6.6/Android.bp, which also
+// covers display/, dataipa/ and data-ipa-cfg-mgr/. Importing that namespace to
+// get the QTI AIDL audio HAL therefore also makes 21 display and 3 IPA module
+// names visible, every one of which collides with a pdx246 vendor blob --
+// build/soong/fsgen/fsgen_mutators.go:378 rejects a module name that resolves
+// in two imported namespaces, with no per-module override.
+//
+// NameResolver.findNamespace() searches upward for the nearest ancestor
+// namespace (build/soong/android/namespace.go:180), so declaring one here takes
+// audio/ out of the parent namespace and leaves display/ and the IPA trees
+// invisible -- pdx246 keeps its working display blobs and still gets the audio
+// HAL from source.
+//
+// No imports: every external reference from audio/ resolves in the global
+// namespace (checked across all 48 Android.bp files under audio/).
+soong_namespace {
+}

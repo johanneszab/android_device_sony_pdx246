@@ -1,0 +1,25 @@
+diff --git a/extract-files.py b/extract-files.py
+index 8606d56..74e46f4 100755
+--- a/extract-files.py
++++ b/extract-files.py
+@@ -20,6 +20,12 @@ from extract_utils.main import (
+ namespace_imports = [
+     'device/sony/pdx257',
+     'hardware/qcom-caf/sm8450-6.6',
++    # pdx246 moved the audio HAL into a nested soong namespace at
++    # hardware/qcom-caf/sm8450-6.6/audio (so that importing the parent does not
++    # also pull display/ and the IPA trees, which collide with pdx246's blobs).
++    # Namespace imports do not reach a child namespace, so libmcs no longer sees
++    # libagm / libar-acdb / libats / liblx-osal without this entry.
++    'hardware/qcom-caf/sm8450-6.6/audio',
+     'hardware/qcom-caf/wlan',
+     'vendor/qcom/opensource/commonsys-intf/display',
+     'vendor/qcom/opensource/commonsys/display',
+@@ -32,6 +38,7 @@ def lib_fixup_vendor_suffix(lib: str, partition: str, *args, **kwargs):
+ lib_fixups: lib_fixups_user_type = {
+     **lib_fixups,
+     (
++        'com.qualcomm.qti.dpm.api@1.0',
+         'vendor.qti.ImsRtpService-V1-ndk',
+         'vendor.qti.diaghal-V1-ndk',
+         'vendor.qti.hardware.dpmaidlservice-V1-ndk',

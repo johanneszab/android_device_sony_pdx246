@@ -1,0 +1,286 @@
+diff --git a/Android.bp b/Android.bp
+index 80eab0da3..11f7c5697 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libarpal_headers",
+     vendor: true,
+ 
+@@ -15,6 +21,12 @@ cc_library_headers {
+ }
+ 
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libar-pal",
+     owner: "qti",
+     vendor: true,
+@@ -30,6 +42,11 @@ cc_library_shared {
+         "-Wall",
+         "-Werror",
+         "-Wno-macro-redefined",
++        // Added for device/sony/pdx246: this tree predates the current toolchain
++        // and trips -Werror on printf formats (size_type vs int in
++        // Bluetooth.cpp, long vs int in Port.cpp). Warnings only, not behaviour.
++        "-Wno-format",
++        "-Wno-implicit-fallthrough",
+         "-Wno-unused-parameter",
+         "-Wno-unused-variable",
+     ],
+@@ -144,6 +161,12 @@ cc_library_shared {
+ }
+ 
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libaudiochargerlistener",
+     owner: "qti",
+     vendor: true,
+diff --git a/acdbdata/Android.bp b/acdbdata/Android.bp
+index b15129328..9956678f3 100644
+--- a/acdbdata/Android.bp
++++ b/acdbdata/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libacdb_headers",
+     vendor: true,
+     export_include_dirs: ["."],
+diff --git a/api/vui-interface/Android.bp b/api/vui-interface/Android.bp
+index 95596ebc3..3e2c43594 100644
+--- a/api/vui-interface/Android.bp
++++ b/api/vui-interface/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libarvui_intf_headers",
+     vendor: true,
+     export_include_dirs: ["."],
+diff --git a/audio-feature-stats/Android.bp b/audio-feature-stats/Android.bp
+index c37b2dc41..58fcb02d1 100644
+--- a/audio-feature-stats/Android.bp
++++ b/audio-feature-stats/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libaudiofeaturestats_headers",
+     vendor: true,
+     export_include_dirs: ["."],
+diff --git a/audio-listen/Android.bp b/audio-listen/Android.bp
+index 722606de5..bf3ce8281 100644
+--- a/audio-listen/Android.bp
++++ b/audio-listen/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "liblisten_headers",
+     vendor: true,
+     export_include_dirs: ["."],
+diff --git a/capiv2_api/Android.bp b/capiv2_api/Android.bp
+index 3187fc495..8969a56f6 100644
+--- a/capiv2_api/Android.bp
++++ b/capiv2_api/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libcapiv2_headers",
+     vendor: true,
+     export_include_dirs: ["."],
+diff --git a/ipc/aidl/aidlconverter/Android.bp b/ipc/aidl/aidlconverter/Android.bp
+index 2b9afaedc..d6473757f 100644
+--- a/ipc/aidl/aidlconverter/Android.bp
++++ b/ipc/aidl/aidlconverter/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_static {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+ 
+     name: "libpalaidltypeconverter",
+     vendor: true,
+diff --git a/ipc/aidl/client/Android.bp b/ipc/aidl/client/Android.bp
+index 513403569..0e5ccad71 100644
+--- a/ipc/aidl/client/Android.bp
++++ b/ipc/aidl/client/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libpalclient",
+     owner: "qti",
+     vendor: true,
+diff --git a/ipc/aidl/server/Android.bp b/ipc/aidl/server/Android.bp
+index e42406020..daa163b67 100644
+--- a/ipc/aidl/server/Android.bp
++++ b/ipc/aidl/server/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libpalipcservice",
+     owner: "qti",
+     vendor: true,
+diff --git a/mink/Android.bp b/mink/Android.bp
+index a0cb97044..c5127a476 100644
+--- a/mink/Android.bp
++++ b/mink/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "mink_headers",
+     vendor: true,
+     export_include_dirs: ["inc"],
+diff --git a/peripheral_utils/Android.bp b/peripheral_utils/Android.bp
+index 8b3e99874..777ee4b56 100644
+--- a/peripheral_utils/Android.bp
++++ b/peripheral_utils/Android.bp
+@@ -1,10 +1,22 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "peripheralstate_headers",
+     vendor: true,
+     export_include_dirs: ["inc"],
+ }
+ 
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libPeripheralStateUtils",
+     vendor: true,
+ }
+diff --git a/plugins/codecs/Android.bp b/plugins/codecs/Android.bp
+index b65cf471c..d6281c7a2 100644
+--- a/plugins/codecs/Android.bp
++++ b/plugins/codecs/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "lib_bt_bundle",
+     owner: "qti",
+     vendor: true,
+@@ -31,6 +37,12 @@ cc_library_shared {
+ }
+ 
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "lib_bt_aptx",
+     owner: "qti",
+     vendor: true,
+@@ -60,6 +72,12 @@ cc_library_shared {
+ }
+ 
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "lib_bt_ble",
+     owner: "qti",
+     vendor: true,
+diff --git a/plugins/vui_interface/Android.bp b/plugins/vui_interface/Android.bp
+index 6041a98d2..0367fe888 100644
+--- a/plugins/vui_interface/Android.bp
++++ b/plugins/vui_interface/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_shared {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libvui_intf",
+     owner: "qti",
+     vendor: true,
+diff --git a/vui-dmgr/Android.bp b/vui-dmgr/Android.bp
+index c3b09a7c6..aa5b99930 100644
+--- a/vui-dmgr/Android.bp
++++ b/vui-dmgr/Android.bp
+@@ -1,4 +1,10 @@
+ cc_library_headers {
++    // 64-bit only for device/sony/pdx246: this tree is compiled against the
++    // kernel UAPI headers, which LineageOS exports as arm64 for BOTH arches,
++    // so a 32-bit build picks up arm64 asm/sigcontext.h and fails on
++    // __uint128_t. pdx246 has a 2nd arch (stock is zygote64_32); pdx257 is
++    // 64-bit only and never hits this. See PORTING-NOTES.md "AUDIO".
++    compile_multilib: "64",
+     name: "libvui_dmgr_headers",
+     vendor: true,
+     export_include_dirs: ["inc"],

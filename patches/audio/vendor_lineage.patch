@@ -1,0 +1,19 @@
+diff --git a/tools/clean_headers.sh b/tools/clean_headers.sh
+index 44053a31..5925e335 100755
+--- a/tools/clean_headers.sh
++++ b/tools/clean_headers.sh
+@@ -6,3 +6,14 @@ export ANDROID_BUILD_TOP="$PWD"
+ ./bionic/libc/kernel/tools/clean_header.py -u \
+     "$1/usr/include/asm/signal.h" \
+     "$1/usr/include/asm-generic/signal.h"
++
++# Added for device/sony/pdx246. These export_include_dirs are put on the command
++# line with -I, ahead of bionic's own sanitized uapi headers (-isystem), so an
++# unsanitized kernel header here SHADOWS bionic's. linux/eventpoll.h defines
++# struct epoll_event, which bionic defines itself in bits/epoll_event.h, so
++# anything including <sys/epoll.h> fails with "redefinition of 'epoll_event'"
++# (hit by the QTI audio HAL's ChargerListener.h). clean_header.py applies the
++# same sanitization bionic uses for its own copy.
++if [ -f "$1/usr/include/linux/eventpoll.h" ]; then
++    ./bionic/libc/kernel/tools/clean_header.py -u "$1/usr/include/linux/eventpoll.h"
++fi
