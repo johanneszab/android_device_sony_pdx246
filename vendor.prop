@@ -205,7 +205,31 @@ vendor.usb.rmnet.func.name=gsi
 vendor.usb.rmnet.inst.name=rmnet
 vendor.usb.rndis.func.name=gsi
 vendor.usb.use_ffs_mtp=1
-vendor.usb.use_gadget_hal=1
+# BRING-UP: was 1 (matching stock). The QTI USB gadget HAL crashes immediately:
+#   init: starting service 'vendor.usbgadget-hal'...
+#   init: Service 'vendor.usbgadget-hal' (pid 1239) exited with status 255
+# so nothing ever writes /config/usb_gadget/g1/UDC and the device never
+# enumerates on USB -- which is why there is no adb in Android. adbd itself is
+# fine ("adbd opening control endpoint /dev/usb-ffs/adb/ep0"); only the UDC
+# binding is missing.
+#
+# Setting this to 0 selects the init-driven configfs path in
+# vendor/etc/init/hw/init.qcom.usb.rc instead of the HAL:
+#   on property:vendor.usb.controller=* && property:vendor.usb.use_gadget_hal=0
+#      setprop sys.usb.controller ${vendor.usb.controller}
+#      setprop sys.usb.configfs 1
+# vendor.usb.controller comes from /vendor/bin/init.qcom.usb.sh (shipped), and
+# "adb" is one of the compositions that rc handles for sys.usb.configfs=1.
+#
+# REVERT once the gadget HAL is fixed -- stock uses the HAL path.
+vendor.usb.use_gadget_hal=0
+
+# Seed the composition. sys.usb.config is set from persist.vendor.usb.config
+# ("on boot" in init.qcom.usb.rc) and persist.sys.usb.config ("on boot" in
+# init.usb.rc); both live in /data, which we formatted, so without a default
+# they are empty and no composition is ever applied.
+persist.vendor.usb.config=adb
+persist.sys.usb.config=adb
 
 # Wi-Fi
 wifi.aware.interface=wifi-aware0

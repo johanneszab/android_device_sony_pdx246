@@ -189,7 +189,16 @@ PRODUCT_PACKAGES += \
 # all in Android. vendor/qcom/opensource/usb/hal defines the module; it just
 # was never in PRODUCT_PACKAGES. Shipping the stock blob instead collides with
 # that module's install rule, so build it from source as pdx257 does.
+# Android 16 dropped HIDL usb.gadget: compatibility_matrix.7 lists it as
+# format="hidl" version 1.0-2, matrix 8 onwards only has format="aidl". The
+# stock @1.2-service-qti blob is HIDL, so hwservicemanager refuses it --
+#   getTransport: Cannot find entry android.hardware.usb.gadget@1.2::IUsbGadget
+#   Cannot register USB Gadget HAL service
+# and adb never enumerates. Build QTI's AIDL services instead (they ship their
+# own .rc and VINTF fragments), as pdx257 does.
 PRODUCT_PACKAGES += \
+    android.hardware.usb-service.qti \
+    android.hardware.usb.gadget-service.qti \
     usb_compositions.conf
 
 # Thermal
