@@ -166,6 +166,42 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     hardware/interfaces/audio/aidl/default/audio_effects_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects_config.xml
 
+# Wi-Fi userspace
+#
+# pdx246 shipped NONE of these. We extract the HIDL wifi HAL blob
+# (android.hardware.wifi@1.0-service) and libwifi-hal.so, and with
+# libcld80211.so added the driver now probes and creates wlan0 -- but nothing
+# ever provided wpa_supplicant, so:
+#   SupplicantStaIfaceHal: Failed to get internal ISupplicantStaIfaceHal instance
+#   SupplicantP2pIfaceHal: Failed to get internal ISupplicantP2pIfaceHal instance
+#   wificond: tearDownClientInterface: erasing wiphy_index for iface_name wlan0
+# and wifi could not be enabled at all. wpa_supplicant is what provides
+# android.hardware.wifi.supplicant; it is built from external/wpa_supplicant_8.
+#
+# Mirrors device/sony/pdx257/device.mk, minus android.hardware.wifi-service:
+# pdx257 uses the AOSP AIDL wifi service with libwifi-hal-qcom, whereas our
+# HIDL blob HAL is already registering IWifi and driving the chip. Revisit that
+# split if the HIDL path proves to be a dead end.
+# Minimal set on purpose:
+#   - wpa_supplicant.conf is ALREADY installed by a blob at
+#     /vendor/etc/wifi/wpa_supplicant.conf, and adding the module makes kati
+#     fail with "non-existent modules in PRODUCT_PACKAGES".
+#   - hostapd is AP/tethering only and does not resolve either: the
+#     wpa_supplicant_8 hostapd build is gated on BOARD_HOSTAPD_DRIVER /
+#     WPA_SUPPLICANT_VERSION, which pdx246 does not set. Enabling those pulls in
+#     BOARD_HOSTAPD_PRIVATE_LIB = lib_driver_cmd_qcwcn, which lives in the
+#     hardware/qcom-caf/wlan soong namespace we deliberately do not import
+#     (it collides with our blob libwifi-hal-ctrl -- see the
+#     BOARD_USES_QCOM_HARDWARE note). Revisit for tethering.
+PRODUCT_PACKAGES += \
+    libwifi-hal-ctrl \
+    wpa_supplicant
+
+# WLAN firmware symlinks -- see device/sony/pdx246/Android.bp for why.
+PRODUCT_PACKAGES += \
+    firmware_WCNSS_qcom_cfg.ini_symlink \
+    firmware_wlan_mac.bin_symlink
+
 # SoundTrigger
 # SystemServer starts SoundTriggerMiddlewareService unconditionally
 # (SystemServer.java "StartSoundTriggerMiddlewareService"), and

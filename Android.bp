@@ -5,3 +5,33 @@
 
 soong_namespace {
 }
+
+// WLAN firmware symlinks.
+//
+// The kernel firmware loader looks for the WLAN config under /vendor/firmware,
+// not where the file actually lives. Without these, icnss2 fails to probe:
+//
+//   ueventd: firmware: attempted
+//     /vendor/firmware_mnt/image/wlan/qca_cld/adrastea/WCNSS_qcom_cfg.ini,
+//     open failed: No such file or directory
+//   icnss2: Driver probe failed: -1, state: 0x20487
+//   android.hardware.wifi@1.0-service: Failed to load WiFi driver
+//
+// Stock ships exactly these two as symlinks in
+// /vendor/firmware/wlan/qca_cld/adrastea/; we already ship both targets
+// (WCNSS_qcom_cfg.ini via proprietary-files, wlan_mac.bin lives on the
+// persist partition), just not the links. Same approach as
+// device/sony/pdx257/Android.bp.
+install_symlink {
+    name: "firmware_WCNSS_qcom_cfg.ini_symlink",
+    soc_specific: true,
+    installed_location: "firmware/wlan/qca_cld/adrastea/WCNSS_qcom_cfg.ini",
+    symlink_target: "/vendor/etc/wifi/adrastea/WCNSS_qcom_cfg.ini",
+}
+
+install_symlink {
+    name: "firmware_wlan_mac.bin_symlink",
+    soc_specific: true,
+    installed_location: "firmware/wlan/qca_cld/adrastea/wlan_mac.bin",
+    symlink_target: "/mnt/vendor/persist/wlan_mac.bin",
+}

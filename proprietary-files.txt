@@ -1431,6 +1431,11 @@ vendor/lib64/vendor.qti.hardware.fm@1.0.so
 system_ext/etc/permissions/wfd-system-ext-privapp-permissions-qti.xml
 system_ext/etc/permissions/telephony_system-ext_privapp-permissions-qti.xml
 
+# WLAN (libwifi-hal.so links this; without it android.hardware.wifi@1.0-service
+# fails with: CANNOT LINK EXECUTABLE ... library "libcld80211.so" not found)
+vendor/lib/libcld80211.so
+vendor/lib64/libcld80211.so
+
 # Gatekeeper
 vendor/bin/hw/android.hardware.gatekeeper@1.0-service-qti
 vendor/lib/hw/android.hardware.gatekeeper@1.0-impl-qti.so
