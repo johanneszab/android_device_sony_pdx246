@@ -221,10 +221,7 @@ blob_fixups: blob_fixups_user_type = {
     # Android switched these libbase overloads to std::string_view; the blobs
     # still reference the std::string ones. hardware/lineage/compat provides
     # both under libbase_shim.
-    ('vendor/bin/hw/android.hardware.sensors@2.1-service.multihal',
-     'vendor/bin/hw/android.hardware.thermal@2.0-service.sony',
-     'vendor/bin/hw/android.hardware.usb.gadget@1.2-service-qti',
-     'vendor/bin/pnscr',
+    ('vendor/bin/pnscr',
      'vendor/bin/pnscr_spi',
      'vendor/bin/qguard',
      'vendor/bin/trigger_ffu',
@@ -272,17 +269,12 @@ blob_fixups: blob_fixups_user_type = {
     # The stock base still links against the pre-Android 12 "-ndk_platform"
     # AIDL runtime names. Those libraries do not exist any more (not even in
     # the stock dump), so point the blobs at the modern "-ndk" names.
-    'vendor/bin/hw/android.hardware.biometrics.face@1.0-service.face': blob_fixup()
-        .replace_needed('android.hardware.biometrics.common-V1-ndk_platform.so', 'android.hardware.biometrics.common-V1-ndk.so')
-        .replace_needed('android.hardware.biometrics.face-V1-ndk_platform.so', 'android.hardware.biometrics.face-V1-ndk.so'),
     ('vendor/bin/hw/android.hardware.gnss-aidl-service-qti',
      'vendor/lib/hw/android.hardware.gnss-aidl-impl-qti.so',
      'vendor/lib64/hw/android.hardware.gnss-aidl-impl-qti.so',
      'vendor/lib64/libgarden.so',
      'vendor/lib64/libgarden_haltests_e2e.so'): blob_fixup()
         .replace_needed('android.hardware.gnss-V1-ndk_platform.so', 'android.hardware.gnss-V1-ndk.so'),
-    'vendor/bin/hw/android.hardware.thermal@2.0-service.sony': blob_fixup()
-        .replace_needed('android.hardware.power-V1-ndk_platform.so', 'android.hardware.power-V1-ndk.so'),
     'vendor/bin/hw/android.hardware.secure_element_snxxx@1.2-service': blob_fixup()
         .replace_needed('android.hardware.nfc-V1-ndk_platform.so', 'android.hardware.nfc-V1-ndk.so'),
     'vendor/bin/hw/android.hardware.security.keymint-service-qti': blob_fixup()
@@ -297,10 +289,6 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('android.hardware.security.sharedsecret-V1-ndk_platform.so', 'android.hardware.security.sharedsecret-V1-ndk.so'),
     ('vendor/bin/hw/vendor.semc.hardware.aidlsecd-service', 'vendor/bin/keyprovd'): blob_fixup()
         .replace_needed('android.hardware.security.keymint-V1-ndk_platform.so', 'android.hardware.security.keymint-V1-ndk.so'),
-    'vendor/bin/hw/vendor.qti.hardware.lights.service': blob_fixup()
-        .replace_needed('android.hardware.light-V1-ndk_platform.so', 'android.hardware.light-V1-ndk.so'),
-    'vendor/bin/hw/vendor.qti.hardware.vibrator.service': blob_fixup()
-        .replace_needed('android.hardware.vibrator-V2-ndk_platform.so', 'android.hardware.vibrator-V2-ndk.so'),
     ('vendor/bin/hw/vendor.qti.hardware.display.composer-service',
      'vendor/lib/vendor.qti.hardware.display.config-V1-ndk_platform.so',
      'vendor/lib/vendor.qti.hardware.display.config-V2-ndk_platform.so',
