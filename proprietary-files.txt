@@ -1432,7 +1432,25 @@ vendor/bin/xtra-daemon
 vendor/bin/xtwifi-client
 vendor/etc/init/android.hardware.gnss-aidl-service-qti.rc
 vendor/etc/vintf/manifest/android.hardware.gnss-aidl-service-qti.xml
+# HIDL gnss@1.1 + @2.1 declaration -- RESTORED 2026-09-10, it IS required.
+# The QTI GNSS HAL is AIDL IGnss V1 (links android.hardware.gnss-V1-ndk), and
+# V1 has no start/stop/setPositionMode (added in V2). The framework
+# (frameworks/base/services/core/jni/gnss/Gnss.cpp) therefore uses
+# IGnss_V2_1::getService() for every control call. That HIDL service IS
+# registered by the same binary, but libhidl getService() returns nullptr
+# immediately for a HAL not declared in the device manifest, so apps never got
+# a fix:  GnssUtilsJni: IGnss setPositionMode() failed.
+#        GnssLocationProvider: set_position_mode failed in startNavigating()
+# BOTH @1.1 and @2.1 are needed: hwservicemanager refuses to register a declared
+# leaf whose superclasses (@2.0, @1.1, @1.0) are not declared as well.
+# The 2026-09-07 "DO NOT RESTORE, hangs the boot" result predates extracting
+# android.hardware.gnss@2.1-impl-qti.so; without the impl the registration
+# failed and a declared-but-unregistered HAL makes getService() wait forever.
 vendor/etc/vintf/manifest/android.hardware.gnss@2.1-service-qti.xml
+# The HIDL passthrough impl the gnss service dlopens. Never extracted before;
+# without it registerPassthroughServiceImplementation cannot succeed.
+vendor/lib/hw/android.hardware.gnss@2.1-impl-qti.so
+vendor/lib64/hw/android.hardware.gnss@2.1-impl-qti.so
 vendor/etc/vintf/manifest/vendor.qti.gnss-service.xml
 vendor/lib/hw/android.hardware.gnss-aidl-impl-qti.so
 vendor/lib/libdataitems.so
@@ -3482,6 +3500,37 @@ vendor/etc/audio/sku_parrot/audio_policy_configuration.xml
 vendor/etc/audio/sku_parrot_qssi/audio_policy_configuration.xml
 vendor/etc/audio/sku_ravelin/audio_policy_configuration.xml
 vendor/etc/audio/sku_ravelin_qssi/audio_policy_configuration.xml
+
+# ---- QTI location app (network half of the GNSS stack) --------------------
+# com.qualcomm.location is the component that actually downloads XTRA
+# assistance data and provides the network location provider. Without it:
+#   LocSvc_xtra2: DNS resolution on time.xtracloud.net failed with ret code 11
+# even though the device network is fine -- xtra-daemon runs as uid gps with
+# NO supplementary groups (no inet), which is stock behaviour precisely
+# because stock expects this app, which holds INTERNET, to do the download.
+# /data/vendor/location/xtra/xtra.sqlite stays an empty 16 KB DB without it.
+# Same class of omission as the gatekeeper impl, the gnss impl and the audio
+# service. See PORTING-NOTES.md "GPS 2026-09-09".
+system_ext/priv-app/com.qualcomm.location/com.qualcomm.location.apk
+system_ext/framework/com.qti.location.sdk.jar
+system_ext/etc/permissions/com.qualcomm.location.xml
+system_ext/etc/permissions/privapp-permissions-com.qualcomm.location.xml
+system_ext/etc/permissions/com.qti.location.sdk.xml
+system_ext/etc/permissions/com.qualcomm.qti.izattools.xml
+
+# ---- QSPA feature flags ---------------------------------------------------
+# Two tiny init files that set ro.boot.vendor.qspa.{modem,nav}="enabled".
+#   qspa_system.rc:  import /system_ext/etc/qspa/qspa_${ro.boot.vendor.qspa:-default}.rc
+#   qspa_default.rc: on init / setprop ro.boot.vendor.qspa.nav "enabled"
+# com.qualcomm.location.apk declares itself as a conditional overlay:
+#   overlay: targetPackage=com.qualcomm.location
+#            requiredPropertyName=ro.boot.vendor.qspa.nav requiredPropertyValue=enabled
+# so without these two files PackageManager skips the app entirely:
+#   PackageManager: Failed to parse /system_ext/priv-app/com.qualcomm.location:
+#   overlay ignored due to required system property: ro.boot.vendor.qspa.nav
+# Despite the ro.boot.* prefix this is set by init, NOT by bootconfig.
+system_ext/etc/init/qspa_system.rc
+system_ext/etc/qspa/qspa_default.rc
 
 # ---- QTI shared Java libraries (uses-library targets) ---------------------
 # Four APKs we already ship declare <uses-library> on these and CRASH without
