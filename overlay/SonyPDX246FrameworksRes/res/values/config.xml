@@ -23,4 +23,27 @@
         <item>1150</item> <!--item>sensorLocationY</item-->
         <item>240</item> <!--item>sensorRadius</item-->
     </array>
+
+    <!-- Pin the fused location provider to AOSP com.android.location.fused.
+
+         With the overlay enabled, the service watcher picks the system app with
+         the highest serviceVersion for the fused action. com.qualcomm.location
+         (izat) declares 1, AOSP FusedLocation declares 0, so izat took the slot.
+         izat is not usable as the fused provider on this build:
+           - it holds no location runtime permissions, so it snaps every report
+             to a 2 km grid (FlpServiceProvider: Has ACCESS_FINE_LOCATION
+             permission: false; reports arrive with hAcc=2000.0)
+           - its FLP session handling fails on a browser burst of requests
+             (Invalid FlpSession id, LocSvc_APIClientBase ERROR: 5)
+           - it produced no reports unless another client had GNSS running
+         Stock never uses it either: there Google Play Services is the fused
+         provider. On stock-less builds like this one it simply broke location
+         for apps such as Jelly.
+
+         AOSP FusedLocation forwards HIGH_ACCURACY requests to the gps provider.
+         Verified 2026-09-10: Jelly got a real gps fix (hAcc 8.9 m) through it.
+         With this false, CurrentUserServiceSupplier.retrieveExplicitPackage()
+         returns config_fusedLocationProviderPackageName, which is AOSP's.
+         See PORTING-NOTES.md "FIXED (2026-09-10): websites got no location". -->
+    <bool name="config_enableFusedLocationOverlay" translatable="false">false</bool>
 </resources>
