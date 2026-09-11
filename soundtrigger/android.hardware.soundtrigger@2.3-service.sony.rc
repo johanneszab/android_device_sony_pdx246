@@ -1,0 +1,11 @@
+service vendor.soundtrigger-hal-2-3 /vendor/bin/hw/android.hardware.soundtrigger@2.3-service.sony
+    interface android.hardware.soundtrigger@2.0::ISoundTriggerHw default
+    interface android.hardware.soundtrigger@2.1::ISoundTriggerHw default
+    interface android.hardware.soundtrigger@2.2::ISoundTriggerHw default
+    interface android.hardware.soundtrigger@2.3::ISoundTriggerHw default
+    class hal
+    user audioserver
+    group audio media
+    capabilities BLOCK_SUSPEND
+    ioprio rt 4
+    task_profiles ProcessCapacityHigh HighPerformance
