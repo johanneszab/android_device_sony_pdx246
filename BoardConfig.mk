@@ -55,10 +55,14 @@ BOARD_BOOT_HEADER_VERSION := 4
 BOARD_KERNEL_BASE := 0x00000000
 # printk.devkmsg=on lifts the rate limit on userspace /dev/kmsg writes; without
 # it init's messages are dropped after the module-load flood and its errors
-# never reach ramoops. ignore_loglevel was dropped again: it printed every
-# kernel debug message and wrapped the 256K ramoops console buffer before the
+# never reach ramoops.
+# loglevel=7 because the bootloader passes loglevel=6, which prints only
+# levels 0-5 and therefore filters out init's LOG(INFO) -- including every
+# "starting service" line, which makes it impossible to tell whether a service
+# ran at all. ignore_loglevel would also work but prints every kernel debug
+# message and wraps the 256K ramoops console buffer well before the
 # interesting part of the boot. DEBUG ONLY.
-BOARD_KERNEL_CMDLINE := video=vfb:640x400,bpp=32,memsize=3072000 bootconfig printk.devkmsg=on
+BOARD_KERNEL_CMDLINE := video=vfb:640x400,bpp=32,memsize=3072000 bootconfig printk.devkmsg=on loglevel=7
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_KERNEL_IMAGE_NAME := Image
