@@ -149,6 +149,13 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
     frameworks/native/data/etc/android.software.verified_boot.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.verified_boot.xml
 
+# Lights -- LineageOS AIDL lights HAL, built from source.
+# Replaces the QTI blob, which declared ILights v1 against a v2 framework and
+# drove the LCD backlight to 4095 on notification-shade touches. This one
+# declares v2 and keeps the RGB notification LED (/sys/class/leds/{red,green,blue}).
+PRODUCT_PACKAGES += \
+    android.hardware.light-service.lineage
+
 # Audio -- stock HIDL audio@7.0 HAL
 #
 # frameworks/av/media/libaudiohal/FactoryHal.cpp tries AIDL 1.0 first and then

@@ -2552,7 +2552,21 @@ vendor/bin/hdcp2p2prov
 vendor/bin/hw/capabilityconfigstoretest
 vendor/bin/hw/vendor.qti.hardware.AGMIPC@1.0-service
 vendor/bin/hw/vendor.qti.hardware.display.demura-service
-vendor/bin/hw/vendor.qti.hardware.lights.service
+# NOT extracted: the QTI lights HAL (vendor.qti.hardware.lights.service).
+# Its VINTF fragment declares android.hardware.light with NO <version>, i.e.
+# ILights v1 (the file itself says it is copied from CAF LA.AU.0.0.1_rb1.22),
+# but the framework compatibility matrix requires v2. A v1 implementation
+# receiving v2 LightType requests misroutes them, and this one drove the LCD
+# backlight to maximum on notification-shade interactions:
+#   input_interaction: Interaction with: NotificationShade, swipe-up
+#   [FTS_TS]fts_input_report_b: P0(241,1425) DOWN!
+#   vendor.qti.lights: setLightstate line = 287 btness = 255
+#   [lcm] the brightness is 4095          <- 9 ms after the touch
+# The panel then stayed at 4095 while the framework setting was 18/255,
+# because nothing re-writes the backlight until the next brightness change.
+# Replaced by android.hardware.light-service.lineage (built from source,
+# declares v2). pdx257 ships no lights HAL at all, which is the fallback if
+# the Lineage one also misbehaves. See PORTING-NOTES.md.
 vendor/bin/hw/vendor.semc.hardware.aidlcharger-service.somc
 vendor/bin/hw/vendor.semc.hardware.aidlsecd-service
 vendor/bin/hw/vendor.semc.hardware.aidlthermal-service
@@ -2757,7 +2771,6 @@ vendor/etc/init/vendor.dpmd.rc
 vendor/etc/init/vendor.qti.diag.rc
 vendor/etc/init/vendor.qti.hardware.AGMIPC@1.0-service.rc
 vendor/etc/init/vendor.qti.hardware.display.demura-service.rc
-vendor/etc/init/vendor.qti.hardware.lights.service.rc
 vendor/etc/init/vendor.semc.hardware.aidlcharge-somc.rc
 vendor/etc/init/vendor.semc.hardware.aidlsecd-service.rc
 vendor/etc/init/vendor.semc.hardware.aidlthermal-service.rc
@@ -2841,7 +2854,6 @@ vendor/etc/vintf/manifest/manifest_non_qmaa_extn.xml
 vendor/etc/vintf/manifest/qtiradio-saidl.xml
 vendor/etc/vintf/manifest/vendor.qti.diag.hal.service.xml
 vendor/etc/vintf/manifest/vendor.qti.hardware.display.demura-service.xml
-vendor/etc/vintf/manifest/vendor.qti.hardware.lights.service.xml
 vendor/etc/vintf/manifest/vendor.semc.hardware.aidlcharge-somc.xml
 vendor/etc/vintf/manifest/vendor.semc.hardware.aidlthermal-service.xml
 vendor/etc/vintf/manifest/vendor.semc.system.idd.manifest.xml
