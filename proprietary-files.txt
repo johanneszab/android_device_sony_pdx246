@@ -85,7 +85,14 @@ system_ext/lib/com.qualcomm.qti.ant@1.0.so
 system_ext/lib64/com.qualcomm.qti.ant@1.0.so
 
 # Atrace
+# atrace HAL (vendor trace categories for Perfetto/systrace). Stock's .rc and
+# VINTF fragment were never extracted, so the service never ran. Both carry a
+# -sony name because hardware/interfaces/atrace/1.0/default owns the original
+# install paths; see the fingerprint entry for why the declaration has to be a
+# fragment rather than manifest.xml.
 vendor/bin/hw/android.hardware.atrace@1.0-service
+vendor/etc/init/android.hardware.atrace@1.0-service.rc:vendor/etc/init/android.hardware.atrace@1.0-service-sony.rc
+vendor/etc/vintf/manifest/android.hardware.atrace@1.0-service.xml:vendor/etc/vintf/manifest/android.hardware.atrace@1.0-service-sony.xml
 
 # Audio
 vendor/lib/hw/android.hardware.audio.effect@2.0-impl.so
@@ -1392,8 +1399,33 @@ vendor/lib64/vendor.qti.hardware.secureprocessor.common@1.0.so
 vendor/lib64/vendor.qti.hardware.secureprocessor.config@1.0.so
 vendor/lib64/vendor.qti.hardware.secureprocessor.device@1.0.so
 
-# Fingerprint
+# Fingerprint: Egistec sensor behind the stock HIDL 2.1 service, which loads
+# the HAL module bix.fingerprint.default.so. The service binary was extracted
+# without its .rc, so it never started, Settings offered no fingerprint option,
+# and FingerprintService polled for a virtual HAL instead:
+#   servicemanager: Waited one second for
+#     android.hardware.biometrics.fingerprint.virtualhal.IVirtualHal/virtual
+# Android 16 still drives HIDL 2.1 sensors through HidlToAidlSensorAdapter, and
+# compatibility_matrix.6.xml lists fingerprint 2.1-3. AuthService only registers
+# HIDL sensors listed in config_biometric_sensors; see the framework overlay.
+#
+# The .rc and the VINTF fragment are renamed with -sony: AOSP's reference
+# service (hardware/interfaces/biometrics/fingerprint/2.1/default) has install
+# rules for both original paths, and kati rejects a second rule even though
+# that module is never installed ("overriding commands for target").
+#
+# The fragment IS required. ro.boot.product.vendor.sku=parrot, so at runtime
+# libvintf reads vendor/etc/vintf/manifest_parrot.xml (stock, no fingerprint
+# entry) plus the fragments, and never our manifest.xml. Without the fragment
+# the service ran but could not register:
+#   hwservicemanager: getTransport: Cannot find entry
+#     android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint/default
+#   init: Service 'vendor.fps_hal' (pid 7608) exited with status 1
+# The duplicate entry was removed from manifest.xml instead; only the
+# build-time checkvintf reads that file (it runs with an empty sku).
 vendor/bin/hw/android.hardware.biometrics.fingerprint@2.1-service
+vendor/etc/init/android.hardware.biometrics.fingerprint@2.1-service.rc:vendor/etc/init/android.hardware.biometrics.fingerprint@2.1-service-sony.rc
+vendor/etc/vintf/manifest/android.hardware.biometrics.fingerprint@2.1-service.xml:vendor/etc/vintf/manifest/android.hardware.biometrics.fingerprint@2.1-service-sony.xml
 vendor/etc/init/qfp-daemon.rc
 vendor/lib/vendor.qti.hardware.fingerprint@1.0.so
 vendor/lib64/vendor.qti.hardware.fingerprint@1.0.so

@@ -24,6 +24,14 @@
         <item>240</item> <!--item>sensorRadius</item-->
     </array>
 
+    <!-- The fingerprint HAL is HIDL (android.hardware.biometrics.fingerprint@2.1).
+         AuthService registers a HIDL sensor only if it is listed here, as
+         "id:modality:strength". Stock's FrameworksResTarget_Vendor.apk uses
+         sensor 0, modality 2 (fingerprint), strength 15 (BIOMETRIC_STRONG). -->
+    <string-array name="config_biometric_sensors" translatable="false">
+        <item>0:2:15</item>
+    </string-array>
+
     <!-- Pin the fused location provider to AOSP com.android.location.fused.
 
          With the overlay enabled, the service watcher picks the system app with

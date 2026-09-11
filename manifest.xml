@@ -5,43 +5,25 @@
     FCM 6 generation of HALs (gnss@2.1, thermal@2.0, usb@1.2, composer@2.4,
     allocator@4.0), so anything newer fails the deprecation check.
 
-    Most HALs are declared by the per-service fragments the blobs ship in
-    vendor/etc/vintf/manifest/. The ones below cannot be: AOSP (or
-    vendor/qcom/opensource) defines a module that installs a fragment to the
-    same path, so shipping the stock copy is a duplicate-rule error in kati,
-    but those source modules are not in PRODUCT_PACKAGES, so their fragment
-    never actually lands and the HAL ends up undeclared. Declaring them here
-    avoids the path collision entirely. The implementations are the Sony blobs
-    in vendor/bin/hw.
+    THIS FILE IS NOT READ ON THE DEVICE. The bootloader sets
+    ro.boot.product.vendor.sku=parrot, so libvintf loads Sony's
+    vendor/etc/vintf/manifest_parrot.xml plus the fragments in
+    vendor/etc/vintf/manifest/, and skips manifest.xml. Only the build-time
+    checkvintf reads this file, because it runs with an empty sku.
+
+    A HAL declared only here is therefore undeclared at runtime, and
+    hwservicemanager refuses its registration ("getTransport: Cannot find
+    entry"). That kept fingerprint and atrace from working until 2026-09-11.
+    Declare a HAL with a fragment instead. When a source module already owns
+    the stock fragment's install path (kati: "overriding commands for
+    target"), extract it under a -sony name, as proprietary-files.txt does for
+    fingerprint and atrace. Do not declare the same instance here as well:
+    checkvintf rejects the duplicate ("Conflicting FqInstance").
 -->
 <manifest version="1.0" type="device" target-level="6">
-    <hal format="hidl">
-        <name>android.hardware.atrace</name>
-        <transport>hwbinder</transport>
-        <version>1.0</version>
-        <interface>
-            <name>IAtraceDevice</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.biometrics.fingerprint</name>
-        <transport>hwbinder</transport>
-        <version>2.1</version>
-        <interface>
-            <name>IBiometricsFingerprint</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.cas</name>
-        <transport>hwbinder</transport>
-        <version>1.2</version>
-        <interface>
-            <name>IMediaCasService</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
+    <!-- No android.hardware.cas: the com.android.hardware.cas APEX serves the
+         AIDL HAL (android.hardware.cas-service.example, running as
+         vendor.cas-default). Sony's HIDL cas@1.2 blob has no .rc and never runs. -->
 
     <!-- NO android.hardware.audio.core here on purpose.
          It used to declare IModule/usb, which the com.android.hardware.audio
@@ -60,8 +42,8 @@
          HIDL 7.1/7.0/6.0 and looks up exactly these two:
              HIDL devices -> android.hardware.audio        / IDevicesFactory
              HIDL effects -> android.hardware.audio.effect / IEffectsFactory
-         The service binary ships no VINTF fragment of its own, so unlike the
-         AGM/PAL services these DO have to be declared here. -->
+         At runtime both come from Sony's manifest_parrot.xml; these copies
+         only serve the build-time checkvintf (see the note at the top). -->
     <hal format="hidl">
         <name>android.hardware.audio</name>
         <transport>hwbinder</transport>
