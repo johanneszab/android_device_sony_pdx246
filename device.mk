@@ -176,6 +176,40 @@ PRODUCT_COPY_FILES += \
 # AudioReach is a newer generation than this device's ACDB data. See
 # PORTING-NOTES.md "AUDIO: THE PREMISE WAS WRONG".
 
+# QTI telephony shared Java libraries, built from source (vendor/codeaurora/telephony).
+#
+# Four APKs we ship declare <uses-library> on these and throw
+# NoClassDefFoundError without them. qcrilmsgtunnel (com.qti.phone) crash-looped
+# hard enough to trigger Android Rescue Party, which rebooted the device
+# (ro.boot.bootreason = reboot,rescueparty). Dependents:
+#   QtiTelephonyService.apk, qcrilmsgtunnel.apk, ims.apk, com.qualcomm.location.apk
+#
+# Taken from SOURCE rather than as blobs: vendor/codeaurora/telephony provides
+# extphonelib, qti-telephony-utils and qti-telephony-hidl-wrapper, and
+# vendor/codeaurora/telephony/ims provides ims-ext-common. Extracting the stock
+# jars instead collides with those modules:
+#   error: overriding commands for target .../product/etc/permissions/ims_ext_common.xml
+# This is exactly the list pdx257 uses (device/sony/pdx257/device.mk:337-350).
+#
+# A shared Java library needs BOTH the jar module and the .xml module -- the XML
+# is what maps the <uses-library> name to a file on disk.
+PRODUCT_PACKAGES += \
+    extphonelib \
+    extphonelib-product \
+    extphonelib.xml \
+    extphonelib_product.xml \
+    ims-ext-common \
+    ims_ext_common.xml \
+    qti-telephony-hidl-wrapper \
+    qti-telephony-hidl-wrapper-prd \
+    qti_telephony_hidl_wrapper.xml \
+    qti_telephony_hidl_wrapper_prd.xml \
+    qti-telephony-utils \
+    qti-telephony-utils-prd \
+    qti_telephony_utils.xml \
+    qti_telephony_utils_prd.xml \
+    telephony-ext
+
 # Wi-Fi userspace
 #
 # pdx246 shipped NONE of these. We extract the HIDL wifi HAL blob

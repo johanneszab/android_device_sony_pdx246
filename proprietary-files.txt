@@ -3483,3 +3483,24 @@ vendor/etc/audio/sku_parrot_qssi/audio_policy_configuration.xml
 vendor/etc/audio/sku_ravelin/audio_policy_configuration.xml
 vendor/etc/audio/sku_ravelin_qssi/audio_policy_configuration.xml
 
+# ---- QTI shared Java libraries (uses-library targets) ---------------------
+# Four APKs we already ship declare <uses-library> on these and CRASH without
+# them. qcrilmsgtunnel (com.qti.phone) crash-looped hard enough to trigger
+# Android Rescue Party, which rebooted the device:
+#   FATAL EXCEPTION: main  Process: com.qti.phone
+#   java.lang.NoClassDefFoundError: Landroid/hidl/manager/V1_0/IServiceNotification$Stub;
+#       at com.qualcomm.qcrilmsgtunnel.QcrilMsgTunnelIfaceManager.<init>
+#   ro.boot.bootreason = reboot,rescueparty
+#
+# Dependents (from aapt2 dump badging on the APKs we extract):
+#   QtiTelephonyService.apk  -> qti-telephony-hidl-wrapper
+#   qcrilmsgtunnel.apk       -> qti-telephony-hidl-wrapper, qti-telephony-utils
+#   ims.apk                  -> + ims-ext-common
+#   com.qualcomm.location.apk-> + com.qualcomm.qcrilhook, com.android.location.provider
+# (com.android.location.provider is AOSP and already in the image.)
+#
+# A shared Java library needs BOTH the jar and the permissions XML that
+# declares it -- the XML is what maps the <uses-library> name to the file.
+# LESSON: never extract an APK without checking its uses-library list.
+system_ext/framework/qcrilhook.jar
+system_ext/etc/permissions/qcrilhook.xml
