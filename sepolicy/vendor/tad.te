@@ -1,0 +1,33 @@
+# Sony Trim Area daemon.
+#
+#   service tad /vendor/bin/tad /dev/block/bootdevice/by-name/TA 0,16
+#       user oem_2997
+#       group oem_2997 root
+#       socket tad stream 0660 system oem_2993
+#       class trimarea
+#       seclabel u:r:tad:s0            <-- init setexeccon()s this exact type
+#
+# declared in /odm/etc/init/init.sony-platform.rc, which also runs
+#   exec u:r:tad:s0 system -- /vendor/bin/wait4tad
+# so wait4tad is labelled tad_exec as well.
+#
+# The TA partition holds Sony's per-device data (DRM keys, sensor and camera
+# calibration), so this domain is likely a prerequisite for those working.
+#
+# Without the type existing, init cannot honour the seclabel at all and fails
+# with "cannot setexeccon('u:r:tad:s0') for tad: Invalid argument". Note that
+# androidboot.selinux=permissive does NOT paper over this: permissive allows
+# denied accesses, it does not invent a type that the policy never declared.
+type tad, domain;
+type tad_exec, exec_type, vendor_file_type, file_type;
+type tad_socket, file_type;
+
+init_daemon_domain(tad)
+
+# Reads the raw TA partition passed as argv[1].
+allow tad block_device:dir search;
+allow tad self:capability { dac_override dac_read_search };
+
+# Its control socket, created by init as /dev/socket/tad.
+allow tad tad_socket:sock_file { create unlink write };
+allow tad tad_socket:unix_stream_socket { create_stream_socket_perms };

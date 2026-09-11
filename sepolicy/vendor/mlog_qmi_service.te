@@ -1,0 +1,10 @@
+# Sony modem-log QMI service.
+#
+#   service mlog_qmi_service /vendor/bin/mlog_qmi_service
+#       user root
+#       seclabel u:r:mlog_qmi_service:s0
+#       disabled
+type mlog_qmi_service, domain;
+type mlog_qmi_service_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(mlog_qmi_service)

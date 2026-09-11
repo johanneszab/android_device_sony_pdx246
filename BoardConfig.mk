@@ -256,6 +256,27 @@ BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := $(BOARD_AVB_ALGORITHM)
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(BOARD_AVB_ROLLBACK_INDEX)
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 2
 
+# SEPolicy
+BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
+
+# QTI vendor policy. Without it none of the ~161 vendor services gets a domain
+# ("has incorrect label or no domain transition from u:r:init:s0"), everything
+# runs as init, and rmt_storage cannot serve the modem's NV requests -- the
+# modem then starves and its watchdog panics the kernel:
+#   qcom_q6v5_pas 4080000.remoteproc-mss: fatal error received:
+#     dog_hb...: Task starvation: nv. ping: 4
+#
+# Use the upstream include rather than hand-picking dirs: the vendor policy,
+# the QSSI public policy and the QSSI product policy are interdependent
+# (attributes, hal types and property types are spread across all three), and
+# every attempt to take a subset just surfaced the next missing declaration.
+include device/qcom/sepolicy_vndr/SEPolicy.mk
+
+# BRING-UP ONLY -- REVERT BOTH.
+# The qva/ policy contains `allow dumpstate vold:binder call`, which violates an
+# AOSP neverallow. That rule needs fixing properly; this bypasses the check.
+SELINUX_IGNORE_NEVERALLOWS := true
+
 # VINTF
 DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
 

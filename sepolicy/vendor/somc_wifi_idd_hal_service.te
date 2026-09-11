@@ -1,0 +1,22 @@
+# Sony wifi IDD (internal device diagnostics) HAL.
+#
+#   service somc_wifi_idd_hal_service /vendor/bin/hw/vendor.somc.hardware.wifi.idd-service
+#       interface aidl vendor.somc.hardware.wifi.idd.ISomcWifiIdd/default
+#       class hal
+#       user wifi
+#       group wifi
+#
+# This one failed differently from the others -- it has no explicit seclabel, so
+# init reported
+#   "File /vendor/bin/hw/vendor.somc.hardware.wifi.idd-service
+#    (labeled u:object_r:vendor_file:s0) has incorrect label or no domain
+#    transition"
+# i.e. it needs an exec type and a transition, not a setexeccon.
+#
+# NOTE: registering its AIDL interface additionally needs a service_contexts
+# entry for vendor.somc.hardware.wifi.idd.ISomcWifiIdd/default. Not added yet --
+# this file only stops the domain-transition failure.
+type somc_wifi_idd_hal_service, domain;
+type somc_wifi_idd_hal_service_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(somc_wifi_idd_hal_service)
