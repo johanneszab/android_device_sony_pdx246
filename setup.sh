@@ -71,6 +71,7 @@ declare -A PATCH_PROJECT=(
   [external_google-highway]="external/google-highway"
   [external_mdnsresponder]="external/mdnsresponder"
   [external_XMP-Toolkit-SDK]="external/XMP-Toolkit-SDK"
+  [hardware_interfaces]="hardware/interfaces"
 )
 for name in "${!PATCH_PROJECT[@]}"; do
     patch_file="$PWD/$DEVICE_PATH/patches/aosp/${name}.patch"

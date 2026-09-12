@@ -1,0 +1,82 @@
+diff --git a/usb/gadget/1.1/default/lib/MonitorFfs.cpp b/usb/gadget/1.1/default/lib/MonitorFfs.cpp
+index 6d09a8a002..e013dd1dbf 100644
+--- a/usb/gadget/1.1/default/lib/MonitorFfs.cpp
++++ b/usb/gadget/1.1/default/lib/MonitorFfs.cpp
+@@ -153,14 +153,48 @@ void* MonitorFfs::startMonitorFd(void* param) {
+                         if (kDebug) ALOGI("endpoints not up");
+                         writeUdc = true;
+                         disconnect = std::chrono::steady_clock::now();
+-                    } else if (descriptorPresent && writeUdc) {
+-                        steady_clock::time_point temp = steady_clock::now();
++                    } else if (descriptorPresent) {
++                        if (writeUdc) {
++                            steady_clock::time_point temp = steady_clock::now();
+ 
+-                        if (std::chrono::duration_cast<microseconds>(temp - disconnect).count() <
+-                            kPullUpDelay)
+-                            usleep(kPullUpDelay);
++                            if (std::chrono::duration_cast<microseconds>(temp - disconnect)
++                                        .count() < kPullUpDelay)
++                                usleep(kPullUpDelay);
++                        }
++
++                        // Bind whenever the endpoints are present and the UDC is free,
++                        // judged by the UDC file itself. The endpoint files can come
++                        // back before the check above ever sees them missing (adbd
++                        // restarting), or while the kernel is still unbinding the old
++                        // gadget (USB bus reset), and in both cases no further inotify
++                        // event follows. So poll while the UDC is still bound: briefly
++                        // after any event, longer after a seen endpoint loss.
++                        bool pulledUp = false;
++                        int attempt = 0;
++                        for (; attempt < kPullUpRetries; attempt++) {
++                            std::string udc;
++                            if (::android::base::ReadFileToString(PULLUP_PATH, &udc) &&
++                                udc.find_first_not_of(" \n") == std::string::npos &&
++                                !!WriteStringToFile(monitorFfs->mGadgetName, PULLUP_PATH)) {
++                                pulledUp = true;
++                                break;
++                            }
++                            if (!writeUdc && attempt >= kPullUpBoundPolls) break;
++                            bool stillPresent = true;
++                            for (const auto& ep : monitorFfs->mEndpointList) {
++                                if (access(ep.c_str(), R_OK)) {
++                                    stillPresent = false;
++                                    break;
++                                }
++                            }
++                            if (!stillPresent) break;
++                            usleep(kPullUpRetryUs);
++                        }
+ 
+-                        if (!!WriteStringToFile(monitorFfs->mGadgetName, PULLUP_PATH)) {
++                        if (pulledUp) {
++                            if (attempt > 0 || !writeUdc)
++                                ALOGI("UDC written after %d polls, endpoint loss seen: %d",
++                                      attempt, writeUdc);
+                             lock_guard<mutex> lock(monitorFfs->mLock);
+                             monitorFfs->mCurrentUsbFunctionsApplied = true;
+                             monitorFfs->mCallback(monitorFfs->mCurrentUsbFunctionsApplied,
+diff --git a/usb/gadget/1.1/default/lib/include/UsbGadgetCommon.h b/usb/gadget/1.1/default/lib/include/UsbGadgetCommon.h
+index b30f18e4e1..154b5749b3 100644
+--- a/usb/gadget/1.1/default/lib/include/UsbGadgetCommon.h
++++ b/usb/gadget/1.1/default/lib/include/UsbGadgetCommon.h
+@@ -50,7 +50,17 @@ constexpr int kMaxFilePathLength = 256;
+ constexpr int kEpollEvents = 10;
+ constexpr bool kDebug = false;
+ constexpr int kDisconnectWaitUs = 100000;
+-constexpr int kPullUpDelay = 500000;
++// Was 500000. That sleep mostly hid two races after adbd reopens FunctionFS
++// (USB bus reset, adbd restart): the endpoint files can come back before
++// MonitorFfs sees them missing, or while the kernel is still unbinding the old
++// gadget, and no later inotify event follows. MonitorFfs now reads the UDC
++// file and polls it (kPullUpRetryUs steps, up to kPullUpRetries after a seen
++// endpoint loss, kPullUpBoundPolls otherwise), so the device is back on the
++// bus without the extra half second and without adbd's 1 s bind timeout.
++constexpr int kPullUpDelay = 0;
++constexpr int kPullUpRetries = 100;
++constexpr int kPullUpBoundPolls = 30;
++constexpr int kPullUpRetryUs = 10000;
+ constexpr int kShutdownMonitor = 100;
+ 
+ constexpr char kBuildType[] = "ro.build.type";
