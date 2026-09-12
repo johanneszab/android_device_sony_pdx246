@@ -72,6 +72,7 @@ declare -A PATCH_PROJECT=(
   [external_mdnsresponder]="external/mdnsresponder"
   [external_XMP-Toolkit-SDK]="external/XMP-Toolkit-SDK"
   [hardware_interfaces]="hardware/interfaces"
+  [bionic]="bionic"
 )
 for name in "${!PATCH_PROJECT[@]}"; do
     patch_file="$PWD/$DEVICE_PATH/patches/aosp/${name}.patch"
