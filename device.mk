@@ -237,14 +237,15 @@ PRODUCT_PACKAGES += \
 #   - wpa_supplicant.conf is ALREADY installed by a blob at
 #     /vendor/etc/wifi/wpa_supplicant.conf, and adding the module makes kati
 #     fail with "non-existent modules in PRODUCT_PACKAGES".
-#   - hostapd is AP/tethering only and does not resolve either: the
-#     wpa_supplicant_8 hostapd build is gated on BOARD_HOSTAPD_DRIVER /
-#     WPA_SUPPLICANT_VERSION, which pdx246 does not set. Enabling those pulls in
-#     BOARD_HOSTAPD_PRIVATE_LIB = lib_driver_cmd_qcwcn, which lives in the
-#     hardware/qcom-caf/wlan soong namespace we deliberately do not import
-#     (it collides with our blob libwifi-hal-ctrl -- see the
-#     BOARD_USES_QCOM_HARDWARE note). Revisit for tethering.
+#   - hostapd (the hotspot) is built without a private driver library, like
+#     our wpa_supplicant: BoardConfig.mk sets only BOARD_HOSTAPD_DRIVER, so
+#     hostapd compiles its driver commands out. lib_driver_cmd_qcwcn would
+#     need the hardware/qcom-caf/wlan soong namespace we deliberately do not
+#     import (it collides with our blob libwifi-hal-ctrl -- see the
+#     BOARD_USES_QCOM_HARDWARE note). The module brings its AIDL init rc and
+#     VINTF fragment, so stock's HIDL hostapd.android.rc is not extracted.
 PRODUCT_PACKAGES += \
+    hostapd \
     libwifi-hal-ctrl \
     wpa_supplicant
 

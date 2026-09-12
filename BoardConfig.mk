@@ -296,5 +296,12 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
     $(DEVICE_PATH)/framework_compatibility_matrix.xml
 
+# Wi-Fi
+# Builds hostapd for the hotspot (device.mk). BOARD_HOSTAPD_PRIVATE_LIB stays
+# unset on purpose, so hostapd compiles its private driver commands out
+# (external/wpa_supplicant_8/board_config_wpa_supplicant.mk). BOARD_WLAN_DEVICE
+# stays unset too: hostapd's nl80211 driver defaults to the QCA variant.
+BOARD_HOSTAPD_DRIVER := NL80211
+
 # Inherit the proprietary files
 include vendor/sony/pdx246/BoardConfigVendor.mk

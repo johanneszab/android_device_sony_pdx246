@@ -2387,6 +2387,9 @@ vendor/lib/hw/vibrator.default.so
 vendor/lib64/hw/vibrator.default.so
 
 # Wi-Fi
+# NOT extracted: vendor/etc/init/hostapd.android.rc. hostapd is built from
+# source (device.mk) and installs its own AIDL rc at that path; stock's rc
+# declares the HIDL hostapd interfaces, whose binary we do not ship.
 vendor/bin/hw/android.hardware.wifi@1.0-service
 vendor/bin/cnss-daemon
 vendor/bin/hostapd_cli
@@ -2770,7 +2773,6 @@ vendor/etc/gpfspath_oem_config.xml
 vendor/etc/idd.fstab
 vendor/etc/iddd_user.conf
 vendor/etc/init.qti.fm.sh
-vendor/etc/init/hostapd.android.rc
 vendor/etc/init/imsdaemon.rc
 vendor/etc/init/init.embmssl_server.rc
 vendor/etc/init/init.keyprovd.rc
