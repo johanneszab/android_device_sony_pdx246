@@ -3546,6 +3546,10 @@ vendor/lib/vendor.qti.hardware.pal@1.0-impl.so
 # (Module::typeFromString rejects "primary"; XsdcConversion rejects an
 # unattached FM port). With the HIDL HAL neither applies, and FM works
 # because libfmpal is back as a blob.
+# extract-files.py cuts the encodedFormats of their A2DP output ports down to
+# the five codecs AOSP's Bluetooth stack can offload. Stock also lists CELT,
+# aptX Adaptive, aptX TWS+ and LC3, which the stack cannot use; LC3 makes it
+# offload no codec at all (PORTING-NOTES.md, "Bluetooth media (A2DP)").
 vendor/etc/audio/sku_parrot/audio_policy_configuration.xml
 vendor/etc/audio/sku_parrot_qssi/audio_policy_configuration.xml
 vendor/etc/audio/sku_ravelin/audio_policy_configuration.xml

@@ -258,6 +258,20 @@ blob_fixups: blob_fixups_user_type = {
         .regex_replace('<M4Enable>0</M4Enable>', '<M4Enable>1</M4Enable>')
         .regex_replace('<UIBCValid>0</UIBCValid>', '<UIBCValid>1</UIBCValid>')
         .regex_replace('<USB>1</USB>', '<USB>3</USB>'),
+    # AOSP's Bluetooth stack builds its A2DP offload preference from the
+    # encodedFormats of the A2DP output ports. LC3 there has no A2DP codec ID
+    # (BluetoothCodecType) and arrives as an invalid codec type, which makes
+    # the HIDL UpdateOffloadingCapabilities give up: nothing is offloaded and
+    # A2DP media stays silent. CELT, aptX Adaptive and aptX TWS+ are only
+    # dropped, with an error log. Keep the five codecs the stack can offload,
+    # the list in persist.bluetooth.a2dp_offload.cap. "A2DP In" keeps its LC3.
+    ('vendor/etc/audio/sku_parrot/audio_policy_configuration.xml',
+     'vendor/etc/audio/sku_parrot_qssi/audio_policy_configuration.xml',
+     'vendor/etc/audio/sku_ravelin/audio_policy_configuration.xml',
+     'vendor/etc/audio/sku_ravelin_qssi/audio_policy_configuration.xml'): blob_fixup()
+        .regex_replace(r'(type="AUDIO_DEVICE_OUT_BLUETOOTH_A2DP\w*"[^>]*encodedFormats=")[^"]*',
+                       r'\1AUDIO_FORMAT_SBC AUDIO_FORMAT_AAC AUDIO_FORMAT_APTX '
+                       r'AUDIO_FORMAT_APTX_HD AUDIO_FORMAT_LDAC'),
     'vendor/lib64/camera/components/com.arcsoft.node.dual_smooth_transition.so': blob_fixup()
         .add_needed('liblog.so'),
     'vendor/lib64/libarcsoft_high_dynamic_range_v5.so': blob_fixup()
