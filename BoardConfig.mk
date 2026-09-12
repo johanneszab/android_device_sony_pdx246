@@ -281,6 +281,13 @@ BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
 # every attempt to take a subset just surfaced the next missing declaration.
 include device/qcom/sepolicy_vndr/SEPolicy.mk
 
+# Sony's shared QTI policy, as on pdx257: types, labels and domains for Sony
+# services such as the TA daemon, miscta, idd, secd, spc and the display HAL.
+# Stock ships the equivalent in /odm/etc/selinux (odm_sepolicy.cil). Without
+# it those services run in init's domain; see the SELinux label pre-check in
+# PORTING-NOTES.md.
+include hardware/sony/sepolicy/qti/SEPolicy.mk
+
 # BRING-UP ONLY -- REVERT BOTH.
 # The qva/ policy contains `allow dumpstate vold:binder call`, which violates an
 # AOSP neverallow. That rule needs fixing properly; this bypasses the check.

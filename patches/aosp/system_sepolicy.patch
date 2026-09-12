@@ -1,8 +1,8 @@
 diff --git a/private/compat/202504/202504.ignore.cil b/private/compat/202504/202504.ignore.cil
-index 8cd51e411..c1957c281 100644
+index 8cd51e411..d6332a883 100644
 --- a/private/compat/202504/202504.ignore.cil
 +++ b/private/compat/202504/202504.ignore.cil
-@@ -30,4 +30,9 @@
+@@ -30,4 +30,11 @@
      wallet_prop
      anomaly_detector_service
      uprobestats_service
@@ -11,4 +11,6 @@ index 8cd51e411..c1957c281 100644
 +    usb_uvc_config_prop
 +    vendor_persist_nfc_prop
 +    xtra_control_prop
++    devicesetting_app
++    display_brightness_prop
    ))

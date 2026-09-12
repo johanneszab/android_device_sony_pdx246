@@ -12,14 +12,11 @@
 # This label is inert but kept so re-adding the blob just works.
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.face@1\.0-service\.face  u:object_r:hal_face_default_exec:s0
 
-# Sony-specific daemons that have no upstream type at all (unlike the entries
-# above, which reuse an existing AOSP exec type). Domains declared in
-# tad.te / ta_qmi_service.te / mlog_qmi_service.te / somc_wifi_idd_hal_service.te.
-/(vendor|system/vendor)/bin/tad                                                u:object_r:tad_exec:s0
+# Sony-specific daemons that have no upstream type at all (unlike the entry
+# above, which reuses an existing AOSP exec type). tad, ta_qmi_service,
+# mlog_qmi_service and /dev/socket/tad are labelled by hardware/sony/sepolicy/qti
+# (included in BoardConfig.mk). It does not label wait4tad, which init runs with
+# seclabel u:r:tad:s0; stock labels it tad_exec as well.
 /(vendor|system/vendor)/bin/wait4tad                                           u:object_r:tad_exec:s0
-/(vendor|system/vendor)/bin/ta_qmi_service                                     u:object_r:ta_qmi_service_exec:s0
-/(vendor|system/vendor)/bin/mlog_qmi_service                                   u:object_r:mlog_qmi_service_exec:s0
+# Domain declared in somc_wifi_idd_hal_service.te.
 /(vendor|system/vendor)/bin/hw/vendor\.somc\.hardware\.wifi\.idd-service       u:object_r:somc_wifi_idd_hal_service_exec:s0
-
-# init creates this for the tad service (socket tad stream 0660 system oem_2993)
-/dev/socket/tad                                                                u:object_r:tad_socket:s0
