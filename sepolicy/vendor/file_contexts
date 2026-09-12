@@ -20,3 +20,31 @@
 /(vendor|system/vendor)/bin/wait4tad                                           u:object_r:tad_exec:s0
 # Domain declared in somc_wifi_idd_hal_service.te.
 /(vendor|system/vendor)/bin/hw/vendor\.somc\.hardware\.wifi\.idd-service       u:object_r:somc_wifi_idd_hal_service_exec:s0
+
+# Sony services that stock labels in /odm/etc/selinux/odm_file_contexts and
+# hardware/sony/sepolicy does not. The lines are stock's; each type is declared
+# in the .te file of the same name.
+/(vendor|system/vendor)/bin/charge_service       u:object_r:charge_service_exec:s0
+/(vendor|system/vendor)/bin/chargemon            u:object_r:chargemon_exec:s0
+/(vendor|system/vendor|odm|vendor/odm)/bin/check_ffu              u:object_r:somc_check_ffu_exec:s0
+/(vendor|system/vendor|odm|vendor/odm)/bin/check_update           u:object_r:somc_check_update_exec:s0
+/(vendor|system/vendor)/bin/pip_firewall                      u:object_r:pip_firewall_exec:s0
+/(vendor|system/vendor)/bin/pmic_key_reset u:object_r:pmic_key_reset_exec:s0
+/(vendor|system/vendor|odm|vendor/odm)/bin/spcdeld                                u:object_r:spcdeld_exec:s0
+/(vendor|system/vendor|odm|vendor/odm)/bin/hw/vendor\.semc\.hardware\.aidlcharger-service\.somc u:object_r:hal_somc_charger_daemon_exec:s0
+/(vendor|system/vendor)/bin/hw/vendor\.semc\.hardware\.charger@(.*)? u:object_r:hal_somc_charger_daemon_exec:s0
+/(vendor|odm|vendor/odm)/bin/hw/vendor\.semc\.hardware\.aidlthermal-service u:object_r:hal_somc_thermal_daemon_exec:s0
+/(vendor|system/vendor|odm|vendor/odm)/bin/hw/vendor\.somc\.hardware\.aidlsuperstamina-service u:object_r:hal_superstamina_exec:s0
+/vendor/bin/hw/vendor\.somc\.hardware\.wifidriver@[1-9]\.[0-9]-service u:object_r:hal_somc_wifidriver_exec:s0
+
+# Stock labels these with existing AOSP types (vendor_file_contexts and
+# odm_file_contexts).
+/(vendor|system/vendor)/bin/hw/android\.hardware\.secure_element_snxxx@1\.2-service       u:object_r:hal_secure_element_default_exec:s0
+/(vendor|system/vendor)/bin/hw/vendor\.sony\.tsr\.media\.c2\-service u:object_r:mediacodec_exec:s0
+/(vendor|system/vendor|odm|vendor/odm)/bin/trigger_ffu            u:object_r:vendor_misc_writer_exec:s0
+
+# Not on stock: our soundtrigger@2.3 wrapper (device/sony/pdx246/soundtrigger).
+# Stock registers ISoundTriggerHw from its audio HAL process; here this wrapper
+# is the only server (lshal). AOSP gives that interface to hal_audio, so the
+# wrapper runs in the audio HAL's domain.
+/(vendor|system/vendor)/bin/hw/android\.hardware\.soundtrigger@2\.3-service\.sony  u:object_r:hal_audio_default_exec:s0

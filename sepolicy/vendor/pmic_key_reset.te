@@ -1,0 +1,12 @@
+# Sony PMIC key reset setup, run once by init.
+#
+#   exec u:r:pmic_key_reset:s0 root drmrpc -- /vendor/bin/pmic_key_reset 2 0 4480 0
+#
+# in /odm/etc/init/init.sony-platform.rc. init setexeccon()s this exact type,
+# so without the type the exec fails even in permissive mode (see tad in
+# hardware/sony/sepolicy). Stock declares it in
+# /odm/etc/selinux/odm_sepolicy.cil without any further rules.
+type pmic_key_reset, domain;
+type pmic_key_reset_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(pmic_key_reset)

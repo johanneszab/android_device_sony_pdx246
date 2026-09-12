@@ -1,0 +1,14 @@
+# Sony charge service.
+#
+#   service charge_service /vendor/bin/charge_service
+#       user system
+#       group system root oem_2993 wakelock
+#       disabled
+#
+# declared in /odm/etc/init/init.sony-platform.rc. Stock declares the same type
+# in /odm/etc/selinux/odm_sepolicy.cil, with 45 rules; this file only gives the
+# service its domain so far, the rules follow from the permissive denials.
+type charge_service, domain;
+type charge_service_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(charge_service)

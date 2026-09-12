@@ -1,0 +1,11 @@
+# Sony pip_firewall service.
+#
+#   service pip_firewall_service /vendor/bin/pip_firewall
+#
+# declared in /vendor/etc/init/pip_firewall.rc. Stock declares the same type in
+# /odm/etc/selinux/odm_sepolicy.cil, with 6 rules; this file only gives the
+# service its domain so far, the rules follow from the permissive denials.
+type pip_firewall, domain;
+type pip_firewall_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(pip_firewall)

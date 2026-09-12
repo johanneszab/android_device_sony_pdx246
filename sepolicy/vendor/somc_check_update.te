@@ -1,0 +1,14 @@
+# Sony check_update, one of the storage firmware update (FFU) helpers.
+#
+#   service check_update /vendor/bin/check_update
+#
+# declared in /vendor/etc/init/trigger_ffu.rc. Stock uses this type name in
+# /odm/etc/selinux/odm_sepolicy.cil, with 14 rules, and makes it a boot control
+# HAL client; this file gives the service its domain and that client role, the
+# rules follow from the permissive denials.
+type somc_check_update, domain;
+type somc_check_update_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(somc_check_update)
+
+hal_client_domain(somc_check_update, hal_bootctl)

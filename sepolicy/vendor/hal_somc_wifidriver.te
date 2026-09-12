@@ -1,0 +1,11 @@
+# Sony Wi-Fi driver HAL.
+#
+#   service somc_wifidriver_hal_service /vendor/bin/hw/vendor.somc.hardware.wifidriver@2.0-service
+#
+# declared in /vendor/etc/init. Stock uses this type name in
+# /odm/etc/selinux/odm_sepolicy.cil, with 11 rules; this file only gives the
+# service its domain so far, the rules follow from the permissive denials.
+type hal_somc_wifidriver, domain;
+type hal_somc_wifidriver_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(hal_somc_wifidriver)

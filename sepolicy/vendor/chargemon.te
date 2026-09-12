@@ -1,0 +1,15 @@
+# Sony charge monitor.
+#
+#   service chargemon /vendor/bin/chargemon
+#       user system
+#       group root system oem_2993 wakelock input
+#       capabilities SYS_BOOT
+#       disabled
+#
+# declared in /odm/etc/init/init.sony-platform.rc. Stock declares the same type
+# in /odm/etc/selinux/odm_sepolicy.cil, with 58 rules; this file only gives the
+# service its domain so far, the rules follow from the permissive denials.
+type chargemon, domain;
+type chargemon_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(chargemon)

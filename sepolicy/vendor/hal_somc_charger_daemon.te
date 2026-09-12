@@ -1,0 +1,13 @@
+# Sony charger HAL, both the AIDL and the HIDL 1.2 service.
+#
+#   service vendor.aidlcharger-somc /vendor/bin/hw/vendor.semc.hardware.aidlcharger-service.somc
+#   service vendor.semc.hardware.charger-1-2 /vendor/bin/hw/vendor.semc.hardware.charger@1.2-service
+#
+# declared in /vendor/etc/init. Stock uses this type name in
+# /odm/etc/selinux/odm_sepolicy.cil, with 23 rules and its own hal_somc_charger
+# attributes; this file only gives the services their domain so far, the rules
+# and attributes follow with the permissive denials.
+type hal_somc_charger_daemon, domain;
+type hal_somc_charger_daemon_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(hal_somc_charger_daemon)

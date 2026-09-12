@@ -1,0 +1,11 @@
+# Sony check_ffu, one of the storage firmware update (FFU) helpers.
+#
+#   service check_ffu /vendor/bin/check_ffu
+#
+# declared in /vendor/etc/init/trigger_ffu.rc. Stock uses this type name in
+# /odm/etc/selinux/odm_sepolicy.cil, with 12 rules; this file only gives the
+# service its domain so far, the rules follow from the permissive denials.
+type somc_check_ffu, domain;
+type somc_check_ffu_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(somc_check_ffu)
