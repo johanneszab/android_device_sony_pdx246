@@ -2106,6 +2106,12 @@ system_ext/lib64/lib-imsvideocodec.so
 system_ext/lib64/lib-imsvt.so
 system_ext/lib64/lib-imsvtextutils.so
 system_ext/lib64/lib-imsvtutils.so
+# ims.apk (org.codeaurora.ims) loads these with System.loadLibrary; stock links
+# them into priv-app/ims/lib/arm64, the app's native library dir. Without them
+# its ImsService dies in onCreate (UnsatisfiedLinkError: libimsmedia_jni.so)
+# and, the app being persistent, crash-loops as soon as Telephony binds it.
+system_ext/lib64/libimscamera_jni.so;SYMLINK=system_ext/priv-app/ims/lib/arm64/libimscamera_jni.so
+system_ext/lib64/libimsmedia_jni.so;SYMLINK=system_ext/priv-app/ims/lib/arm64/libimsmedia_jni.so
 system_ext/lib64/vendor.qti.ImsRtpService-V2-ndk.so
 system_ext/lib64/vendor.qti.hardware.radio.ims@1.0.so
 vendor/lib64/vendor.qti.hardware.radio.ims@1.0.so;MODULE_SUFFIX=_vendor
