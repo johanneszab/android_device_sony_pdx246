@@ -1,0 +1,9 @@
+# AIDL services of Sony HALs that stock labels in /vendor service_contexts,
+# with stock's type names. Stock gives them its vendor_service attribute; this
+# policy has none, so they are hal_service_type like hardware/sony/sepolicy's
+# and the QTI policy's, and protected_service where stock has it. The rules to
+# add and find them follow from the permissive denials.
+type hal_somc_charger_service, hal_service_type, service_manager_type;
+type hal_somc_thermal_service, hal_service_type, protected_service, service_manager_type;
+type hal_somc_superstamina_service, hal_service_type, protected_service, service_manager_type;
+type hal_somc_wifi_idd_service, hal_service_type, service_manager_type;

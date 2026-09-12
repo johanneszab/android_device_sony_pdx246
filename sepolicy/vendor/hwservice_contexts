@@ -1,0 +1,5 @@
+# Stock's lines from /odm and /vendor hwservice_contexts; types in hwservice.te.
+vendor.nxp.nxpwiredse::INxpWiredSe                          u:object_r:hal_wired_se_hwservice:s0
+vendor.semc.hardware.thermal::ISomcThermalEngineWrapper     u:object_r:hal_somc_thermal_hwservice:s0
+vendor.somc.hardware.superstamina::ISuperStamina            u:object_r:hal_somc_superstamina_hwservice:s0
+vendor.somc.hardware.wifidriver::ISomcWifiDriver            u:object_r:hal_somc_wifidriver_hwservice:s0

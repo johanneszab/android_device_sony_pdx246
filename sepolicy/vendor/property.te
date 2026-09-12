@@ -1,0 +1,26 @@
+# Vendor properties of Sony services that stock labels in /odm and /vendor
+# property_contexts, with stock's type names and classes. vendor_nfc_prop and
+# vendor_public_vendor_default_prop already exist in the QTI policy; they only
+# get their property_contexts lines.
+vendor_internal_prop(vendor_360ra_prop)
+vendor_internal_prop(vendor_strongbox_prop)
+
+vendor_restricted_prop(vendor_360ra_restricted_prop)
+vendor_restricted_prop(vendor_somc_qcril_prop)
+vendor_restricted_prop(odm_partition_info_prop)
+
+vendor_public_prop(vendor_hal_somc_charger_prop)
+vendor_public_prop(vendor_somc_camera_prop)
+vendor_public_prop(vendor_idd_vendor_product_name_prop)
+vendor_public_prop(vendor_idd_startupprober_start_prop)
+vendor_public_prop(vendor_suntory_prop)
+vendor_public_prop(vendor_somc_thermal_prop)
+vendor_public_prop(vendor_somc_ffu_prop)
+vendor_public_prop(vendor_somc_productname_prop)
+vendor_public_prop(vendor_somc_variantname_prop)
+
+# Stock declares these two as system public properties, which a vendor policy
+# cannot. Nothing on the system side of this build uses them (no Sony system
+# apps), so they are vendor public here.
+vendor_public_prop(vendor_cali_prop)
+vendor_public_prop(vendor_default_status_prop)

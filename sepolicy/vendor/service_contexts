@@ -1,0 +1,12 @@
+# Stock's lines from /vendor service_contexts; types in service.te. These four
+# services register under exactly these names (service_manager denials for
+# default_android_service without them).
+#
+# Stock also lists vendor.semc.hardware.display::IDisplay/default and
+# ::IFramerateController/default as hal_white_balance_service. Our display HAL
+# does not register those names; it uses hwservicemanager, which
+# hardware/sony/sepolicy labels. So they are left out.
+vendor.semc.hardware.aidlcharger.ICharger/default                     u:object_r:hal_somc_charger_service:s0
+vendor.semc.hardware.aidlthermal.ISomcThermalEngineWrapper/default    u:object_r:hal_somc_thermal_service:s0
+vendor.somc.hardware.aidlsuperstamina.ISuperStamina/default           u:object_r:hal_somc_superstamina_service:s0
+vendor.somc.hardware.wifi.idd.ISomcWifiIdd/default                    u:object_r:hal_somc_wifi_idd_service:s0
