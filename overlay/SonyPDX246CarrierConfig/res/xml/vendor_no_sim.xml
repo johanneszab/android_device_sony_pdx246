@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carrier_config_list>
+    <carrier_config sku="jp_dcm">
+        <boolean name="carrier_volte_available_bool" value="true" />
+        <boolean name="carrier_vt_available_bool" value="true" />
+        <boolean name="show_call_blocking_disabled_notification_always_bool" value="true" />
+        <boolean name="show_blocking_pay_phone_option_bool" value="true" />
+        <boolean name="hide_enhanced_4g_lte_bool" value="true" />
+    </carrier_config>
+    <carrier_config board="pineapple" sku="jp_dcm">
+        <boolean name="disable_assisted_dialing_bool" value="true" />
+    </carrier_config>
+    <carrier_config device="SO-52E" sku="jp_dcm">
+        <boolean name="disable_assisted_dialing_bool" value="true" />
+    </carrier_config>
+    <carrier_config sku="jp_kddi">
+        <boolean name="ignore_sim_network_locked_events_bool" value="true" />
+        <boolean name="carrier_allow_turnoff_ims_bool" value="false" />
+        <boolean name="hide_enhanced_4g_lte_bool" value="true" />
+        <boolean name="show_blocking_pay_phone_option_bool" value="true" />
+    </carrier_config>
+    <carrier_config sku="jp_sbm">
+        <boolean name="carrier_volte_available_bool" value="true" />
+        <boolean name="show_blocking_pay_phone_option_bool" value="true" />
+    </carrier_config>
+    <carrier_config sku="euro">
+        <boolean name="rtt_supported_bool" value="true" />
+    </carrier_config>
+</carrier_config_list>

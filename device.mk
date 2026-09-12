@@ -339,10 +339,14 @@ PRODUCT_COPY_FILES += \
 # Overlays
 PRODUCT_ENFORCE_RRO_TARGETS := *
 
+# SonyPDX246TelephonyRes and SonyPDX246CarrierConfig carry the IMS setup for
+# VoLTE and Wi-Fi calling, together with the IMS flags in SonyPDX246FrameworksRes.
 PRODUCT_PACKAGES += \
     SonyPDX246SystemUIRes \
     SonyPDX246NfcNciRes \
-    SonyPDX246FrameworksRes
+    SonyPDX246FrameworksRes \
+    SonyPDX246TelephonyRes \
+    SonyPDX246CarrierConfig
 
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay-lineage

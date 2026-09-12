@@ -32,6 +32,25 @@
         <item>0:2:15</item>
     </string-array>
 
+    <!-- IMS: VoLTE and Wi-Fi calling through the QTI ImsService
+         (org.codeaurora.ims, named in SonyPDX246TelephonyRes). Values from stock
+         FrameworksResCommon_Sys.apk, except video calling, which stock's EEA
+         product overlay turns off. Whether a SIM then gets VoLTE or Wi-Fi calling
+         is up to the carrier config (SonyPDX246CarrierConfig). -->
+    <bool name="config_device_volte_available">true</bool>
+    <bool name="config_carrier_volte_available">true</bool>
+    <bool name="config_device_vt_available">false</bool>
+    <bool name="config_device_wfc_ims_available">true</bool>
+
+    <!-- IWLAN, the transport for Wi-Fi calling. vendor.qti.iwlan provides the
+         IWLAN data and network services and the qualified networks service.
+         AOSP leaves these empty, and then Telephony binds none of them: every
+         transport stays WWAN and IMS never registers over Wi-Fi. Values from
+         stock FrameworksResCommon_Sys.apk; pdx257 sets the same. -->
+    <string name="config_wlan_data_service_package" translatable="false">vendor.qti.iwlan</string>
+    <string name="config_wlan_network_service_package" translatable="false">vendor.qti.iwlan</string>
+    <string name="config_qualified_networks_service_package" translatable="false">vendor.qti.iwlan</string>
+
     <!-- Pin the fused location provider to AOSP com.android.location.fused.
 
          With the overlay enabled, the service watcher picks the system app with
