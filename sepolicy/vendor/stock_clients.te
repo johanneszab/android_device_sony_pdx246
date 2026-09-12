@@ -1,0 +1,113 @@
+# Rules from other vendor domains into the Sony types, ported from stock's
+# odm_sepolicy.cil by build-logs/selinux-port-stock-rules.py. Regenerate
+# rather than edit. Rules from system-side domains (Sony apps,
+# system_server) are not ported.
+
+# dumpstate
+allow dumpstate hal_somc_charger_daemon:binder { call transfer };
+allow dumpstate hal_somc_charger_daemon:fd { use };
+allow dumpstate hal_somc_thermal_daemon:binder { call transfer };
+allow dumpstate hal_somc_thermal_daemon:fd { use };
+allow dumpstate hal_superstamina:binder { call transfer };
+allow dumpstate hal_superstamina:fd { use };
+
+# hal_audio_default
+allow hal_audio_default vendor_360ra_prop:file { read getattr map open };
+allow hal_audio_default vendor_360ra_prop:property_service { set };
+allow hal_audio_default vendor_360ra_restricted_prop:file { read getattr map open };
+allow hal_audio_default vendor_somc_camera_prop:file { read getattr map open };
+
+# hal_camera_default
+allow hal_camera_default vendor_somc_camera_prop:file { read getattr map open };
+allow hal_camera_default vendor_somc_camera_prop:property_service { set };
+allow hal_camera_default vendor_somc_thermal_prop:file { read getattr map open };
+
+# hwservicemanager
+allow hwservicemanager charge_service:binder { call transfer };
+allow hwservicemanager charge_service:binder { transfer };
+allow hwservicemanager charge_service:dir { search };
+allow hwservicemanager charge_service:file { read map open };
+allow hwservicemanager charge_service:file { read open };
+allow hwservicemanager charge_service:process { getattr };
+allow hwservicemanager chargemon:binder { call transfer };
+allow hwservicemanager chargemon:dir { search };
+allow hwservicemanager chargemon:file { read map open };
+allow hwservicemanager chargemon:process { getattr };
+allow hwservicemanager hal_somc_thermal_daemon:binder { call transfer };
+allow hwservicemanager hal_somc_thermal_daemon:dir { search };
+allow hwservicemanager hal_somc_thermal_daemon:file { read map open };
+allow hwservicemanager hal_somc_thermal_daemon:process { getattr };
+allow hwservicemanager hal_somc_wifidriver:binder { call transfer };
+allow hwservicemanager hal_somc_wifidriver:dir { search };
+allow hwservicemanager hal_somc_wifidriver:file { read map open };
+allow hwservicemanager hal_somc_wifidriver:process { getattr };
+allow hwservicemanager hal_superstamina:binder { call transfer };
+allow hwservicemanager hal_superstamina:dir { search };
+allow hwservicemanager hal_superstamina:file { read map open };
+allow hwservicemanager hal_superstamina:process { getattr };
+allow hwservicemanager somc_check_update:binder { transfer };
+
+# idd
+allow idd vendor_idd_startupprober_start_prop:file { read getattr map open };
+allow idd vendor_idd_startupprober_start_prop:property_service { set };
+allow idd vendor_idd_vendor_product_name_prop:file { read getattr map open };
+
+# keyprovd
+allow keyprovd vendor_suntory_prop:file { read getattr map open };
+
+# mediacodec
+allow mediacodec vendor_suntory_prop:file { read getattr map open };
+
+# netutils_wrapper
+allow netutils_wrapper pip_firewall:fd { use };
+allow netutils_wrapper pip_firewall:fifo_file { read write getattr };
+allow netutils_wrapper pip_firewall:netlink_generic_socket { read write };
+allow netutils_wrapper pip_firewall:netlink_route_socket { read write };
+allow netutils_wrapper pip_firewall:netlink_xfrm_socket { read write };
+allow netutils_wrapper pip_firewall:process { sigchld };
+allow netutils_wrapper pip_firewall:tcp_socket { read write };
+allow netutils_wrapper pip_firewall:udp_socket { read write };
+allow netutils_wrapper pip_firewall:unix_stream_socket { read write };
+
+# rild
+allow rild vendor_somc_qcril_prop:file { read getattr map open };
+allow rild vendor_somc_qcril_prop:property_service { set };
+
+# servicemanager
+allow servicemanager hal_somc_thermal_daemon:binder { transfer };
+allow servicemanager hal_superstamina:binder { transfer };
+
+# somc_wifi_idd_hal_service
+allow somc_wifi_idd_hal_service hal_somc_wifi_idd_service:service_manager { add find };
+
+# system_suspend_server
+allow system_suspend_server charge_service:binder { transfer };
+allow system_suspend_server chargemon:binder { transfer };
+
+# vendor_hal_drm_widevine
+allow vendor_hal_drm_widevine vendor_suntory_prop:file { read getattr map open };
+
+# vendor_hal_secd_default
+allow vendor_hal_secd_default vendor_suntory_prop:file { read getattr map open };
+allow vendor_hal_secd_default vendor_suntory_prop:property_service { set };
+
+# vendor_init
+allow vendor_init vendor_360ra_prop:file { read getattr map open };
+allow vendor_init vendor_360ra_prop:property_service { set };
+allow vendor_init vendor_idd_startupprober_start_prop:file { read getattr map open };
+allow vendor_init vendor_idd_startupprober_start_prop:property_service { set };
+allow vendor_init vendor_idd_vendor_product_name_prop:file { read getattr map open };
+allow vendor_init vendor_idd_vendor_product_name_prop:property_service { set };
+allow vendor_init vendor_somc_ffu_prop:file { read getattr map open };
+allow vendor_init vendor_somc_ffu_prop:property_service { set };
+allow vendor_init vendor_somc_productname_prop:file { read getattr map open };
+allow vendor_init vendor_somc_productname_prop:property_service { set };
+allow vendor_init vendor_somc_qcril_prop:file { read getattr map open };
+allow vendor_init vendor_somc_qcril_prop:property_service { set };
+allow vendor_init vendor_somc_variantname_prop:file { read getattr map open };
+allow vendor_init vendor_somc_variantname_prop:property_service { set };
+allow vendor_init vendor_suntory_prop:property_service { set };
+
+# vendor_thermal-engine
+allow vendor_thermal-engine vendor_somc_thermal_prop:file { read getattr map open };
+allow vendor_thermal-engine vendor_somc_thermal_prop:property_service { set };

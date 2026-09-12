@@ -12,3 +12,7 @@ type spcdeld, domain;
 type spcdeld_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(spcdeld)
+
+# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+allow spcdeld spcdeld_exec:file { read getattr map execute open entrypoint };
+# --- end of ported rules ---

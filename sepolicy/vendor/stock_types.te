@@ -1,0 +1,7 @@
+# Types that stock's rules for the Sony domains use and this policy lacks, with
+# stock's attributes (/odm/etc/selinux/odm_sepolicy.cil). Their labels are in
+# file_contexts and genfs_contexts.
+type charge_log_file, file_type, data_file_type;
+type sysfs_scsi_dev_model, sysfs_type, fs_type;
+type sysfs_scsi_dev_rev, sysfs_type, fs_type;
+type sysfs_dp_is_stopped, sysfs_type, fs_type;

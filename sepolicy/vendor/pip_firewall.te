@@ -9,3 +9,12 @@ type pip_firewall, domain;
 type pip_firewall_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(pip_firewall)
+
+# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+allow pip_firewall netutils_wrapper:process { siginh rlimitinh };
+allow pip_firewall netutils_wrapper:process { transition };
+allow pip_firewall netutils_wrapper_exec:file { read getattr map execute open };
+allow pip_firewall pip_firewall_exec:file { read getattr map execute open entrypoint };
+dontaudit pip_firewall netutils_wrapper:process { noatsecure };
+type_transition pip_firewall netutils_wrapper_exec:process netutils_wrapper;
+# --- end of ported rules ---

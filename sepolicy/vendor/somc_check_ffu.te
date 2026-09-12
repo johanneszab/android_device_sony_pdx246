@@ -9,3 +9,17 @@ type somc_check_ffu, domain;
 type somc_check_ffu_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(somc_check_ffu)
+
+# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+allow somc_check_ffu init:unix_stream_socket { connectto };
+allow somc_check_ffu kmsg_device:chr_file { ioctl read write getattr lock append map open watch watch_reads };
+allow somc_check_ffu property_socket:sock_file { write };
+allow somc_check_ffu somc_check_ffu_exec:file { read getattr map execute open entrypoint };
+allow somc_check_ffu sysfs:dir { ioctl read getattr lock open watch watch_reads search };
+allow somc_check_ffu sysfs:file { ioctl read getattr lock map open watch watch_reads };
+allow somc_check_ffu sysfs:lnk_file { ioctl read getattr lock map open watch watch_reads };
+allow somc_check_ffu sysfs_scsi_dev_model:file { ioctl read getattr lock map open watch watch_reads };
+allow somc_check_ffu sysfs_scsi_dev_rev:file { ioctl read getattr lock map open watch watch_reads };
+allow somc_check_ffu vendor_somc_ffu_prop:file { read getattr map open };
+allow somc_check_ffu vendor_somc_ffu_prop:property_service { set };
+# --- end of ported rules ---

@@ -48,3 +48,10 @@
 # is the only server (lshal). AOSP gives that interface to hal_audio, so the
 # wrapper runs in the audio HAL's domain.
 /(vendor|system/vendor)/bin/hw/android\.hardware\.soundtrigger@2\.3-service\.sony  u:object_r:hal_audio_default_exec:s0
+
+# Files that stock's rules for the Sony domains use (stock's lines from
+# odm_file_contexts; types in stock_types.te).
+/data/vendor/charge_log(/.*)?                    u:object_r:charge_log_file:s0
+/mnt/vendor/persist/charge_log(/.*)?             u:object_r:charge_log_file:s0
+/sys/devices/platform/soc/1d84000.ufshc/host0/target0:0:0/0:0:0:0/model u:object_r:sysfs_scsi_dev_model:s0
+/sys/devices/platform/soc/1d84000.ufshc/host0/target0:0:0/0:0:0:0/rev u:object_r:sysfs_scsi_dev_rev:s0
