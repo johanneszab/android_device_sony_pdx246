@@ -51,6 +51,13 @@
     <string name="config_wlan_network_service_package" translatable="false">vendor.qti.iwlan</string>
     <string name="config_qualified_networks_service_package" translatable="false">vendor.qti.iwlan</string>
 
+    <!-- Wired headset detection. The kernel reports the 3.5 mm jack through the
+         input device "parrot-qrd-sku1-snd-card Headset Jack" (SW_HEADPHONE_INSERT,
+         SW_MICROPHONE_INSERT, SW_LINEOUT_INSERT). With the AOSP default (false),
+         WiredAccessoryManager waits for /sys/class/switch/h2w instead, which this
+         kernel does not have, so headphones were never routed. Stock sets true. -->
+    <bool name="config_useDevInputEventForAudioJack" translatable="false">true</bool>
+
     <!-- Pin the fused location provider to AOSP com.android.location.fused.
 
          With the overlay enabled, the service watcher picks the system app with
