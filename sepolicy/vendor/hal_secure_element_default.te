@@ -1,0 +1,12 @@
+# Stock's rules for the NXP secure element HAL that this policy lacks
+# (/vendor/etc/selinux/vendor_sepolicy.cil), found as permissive denials and
+# checked against stock's policy with build-logs/selinux-stock-allows.py, with
+# the file rules stock pairs with them. Stock's nxpnfc_service is
+# vendor_hal_nxpnfc_service here.
+allow hal_secure_element_default nxpese_hwservice:hwservice_manager { add find };
+allow hal_secure_element_default vendor_hal_nxpnfc_service:service_manager find;
+set_prop(hal_secure_element_default, vendor_nfc_prop)
+allow hal_secure_element_default oemfs:dir { read open search };
+allow hal_secure_element_default oemfs:file { read getattr open watch };
+allow hal_secure_element_default vendor_nfc_vendor_data_file:dir { read write add_name remove_name search };
+allow hal_secure_element_default vendor_nfc_vendor_data_file:file { read write create getattr append unlink open };

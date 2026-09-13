@@ -10,6 +10,10 @@ allow dumpstate hal_somc_thermal_daemon:binder { call transfer };
 allow dumpstate hal_somc_thermal_daemon:fd { use };
 allow dumpstate hal_superstamina:binder { call transfer };
 allow dumpstate hal_superstamina:fd { use };
+allow dumpstate somc_wifi_idd_hal_service:binder { call transfer };
+allow dumpstate somc_wifi_idd_hal_service:fd { use };
+allow dumpstate vendor_hal_secd_default:binder { call transfer };
+allow dumpstate vendor_hal_secd_default:fd { use };
 
 # hal_audio_default
 allow hal_audio_default vendor_360ra_prop:file { read getattr map open };
@@ -18,9 +22,30 @@ allow hal_audio_default vendor_360ra_restricted_prop:file { read getattr map ope
 allow hal_audio_default vendor_somc_camera_prop:file { read getattr map open };
 
 # hal_camera_default
+allow hal_camera_default idd:fd { use };
+allow hal_camera_default tad:unix_stream_socket { connectto };
+allow hal_camera_default vendor_hal_idd_default:binder { call };
 allow hal_camera_default vendor_somc_camera_prop:file { read getattr map open };
 allow hal_camera_default vendor_somc_camera_prop:property_service { set };
 allow hal_camera_default vendor_somc_thermal_prop:file { read getattr map open };
+
+# hal_fingerprint_default
+allow hal_fingerprint_default vendor_hal_idd_default:binder { call };
+
+# hal_nfc_default
+allow hal_nfc_default tad:unix_stream_socket { connectto };
+
+# hal_secure_element_default
+allow hal_secure_element_default tad:unix_stream_socket { connectto };
+allow hal_secure_element_default vendor_hal_idd_default:binder { call };
+
+# hal_wifi_hostapd_default
+allow hal_wifi_hostapd_default idd:fd { use };
+allow hal_wifi_hostapd_default vendor_hal_idd_default:binder { call };
+
+# hal_wifi_supplicant_default
+allow hal_wifi_supplicant_default idd:fd { use };
+allow hal_wifi_supplicant_default vendor_hal_idd_default:binder { call };
 
 # hwservicemanager
 allow hwservicemanager charge_service:binder { call transfer };
@@ -45,17 +70,22 @@ allow hwservicemanager hal_superstamina:binder { call transfer };
 allow hwservicemanager hal_superstamina:dir { search };
 allow hwservicemanager hal_superstamina:file { read map open };
 allow hwservicemanager hal_superstamina:process { getattr };
+allow hwservicemanager idd:binder { call transfer };
+allow hwservicemanager keyprovd:binder { call transfer };
+allow hwservicemanager keyprovd:dir { search };
+allow hwservicemanager keyprovd:file { read map open };
+allow hwservicemanager keyprovd:process { getattr };
 allow hwservicemanager somc_check_update:binder { transfer };
+allow hwservicemanager ta_qmi_service:binder { call transfer };
+allow hwservicemanager ta_qmi_service:dir { search };
+allow hwservicemanager ta_qmi_service:file { read map open };
+allow hwservicemanager ta_qmi_service:process { getattr };
 
-# idd
-allow idd vendor_idd_startupprober_start_prop:file { read getattr map open };
-allow idd vendor_idd_startupprober_start_prop:property_service { set };
-allow idd vendor_idd_vendor_product_name_prop:file { read getattr map open };
-
-# keyprovd
-allow keyprovd vendor_suntory_prop:file { read getattr map open };
+# init
+allow init tad:unix_stream_socket { connectto };
 
 # mediacodec
+allow mediacodec vendor_hal_secd_default:binder { call transfer };
 allow mediacodec vendor_suntory_prop:file { read getattr map open };
 
 # netutils_wrapper
@@ -70,26 +100,46 @@ allow netutils_wrapper pip_firewall:udp_socket { read write };
 allow netutils_wrapper pip_firewall:unix_stream_socket { read write };
 
 # rild
+allow rild tad:unix_stream_socket { connectto };
 allow rild vendor_somc_qcril_prop:file { read getattr map open };
 allow rild vendor_somc_qcril_prop:property_service { set };
 
 # servicemanager
 allow servicemanager hal_somc_thermal_daemon:binder { transfer };
 allow servicemanager hal_superstamina:binder { transfer };
-
-# somc_wifi_idd_hal_service
-allow somc_wifi_idd_hal_service hal_somc_wifi_idd_service:service_manager { add find };
+allow servicemanager idd:binder { call transfer };
+allow servicemanager idd:dir { search };
+allow servicemanager idd:file { read open };
+allow servicemanager idd:process { getattr };
+allow servicemanager keyprovd:binder { transfer };
+allow servicemanager vendor_hal_secd_default:binder { transfer };
 
 # system_suspend_server
 allow system_suspend_server charge_service:binder { transfer };
 allow system_suspend_server chargemon:binder { transfer };
+allow system_suspend_server ta_qmi_service:binder { transfer };
+
+# taimport_vendor
+allow taimport_vendor tad:unix_stream_socket { connectto };
 
 # vendor_hal_drm_widevine
+allow vendor_hal_drm_widevine vendor_hal_secd_default:binder { call transfer };
 allow vendor_hal_drm_widevine vendor_suntory_prop:file { read getattr map open };
 
-# vendor_hal_secd_default
-allow vendor_hal_secd_default vendor_suntory_prop:file { read getattr map open };
-allow vendor_hal_secd_default vendor_suntory_prop:property_service { set };
+# vendor_hal_idd_client
+allow vendor_hal_idd_client idd:fd { use };
+allow vendor_hal_idd_client vendor_hal_idd_default:binder { call };
+
+# vendor_hal_keymint_qti
+allow vendor_hal_keymint_qti keyprovd:binder { transfer };
+allow vendor_hal_keymint_qti vendor_hal_secd_default:binder { transfer };
+
+# vendor_hal_miscta_default
+allow vendor_hal_miscta_default tad:unix_stream_socket { connectto };
+
+# vendor_hal_spc_default
+allow vendor_hal_spc_default tad:unix_stream_socket { connectto };
+allow vendor_hal_spc_default vendor_hal_secd_default:binder { call transfer };
 
 # vendor_init
 allow vendor_init vendor_360ra_prop:file { read getattr map open };
@@ -109,5 +159,13 @@ allow vendor_init vendor_somc_variantname_prop:property_service { set };
 allow vendor_init vendor_suntory_prop:property_service { set };
 
 # vendor_thermal-engine
+allow vendor_thermal-engine idd:fd { use };
+allow vendor_thermal-engine tad:unix_stream_socket { connectto };
+allow vendor_thermal-engine vendor_hal_idd_default:binder { call };
 allow vendor_thermal-engine vendor_somc_thermal_prop:file { read getattr map open };
 allow vendor_thermal-engine vendor_somc_thermal_prop:property_service { set };
+
+# vndservicemanager
+allow vndservicemanager idd:dir { search };
+allow vndservicemanager idd:file { read map open };
+allow vndservicemanager idd:process { getattr };

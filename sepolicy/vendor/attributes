@@ -1,0 +1,7 @@
+# HAL attributes that stock declares in /odm/etc/selinux/odm_sepolicy.cil for
+# Sony's charger and Wi-Fi IDD HALs (hal_somc_charger and hal_somc_wifi_idd,
+# each with its _client and _server sets). The servers are made members, with
+# stock's rules for the attributes, in hal_somc_charger_daemon.te and
+# somc_wifi_idd_hal_service.te.
+hal_attribute(somc_charger)
+hal_attribute(somc_wifi_idd)

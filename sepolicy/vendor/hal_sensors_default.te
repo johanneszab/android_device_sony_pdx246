@@ -1,0 +1,13 @@
+# Sony's HardwareInfo sensor nodes, labeled as on stock
+# (/vendor/etc/selinux/vendor_sepolicy.cil): the types, their genfscon lines
+# (in genfs_contexts) and the sensors HAL's rules. Without the labels the
+# nodes are plain sysfs, and the sensors HAL was denied on gsensor.
+type vendor_sysfs_gsensor, sysfs_type, fs_type;
+type vendor_sysfs_msensor, sysfs_type, fs_type;
+type vendor_sysfs_alsps, sysfs_type, fs_type;
+type vendor_sysfs_gyro, sysfs_type, fs_type;
+
+allow hal_sensors_default vendor_sysfs_gsensor:file { read write open };
+allow hal_sensors_default vendor_sysfs_msensor:file { read write open };
+allow hal_sensors_default vendor_sysfs_alsps:file { read write open };
+allow hal_sensors_default vendor_sysfs_gyro:file { read write open };

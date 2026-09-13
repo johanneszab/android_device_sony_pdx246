@@ -1,0 +1,29 @@
+# Stock's rules for keyprovd. hardware/sony/sepolicy declares the domain,
+# with its labels and part of stock's rules.
+
+# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+allow keyprovd hal_remotelyprovisionedcomponent_service:service_manager { find };
+allow keyprovd hal_secd_service:service_manager { find };
+allow keyprovd hwservicemanager:binder { call transfer };
+allow keyprovd hwservicemanager_prop:file { read getattr map open };
+allow keyprovd init:unix_stream_socket { connectto };
+allow keyprovd ion_device:chr_file { ioctl read write open };
+allow keyprovd keyprovd_exec:file { read getattr map execute open entrypoint };
+allow keyprovd property_socket:sock_file { write };
+allow keyprovd servicemanager:binder { call transfer };
+allow keyprovd servicemanager:fd { use };
+allow keyprovd tad:unix_stream_socket { connectto };
+allow keyprovd tad_socket:sock_file { write };
+allow keyprovd tee_device:chr_file { ioctl read write getattr lock append map open watch watch_reads };
+allow keyprovd vendor_dmabuf_qseecom_heap_device:chr_file { ioctl read getattr lock map open watch watch_reads };
+allow keyprovd vendor_dmabuf_qseecom_ta_heap_device:chr_file { ioctl read open };
+allow keyprovd vendor_hal_keymint_qti:binder { call transfer };
+allow keyprovd vendor_hal_keymint_qti:fd { use };
+allow keyprovd vendor_hal_secd_default:binder { call transfer };
+allow keyprovd vendor_hal_soter_hwservice:hwservice_manager { find };
+allow keyprovd vendor_qce_device:chr_file { ioctl read write open };
+allow keyprovd vendor_sdm_prop:file { read getattr map open };
+allow keyprovd vendor_sdm_prop:property_service { set };
+allow keyprovd vendor_suntory_prop:file { read getattr map open };
+allow keyprovd vendor_tee_listener_prop:file { read getattr map open };
+# --- end of ported rules ---

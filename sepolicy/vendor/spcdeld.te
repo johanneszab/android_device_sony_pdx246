@@ -6,8 +6,7 @@
 #       disabled
 #
 # declared in /odm/etc/init/init.sony-platform.rc. Stock declares the same type
-# in /odm/etc/selinux/odm_sepolicy.cil, with 1 rule; this file only gives the
-# service its domain so far, the rules follow from the permissive denials.
+# in /odm/etc/selinux/odm_sepolicy.cil; its one rule is ported below.
 type spcdeld, domain;
 type spcdeld_exec, exec_type, vendor_file_type, file_type;
 

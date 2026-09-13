@@ -1,0 +1,10 @@
+# Stock's rules for mlog_qmi_service. hardware/sony/sepolicy declares the domain,
+# with its labels and part of stock's rules.
+
+# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+allow mlog_qmi_service mlog_qmi_service_exec:file { read getattr map execute open entrypoint };
+allow mlog_qmi_service self:capability { net_bind_service net_raw };
+allow mlog_qmi_service self:qipcrtr_socket { ioctl read write create getattr setattr lock append map bind connect getopt setopt shutdown };
+allow mlog_qmi_service self:socket { ioctl read write create getattr setattr lock append map bind connect getopt setopt shutdown };
+allow mlog_qmi_service vendor_smem_log_device:chr_file { ioctl read write getattr lock append map open watch watch_reads };
+# --- end of ported rules ---

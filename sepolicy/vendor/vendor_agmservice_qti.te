@@ -1,0 +1,5 @@
+# Stock's rule for the QTI AGM service that this policy lacks
+# (/vendor/etc/selinux/vendor_sepolicy.cil), found as a permissive denial and
+# checked against stock's policy with build-logs/selinux-stock-allows.py: it
+# reads /sys/devices/platform/HardwareInfo/smartpa (plain sysfs on stock too).
+allow vendor_agmservice_qti sysfs:file { read open };

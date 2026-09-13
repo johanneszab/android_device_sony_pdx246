@@ -4,13 +4,17 @@
 #   service vendor.semc.hardware.charger-1-2 /vendor/bin/hw/vendor.semc.hardware.charger@1.2-service
 #
 # declared in /vendor/etc/init. Stock uses this type name in
-# /odm/etc/selinux/odm_sepolicy.cil, with 23 rules and its own hal_somc_charger
-# attributes; this file only gives the services their domain so far, the rules
-# and attributes follow with the permissive denials.
+# /odm/etc/selinux/odm_sepolicy.cil: its rules for the domain are ported below,
+# its binder use comes from stock's HAL attribute (declared in attributes).
 type hal_somc_charger_daemon, domain;
 type hal_somc_charger_daemon_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(hal_somc_charger_daemon)
+
+# As on stock: a server of hal_somc_charger (halserverdomain brings the
+# hwservicemanager rules), and the attribute's binder_call() to servicemanager.
+hal_server_domain(hal_somc_charger_daemon, hal_somc_charger)
+binder_call(hal_somc_charger_server, servicemanager)
 
 # --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
 allow hal_somc_charger_daemon dumpstate:binder { transfer };

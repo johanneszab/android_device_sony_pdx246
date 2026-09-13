@@ -1,0 +1,5 @@
+# Stock's rule for the fingerprint HAL that this policy lacks
+# (/vendor/etc/selinux/vendor_sepolicy.cil): it sets and reads
+# vendor_default_status_prop. Found as a permissive denial and checked against
+# stock's policy with build-logs/selinux-stock-allows.py.
+set_prop(hal_fingerprint_default, vendor_default_status_prop)

@@ -1,6 +1,6 @@
 # HIDL interfaces of Sony services and NXP's wired secure element that stock
-# labels in /odm and /vendor hwservice_contexts, with stock's type names. The
-# rules to register and find them follow from the permissive denials.
+# labels in /odm and /vendor hwservice_contexts, with stock's type names, for
+# the rules ported from stock.
 type hal_wired_se_hwservice, hwservice_manager_type;
 type hal_somc_thermal_hwservice, hwservice_manager_type;
 type hal_somc_superstamina_hwservice, hwservice_manager_type;

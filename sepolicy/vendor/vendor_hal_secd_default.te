@@ -1,0 +1,29 @@
+# Stock's rules for vendor_hal_secd_default. hardware/sony/sepolicy declares the domain,
+# with its labels and part of stock's rules.
+
+# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+allow vendor_hal_secd_default dumpstate:binder { transfer };
+allow vendor_hal_secd_default firmware_file:dir { search };
+allow vendor_hal_secd_default firmware_file:file { ioctl read getattr lock map open watch watch_reads };
+allow vendor_hal_secd_default hal_allocator:fd { use };
+allow vendor_hal_secd_default hal_remotelyprovisionedcomponent_service:service_manager { find };
+allow vendor_hal_secd_default init:unix_stream_socket { connectto };
+allow vendor_hal_secd_default ion_device:chr_file { ioctl read getattr lock map open watch watch_reads };
+allow vendor_hal_secd_default property_socket:sock_file { write };
+allow vendor_hal_secd_default servicemanager:binder { call transfer };
+allow vendor_hal_secd_default servicemanager:fd { use };
+allow vendor_hal_secd_default sysfs:file { ioctl read write getattr lock append map open watch watch_reads };
+allow vendor_hal_secd_default tad:unix_stream_socket { connectto };
+allow vendor_hal_secd_default tad_socket:sock_file { write };
+allow vendor_hal_secd_default tee_device:chr_file { ioctl read write getattr lock append map open watch watch_reads };
+allow vendor_hal_secd_default vendor_dmabuf_qseecom_heap_device:chr_file { ioctl read getattr lock map open watch watch_reads };
+allow vendor_hal_secd_default vendor_dmabuf_qseecom_ta_heap_device:chr_file { ioctl read getattr lock map open watch watch_reads };
+allow vendor_hal_secd_default vendor_hal_keymint_qti:binder { call transfer };
+allow vendor_hal_secd_default vendor_hal_keymint_qti:fd { use };
+allow vendor_hal_secd_default vendor_hal_secd_default_exec:file { read getattr map execute open entrypoint };
+allow vendor_hal_secd_default vendor_qce_device:chr_file { ioctl read write open };
+allow vendor_hal_secd_default vendor_sdm_prop:file { read getattr map open };
+allow vendor_hal_secd_default vendor_suntory_prop:file { read getattr map open };
+allow vendor_hal_secd_default vendor_suntory_prop:property_service { set };
+allow vendor_hal_secd_default vendor_tee_listener_prop:file { read getattr map open };
+# --- end of ported rules ---

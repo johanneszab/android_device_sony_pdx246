@@ -3,9 +3,9 @@
 #   service vendor.semc.hardware.aidlthermal /vendor/bin/hw/vendor.semc.hardware.aidlthermal-service
 #
 # declared in /vendor/etc/init. Stock uses this type name in
-# /odm/etc/selinux/odm_sepolicy.cil, with 32 rules; this file only gives the
-# service its domain so far, the rules follow from the permissive denials.
-type hal_somc_thermal_daemon, domain;
+# /odm/etc/selinux/odm_sepolicy.cil; its rules are ported below. Stock also
+# makes the domain an mlstrustedsubject, exempt from the MLS constraints.
+type hal_somc_thermal_daemon, domain, mlstrustedsubject;
 type hal_somc_thermal_daemon_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(hal_somc_thermal_daemon)

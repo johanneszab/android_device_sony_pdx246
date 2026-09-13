@@ -1,2 +1,9 @@
 # Stock's genfscon from /odm/etc/selinux/odm_sepolicy.cil; type in stock_types.te.
 genfscon sysfs /devices/drm_dp/dp_is_stopped u:object_r:sysfs_dp_is_stopped:s0
+
+# Stock's genfscon for Sony's HardwareInfo sensor nodes, from
+# /vendor/etc/selinux/vendor_sepolicy.cil; types in hal_sensors_default.te.
+genfscon sysfs /devices/platform/HardwareInfo/gsensor u:object_r:vendor_sysfs_gsensor:s0
+genfscon sysfs /devices/platform/HardwareInfo/msensor u:object_r:vendor_sysfs_msensor:s0
+genfscon sysfs /devices/platform/HardwareInfo/alsps u:object_r:vendor_sysfs_alsps:s0
+genfscon sysfs /devices/platform/HardwareInfo/gyro u:object_r:vendor_sysfs_gyro:s0

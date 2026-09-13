@@ -13,10 +13,22 @@
 #    transition"
 # i.e. it needs an exec type and a transition, not a setexeccon.
 #
-# NOTE: registering its AIDL interface additionally needs a service_contexts
-# entry for vendor.somc.hardware.wifi.idd.ISomcWifiIdd/default. Not added yet --
-# this file only stops the domain-transition failure.
+# Stock calls the domain hal_somc_wifi_idd_default
+# (/odm/etc/selinux/odm_sepolicy.cil); its rules are ported below under this
+# name. Its service type is in service.te and service_contexts.
 type somc_wifi_idd_hal_service, domain;
 type somc_wifi_idd_hal_service_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(somc_wifi_idd_hal_service)
+
+# As on stock: a server of hal_somc_wifi_idd (declared in attributes), and the
+# attribute's binder_call() to servicemanager.
+hal_server_domain(somc_wifi_idd_hal_service, hal_somc_wifi_idd)
+binder_call(hal_somc_wifi_idd_server, servicemanager)
+
+# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+allow somc_wifi_idd_hal_service dumpstate:binder { transfer };
+allow somc_wifi_idd_hal_service hal_somc_wifi_idd_service:service_manager { add find };
+allow somc_wifi_idd_hal_service self:netlink_generic_socket { read write create getattr setattr lock append map bind connect getopt setopt shutdown };
+allow somc_wifi_idd_hal_service somc_wifi_idd_hal_service_exec:file { read getattr map execute open entrypoint };
+# --- end of ported rules ---

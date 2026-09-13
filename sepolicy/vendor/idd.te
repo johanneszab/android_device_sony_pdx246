@@ -1,0 +1,51 @@
+# Stock's rules for idd. hardware/sony/sepolicy declares the domain,
+# with its labels and part of stock's rules.
+
+# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+allow idd hal_secd_service:service_manager { find };
+allow idd hwservicemanager:binder { call transfer };
+allow idd hwservicemanager_prop:file { read getattr map open };
+allow idd idd_data_file:dir { ioctl read write create getattr setattr lock rename open watch watch_reads add_name remove_name reparent search rmdir };
+allow idd idd_data_file:file { ioctl read write create getattr setattr lock append map unlink rename open watch watch_reads };
+allow idd idd_exec:file { execute_no_trans };
+allow idd idd_exec:file { read getattr map execute open entrypoint };
+allow idd idd_output_file:dir { ioctl read write getattr lock open watch watch_reads add_name remove_name search };
+allow idd idd_output_file:file { ioctl read write create getattr setattr lock relabelfrom relabelto append map unlink rename open watch watch_reads };
+allow idd idd_rca_dir:dir { write lock open add_name remove_name search };
+allow idd idd_rca_file:dir { ioctl read write create getattr setattr lock rename open watch watch_reads add_name remove_name reparent search rmdir };
+allow idd idd_rca_file:file { ioctl read write create getattr setattr lock append map unlink rename open watch watch_reads };
+allow idd idd_root_dir:dir { getattr search };
+allow idd idd_root_dir:dir { write add_name remove_name };
+allow idd idd_socket_file:dir { write lock open add_name remove_name search };
+allow idd idd_socket_file:sock_file { write create setattr unlink };
+allow idd init:unix_stream_socket { connectto };
+allow idd kernel:system { syslog_read };
+allow idd logd:unix_stream_socket { connectto };
+allow idd logdr_socket:sock_file { read write };
+allow idd proc:file { read getattr open };
+allow idd property_socket:sock_file { write };
+allow idd self:netlink_socket { write create bind };
+allow idd servicemanager:binder { call transfer };
+allow idd sysfs:file { read getattr open };
+allow idd sysfs_wakeup_reasons:dir { search };
+allow idd sysfs_wakeup_reasons:file { read getattr open };
+allow idd system_file:dir { read open };
+allow idd tad:unix_stream_socket { connectto };
+allow idd tad_socket:sock_file { write };
+allow idd tmpfs:lnk_file { read };
+allow idd vendor_hal_idd_default:binder { call };
+allow idd vendor_hal_idd_hwservice:hwservice_manager { find };
+allow idd vendor_hal_secd_default:binder { call transfer };
+allow idd vendor_idd_startupprober_start_prop:file { read getattr map open };
+allow idd vendor_idd_startupprober_start_prop:property_service { set };
+allow idd vendor_idd_vendor_product_name_prop:file { read getattr map open };
+allow idd vendor_shell_exec:file { read getattr execute open execute_no_trans };
+allow idd vendor_somc_cust_prop:file { read getattr map open };
+allow idd vendor_toolbox_exec:file { read getattr execute open execute_no_trans };
+allow idd vndbinder_device:chr_file { ioctl read write getattr lock append map open watch watch_reads };
+allow idd vndservicemanager:binder { call transfer };
+type_transition idd idd_data_file:file idd_output_file "flushed_data.compacted";
+type_transition idd idd_data_file:file idd_output_file "flushed_data.encrypted";
+type_transition idd idd_root_dir:dir idd_data_file;
+type_transition idd idd_root_dir:file idd_data_file;
+# --- end of ported rules ---
