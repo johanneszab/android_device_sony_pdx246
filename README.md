@@ -41,20 +41,24 @@ That does everything reproducible in one pass:
 Then build:
 
 ```bash
-export WITH_ADB_INSECURE=true
 source build/envsetup.sh
 lunch lineage_pdx246-trunk_staging-userdebug
 rm -f out/target/product/pdx246/{boot,vendor_boot}.img
 mka bacon && m superimage
 ```
 
-Three things about that invocation are not optional:
+Two things about that invocation are not optional:
 
 | | why |
 |---|---|
-| `WITH_ADB_INSECURE=true` | LineageOS sets `ro.adb.secure=1` and `ro.debuggable=0` on any non-`eng` build. Without this, adb needs an on-screen RSA prompt you cannot tap when the UI is not coming up, and `adb root` is gone. Drop it for a release build. |
 | `-userdebug`, never `-eng` | `eng` sets `OVERRIDE_DISABLE_DEXOPT_ALL`, which disables dexpreopt. First boot then compiles the boot classpath on device for both architectures — measured at over two hours. |
 | `rm -f ...boot.img` | `--dtb` is passed via `BOARD_MKBOOTIMG_ARGS` and is **not** a tracked dependency, so a changed `prebuilts/dtb.img` silently ships stale. |
+
+This builds the release configuration: LineageOS sets `ro.adb.secure=1` and
+`ro.debuggable=0`, so USB debugging needs the authorization prompt on the
+phone and `adb root` is not available. For bring-up or debugging builds, run
+`export WITH_ADB_INSECURE=true` first: adb then works without the prompt (also
+when the UI does not come up), and the build stays debuggable.
 
 Keep `trunk_staging` as the release. `lineage_pdx246-bp2a-userdebug` also
 resolves but silently changes the release config as well as the variant.

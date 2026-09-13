@@ -149,16 +149,16 @@ cat <<EOF
 
 $(printf '%s==>%s') Setup complete. To build:
 
-    export WITH_ADB_INSECURE=true          # see below -- needed for adb
     source build/envsetup.sh
     lunch lineage_${DEVICE}-trunk_staging-userdebug
     rm -f out/target/product/${DEVICE}/{boot,vendor_boot}.img
     mka bacon && m superimage
 
-WITH_ADB_INSECURE=true is REQUIRED for bring-up. Without it LineageOS sets
-ro.adb.secure=1 and ro.debuggable=0 on any non-eng build, so adb needs an
-on-screen RSA prompt you cannot tap if the UI does not come up, and 'adb root'
-is gone. Drop it for a release build.
+That is the release configuration: LineageOS sets ro.adb.secure=1 and
+ro.debuggable=0, so USB debugging needs the prompt on the phone and 'adb root'
+is gone. For bring-up or debugging, 'export WITH_ADB_INSECURE=true' before
+building: adb then works without the prompt, also when the UI does not come
+up, and the build stays debuggable.
 
 Do NOT build 'eng': it disables dexpreopt entirely and the first boot then
 spends 2+ hours compiling the boot classpath on device.

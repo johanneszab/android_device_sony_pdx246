@@ -80,12 +80,9 @@ BOARD_BOOTCONFIG += \
     androidboot.memcg=1 \
     androidboot.usbcontroller=a600000.dwc3
 
-# ---- DEBUG BUILD ONLY: revert before any daily use ----
-# Stock sets androidboot.init_fatal_panic=true. It is deliberately omitted here,
-# so an init failure logs and reboots to recovery instead of panicking the
-# kernel at once, which left nothing to read.
-BOARD_BOOTCONFIG += \
-    androidboot.init_fatal_reboot_target=recovery
+# No androidboot.init_fatal_* options, as on pdx257: a fatal init error reboots
+# to the bootloader. (Stock sets androidboot.init_fatal_panic=true.) For init
+# debugging, androidboot.init_fatal_reboot_target=recovery keeps adb reachable.
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_KERNEL_SEPARATED_DTBO := true
 TARGET_KERNEL_CONFIG := pdx246_defconfig
