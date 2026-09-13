@@ -1725,18 +1725,46 @@ vendor/etc/pwr/VendorScenarioPowerOptFeature.xml
 vendor/etc/pwr/VideoPowerOptFeature.xml
 
 # QCC
+# xtra-daemon downloads the XTRA assistance file only through QCC: the vendor's
+# libqcc_file_agent.so asks for the HIDL
+# vendor.qti.hardware.qccsyshal@1.1::IQccsyshal/qccsyshal. Stock serves it with
+# qccsyshal@1.2-service, which passes the downloads to the QCC app
+# (com.qti.qcc) over /dev/socket/qcc_app. The app's native code is libqcc.so
+# (DMEFacade) and libqccfileservice.so (DMEFileService); without libqcc.so the
+# persistent app crash-loops at start with an UnsatisfiedLinkError, and the
+# service waits for it forever. libqccdme.so as on pdx257. Stock's AIDL
+# qccsyshal_aidl-service
+# stops itself when hwservicemanager runs and is not needed. Stock declares
+# the HAL in its system manifest; our copy of that entry is
+# vintf/vendor.qti.hardware.qccsyshal@1.2-service.xml. The vendor's
+# init.sony.qcc.rc sets QCC's operation mode 4, opted out of data collection.
+system_ext/app/QCC/QCC.apk
+system_ext/bin/qccsyshal@1.2-service
+system_ext/etc/init/vendor.qti.hardware.qccsyshal@1.2-service.rc
+system_ext/etc/permissions/com.qti.qcc.vendor_qcc.xml
 system_ext/lib/vendor.qti.hardware.qccsyshal@1.0.so
 vendor/lib/vendor.qti.hardware.qccsyshal@1.0.so;MODULE_SUFFIX=_vendor
 system_ext/lib/vendor.qti.hardware.qccsyshal@1.1.so
 vendor/lib/vendor.qti.hardware.qccsyshal@1.1.so;MODULE_SUFFIX=_vendor
 system_ext/lib/vendor.qti.hardware.qccvndhal@1.0.so
 system_ext/lib/vendor.qti.qccvndhal_aidl-V1-ndk.so
+system_ext/lib64/libqcc.so
+system_ext/lib64/libqcc_file_agent_sys.so
+system_ext/lib64/libqccdme.so
+system_ext/lib64/libqccfileservice.so
 system_ext/lib64/vendor.qti.hardware.qccsyshal@1.0.so
 vendor/lib64/vendor.qti.hardware.qccsyshal@1.0.so;MODULE_SUFFIX=_vendor
 system_ext/lib64/vendor.qti.hardware.qccsyshal@1.1.so
 vendor/lib64/vendor.qti.hardware.qccsyshal@1.1.so;MODULE_SUFFIX=_vendor
+system_ext/lib64/vendor.qti.hardware.qccsyshal@1.2-halimpl.so
+system_ext/lib64/vendor.qti.hardware.qccsyshal@1.2.so
 system_ext/lib64/vendor.qti.hardware.qccvndhal@1.0.so
+system_ext/lib64/vendor.qti.qccsyshal_aidl-V1-ndk.so
 system_ext/lib64/vendor.qti.qccvndhal_aidl-V1-ndk.so
+# The HAL implementation needs stock's protobuf: 9 of the 39 protobuf symbols
+# it uses are missing from ours (protobuf 25.8). extract-files.py points it at
+# this renamed copy.
+system/lib64/libprotobuf-cpp-full.so:system_ext/lib64/libprotobuf-cpp-full-stock.so;FIX_SONAME
 
 # QESD
 system_ext/etc/vintf/manifest/vendor.qti.qesdsys.service.xml

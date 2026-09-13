@@ -217,6 +217,10 @@ blob_fixups: blob_fixups_user_type = {
     # rejects depending on two versions of one aidl_interface.
     ('system_ext/lib/libmiracastsystem.so', 'system_ext/lib64/libmiracastsystem.so'): blob_fixup()
         .replace_needed('android.media.audio.common.types-V2-cpp.so', 'android.media.audio.common.types-V4-cpp.so'),
+    # Stock's QCC HAL implementation needs stock's protobuf, which
+    # proprietary-files.txt ships renamed next to it.
+    'system_ext/lib64/vendor.qti.hardware.qccsyshal@1.2-halimpl.so': blob_fixup()
+        .replace_needed('libprotobuf-cpp-full.so', 'libprotobuf-cpp-full-stock.so'),
     # These services declare HIDL interfaces that only exist as blobs, so
     # host_init_verifier (which only knows source-built hidl_interface
     # targets) rejects the scripts. The interface libraries themselves are

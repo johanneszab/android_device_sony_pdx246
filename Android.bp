@@ -35,3 +35,14 @@ install_symlink {
     installed_location: "firmware/wlan/qca_cld/adrastea/wlan_mac.bin",
     symlink_target: "/mnt/vendor/persist/wlan_mac.bin",
 }
+
+// Framework VINTF entry for Qualcomm's QCC system HAL, which xtra-daemon
+// needs for the XTRA assistance download (see the QCC section in
+// proprietary-files.txt). The build rejects VINTF files in PRODUCT_COPY_FILES.
+prebuilt_etc_xml {
+    name: "vendor.qti.hardware.qccsyshal@1.2-service.xml",
+    src: "vintf/vendor.qti.hardware.qccsyshal@1.2-service.xml",
+    filename_from_src: true,
+    sub_dir: "vintf/manifest",
+    system_ext_specific: true,
+}

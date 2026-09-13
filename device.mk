@@ -335,6 +335,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.health-service.qti
 
+# QCC
+# The framework VINTF entry for Qualcomm's QCC system HAL (Android.bp). The
+# service, its libraries and the QCC app come from proprietary-files.txt;
+# xtra-daemon downloads the XTRA assistance file through them.
+PRODUCT_PACKAGES += \
+    vendor.qti.hardware.qccsyshal@1.2-service.xml
+
 # Kernel
 PRODUCT_ENABLE_UFFD_GC := true
 

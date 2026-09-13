@@ -1,0 +1,15 @@
+<!--
+    SPDX-FileCopyrightText: The LineageOS Project
+    SPDX-License-Identifier: Apache-2.0
+
+    Qualcomm's QCC system HAL, system_ext/bin/qccsyshal@1.2-service (see the
+    QCC section in proprietary-files.txt). Stock declares it in its system
+    manifest, which LineageOS does not ship.
+-->
+<manifest version="9.0" type="framework">
+    <hal format="hidl">
+        <name>vendor.qti.hardware.qccsyshal</name>
+        <transport>hwbinder</transport>
+        <fqname>@1.2::IQccsyshal/qccsyshal</fqname>
+    </hal>
+</manifest>
