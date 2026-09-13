@@ -179,9 +179,10 @@ PRODUCT_PACKAGES += \
 #                                them as blobs and the HIDL service dlopens the
 #                                blob copies via libhardware.
 #
-# The QTI AIDL source route is kept in patches/audio/ but is not selected -- its
-# AudioReach is a newer generation than this device's ACDB data. See
-# PORTING-NOTES.md "AUDIO: THE PREMISE WAS WRONG".
+# The QTI AIDL source route is not used: its AudioReach is a newer generation
+# than this device's ACDB data. Its patches (patches/audio/) were removed on
+# 2026-09-13 and remain in git history. See PORTING-NOTES.md "AUDIO: THE PREMISE
+# WAS WRONG".
 
 # QTI telephony shared Java libraries, built from source (vendor/codeaurora/telephony).
 #

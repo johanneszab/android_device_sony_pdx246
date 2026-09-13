@@ -94,61 +94,25 @@ Upstream has probably moved. Rebase the patch by hand, then re-run."
     fi
 done
 
-# ---------------------------------------- 1b. audio: source-built QTI AIDL HAL --
-# The QTI audio HAL is built from hardware/qcom-caf/sm8450-6.6/audio. Four repo
-# projects there need patching, plus vendor/lineage and pdx257 -- see
-# PORTING-NOTES.md "AUDIO" for why each one is needed.
-info "Applying audio HAL patches"
-declare -A AUDIO_PATCH_PROJECT=(
-  ["hardware_qcom-caf_sm8450-6.6_audio_agm"]="hardware/qcom-caf/sm8450-6.6/audio/agm"
-  ["hardware_qcom-caf_sm8450-6.6_audio_graphservices"]="hardware/qcom-caf/sm8450-6.6/audio/graphservices"
-  ["hardware_qcom-caf_sm8450-6.6_audio_pal"]="hardware/qcom-caf/sm8450-6.6/audio/pal"
-  ["hardware_qcom-caf_sm8450-6.6_audio_primary-hal"]="hardware/qcom-caf/sm8450-6.6/audio/primary-hal"
-  [vendor_lineage]="vendor/lineage"
-  [device_sony_pdx257]="device/sony/pdx257"
-)
-for name in "${!AUDIO_PATCH_PROJECT[@]}"; do
-    patch_file="$PWD/$DEVICE_PATH/patches/audio/${name}.patch"
-    project="${AUDIO_PATCH_PROJECT[$name]}"
-    [ -f "$patch_file" ] || { warn "no patch file for $name, skipping"; continue; }
-    if [ ! -d "$project" ]; then
-        warn "project $project not in this tree, skipping ${name}.patch"
-        continue
-    fi
-    if git -C "$project" apply --reverse --check "$patch_file" >/dev/null 2>&1; then
-        printf '    already applied  %s\n' "$project"
-    elif git -C "$project" apply --check "$patch_file" >/dev/null 2>&1; then
-        git -C "$project" apply "$patch_file"
-        printf '    applied          %s\n' "$project"
+# ----------------------------------------------- 1b. pdx257 reference trees --
+# device/sony/pdx257 and vendor/sony/pdx257, where present, are only a reference:
+# nothing in the pdx246 build uses them. soong parses every Android.bp in the
+# tree whatever the lunch target, and pdx257's vendor tree fails analysis here
+# (its vendor.libdpmframework links the system_ext copy of
+# com.qualcomm.qti.dpm.api@1.0, which has no vendor variant). A .find-ignore file
+# makes soong's finder skip its directory, so both trees are hidden instead of
+# patched; they go together because device/sony/pdx257/qcril-database refers to
+# the vendor tree. Delete the two files to build pdx257.
+info "Hiding the pdx257 reference trees from the build"
+for ref in device/sony/pdx257 vendor/sony/pdx257; do
+    [ -d "$ref" ] || continue
+    if [ -e "$ref/.find-ignore" ]; then
+        printf '    already hidden   %s\n' "$ref"
     else
-        die "${name}.patch does not apply to $project.
-Upstream has probably moved. Rebase the patch by hand, then re-run."
+        touch "$ref/.find-ignore"
+        printf '    hidden           %s\n' "$ref"
     fi
 done
-
-# hardware/qcom-caf/sm8450-6.6/audio/ is a PLAIN DIRECTORY -- agm, graphservices,
-# pal and primary-hal below it are separate repo projects, but the parent is not
-# tracked by anything. So the nested soong_namespace that keeps display and the
-# IPA trees out of our namespace cannot be a patch; it is copied in.
-NS_BP="hardware/qcom-caf/sm8450-6.6/audio/Android.bp"
-if [ -d "$(dirname "$NS_BP")" ]; then
-    if ! cmp -s "$DEVICE_PATH/patches/audio/files/sm8450-6.6_audio_Android.bp" "$NS_BP"; then
-        cp "$DEVICE_PATH/patches/audio/files/sm8450-6.6_audio_Android.bp" "$NS_BP"
-        printf '    installed        %s\n' "$NS_BP"
-    else
-        printf '    already present  %s\n' "$NS_BP"
-    fi
-fi
-
-# vendor/lineage/tools/clean_headers.sh is invoked BY PATH from the
-# generated_kernel_includes genrule and is NOT one of its tracked inputs, so
-# soong will not notice the patch above. Force a regeneration.
-KGEN="out/soong/.intermediates/vendor/lineage/build/soong/generated_kernel_includes"
-if [ -d "$KGEN" ] && grep -q 'struct epoll_event' \
-     "$KGEN/gen/usr/include/linux/eventpoll.h" 2>/dev/null; then
-    rm -rf "$KGEN"
-    printf '    purged stale     %s\n' "$KGEN"
-fi
 
 # ------------------------------------------------------------- 2. the blobs --
 # extract-files.py regenerates vendor/sony/pdx246 ENTIRELY from
