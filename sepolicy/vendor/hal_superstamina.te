@@ -9,7 +9,7 @@ type hal_superstamina_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(hal_superstamina)
 
-# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+# --- rules ported from stock's odm_sepolicy.cil (tools/selinux-port-stock-rules.py) ---
 allow hal_superstamina dumpstate:binder { transfer };
 allow hal_superstamina hal_somc_superstamina_hwservice:hwservice_manager { add find };
 allow hal_superstamina hal_somc_superstamina_service:service_manager { add find };

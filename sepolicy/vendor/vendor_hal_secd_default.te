@@ -1,7 +1,7 @@
 # Stock's rules for vendor_hal_secd_default. hardware/sony/sepolicy declares the domain,
 # with its labels and part of stock's rules.
 
-# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+# --- rules ported from stock's odm_sepolicy.cil (tools/selinux-port-stock-rules.py) ---
 allow vendor_hal_secd_default dumpstate:binder { transfer };
 allow vendor_hal_secd_default firmware_file:dir { search };
 allow vendor_hal_secd_default firmware_file:file { ioctl read getattr lock map open watch watch_reads };

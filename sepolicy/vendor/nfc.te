@@ -1,4 +1,4 @@
 # Stock's rule for the NFC app (the platform nfc domain) on the vendor NFC data
 # files (/vendor/etc/selinux/vendor_sepolicy.cil), found as a permissive denial
-# and checked against stock's policy with build-logs/selinux-stock-allows.py.
+# and checked against stock's policy with tools/selinux-stock-allows.py.
 allow nfc vendor_nfc_vendor_data_file:file { ioctl read write create getattr setattr lock append map unlink rename open watch watch_reads };

@@ -13,7 +13,7 @@ type chargemon_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(chargemon)
 
-# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+# --- rules ported from stock's odm_sepolicy.cil (tools/selinux-port-stock-rules.py) ---
 allow chargemon block_device:dir { search };
 allow chargemon chargemon_exec:file { read getattr map execute open entrypoint };
 allow chargemon configfs:dir { read write open add_name remove_name search };

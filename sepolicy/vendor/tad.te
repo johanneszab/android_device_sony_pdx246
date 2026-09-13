@@ -1,7 +1,7 @@
 # Stock's rules for tad. hardware/sony/sepolicy declares the domain,
 # with its labels and part of stock's rules.
 
-# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+# --- rules ported from stock's odm_sepolicy.cil (tools/selinux-port-stock-rules.py) ---
 allow tad block_device:dir { search };
 allow tad init:unix_stream_socket { listen accept };
 allow tad proc:file { read open };

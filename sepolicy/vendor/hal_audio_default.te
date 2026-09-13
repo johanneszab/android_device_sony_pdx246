@@ -2,5 +2,5 @@
 # (/odm/etc/selinux/odm_sepolicy.cil): it sets vendor_audio_prop, for example
 # vendor.sony_spatializer.suppress.dolby during Bluetooth playback. Found as a
 # permissive denial and checked against stock's policy with
-# build-logs/selinux-stock-allows.py.
+# tools/selinux-stock-allows.py.
 set_prop(hal_audio_default, vendor_audio_prop)

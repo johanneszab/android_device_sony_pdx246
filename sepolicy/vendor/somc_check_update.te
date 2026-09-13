@@ -12,7 +12,7 @@ init_daemon_domain(somc_check_update)
 
 hal_client_domain(somc_check_update, hal_bootctl)
 
-# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+# --- rules ported from stock's odm_sepolicy.cil (tools/selinux-port-stock-rules.py) ---
 allow somc_check_update hwservicemanager:binder { call transfer };
 allow somc_check_update hwservicemanager:fd { use };
 allow somc_check_update hwservicemanager_prop:file { read getattr map open };

@@ -10,7 +10,7 @@ type hal_somc_thermal_daemon_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(hal_somc_thermal_daemon)
 
-# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+# --- rules ported from stock's odm_sepolicy.cil (tools/selinux-port-stock-rules.py) ---
 allow hal_somc_thermal_daemon domain:dir { ioctl read getattr lock open watch watch_reads search };
 allow hal_somc_thermal_daemon domain:file { ioctl read getattr lock map open watch watch_reads };
 allow hal_somc_thermal_daemon domain:lnk_file { ioctl read getattr lock map open watch watch_reads };

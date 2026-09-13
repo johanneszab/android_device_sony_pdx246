@@ -26,7 +26,7 @@ init_daemon_domain(somc_wifi_idd_hal_service)
 hal_server_domain(somc_wifi_idd_hal_service, hal_somc_wifi_idd)
 binder_call(hal_somc_wifi_idd_server, servicemanager)
 
-# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+# --- rules ported from stock's odm_sepolicy.cil (tools/selinux-port-stock-rules.py) ---
 allow somc_wifi_idd_hal_service dumpstate:binder { transfer };
 allow somc_wifi_idd_hal_service hal_somc_wifi_idd_service:service_manager { add find };
 allow somc_wifi_idd_hal_service self:netlink_generic_socket { read write create getattr setattr lock append map bind connect getopt setopt shutdown };

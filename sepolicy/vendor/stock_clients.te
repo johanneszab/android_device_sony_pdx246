@@ -1,5 +1,5 @@
 # Rules from other vendor domains into the Sony types, ported from stock's
-# odm_sepolicy.cil by build-logs/selinux-port-stock-rules.py. Regenerate
+# odm_sepolicy.cil by tools/selinux-port-stock-rules.py. Regenerate
 # rather than edit. Rules from system-side domains (Sony apps,
 # system_server) are not ported.
 

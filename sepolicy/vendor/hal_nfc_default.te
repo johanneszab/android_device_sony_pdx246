@@ -1,6 +1,6 @@
 # Stock's rules for the NFC HAL that this policy lacks
 # (/vendor/etc/selinux/vendor_sepolicy.cil), found as permissive denials and
-# checked against stock's policy with build-logs/selinux-stock-allows.py: it
+# checked against stock's policy with tools/selinux-stock-allows.py: it
 # reads /sys/devices/platform/HardwareInfo/modem_id (plain sysfs on stock too)
 # and looks into /oem.
 allow hal_nfc_default sysfs:file { read getattr open };

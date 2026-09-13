@@ -1,7 +1,7 @@
 # Stock's rules for ta_qmi_service. hardware/sony/sepolicy declares the domain,
 # with its labels and part of stock's rules.
 
-# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+# --- rules ported from stock's odm_sepolicy.cil (tools/selinux-port-stock-rules.py) ---
 allow ta_qmi_service hidl_manager_hwservice:hwservice_manager { find };
 allow ta_qmi_service hwservicemanager:binder { call transfer };
 allow ta_qmi_service hwservicemanager_prop:file { read getattr map open };

@@ -16,7 +16,7 @@ init_daemon_domain(hal_somc_charger_daemon)
 hal_server_domain(hal_somc_charger_daemon, hal_somc_charger)
 binder_call(hal_somc_charger_server, servicemanager)
 
-# --- rules ported from stock's odm_sepolicy.cil (build-logs/selinux-port-stock-rules.py) ---
+# --- rules ported from stock's odm_sepolicy.cil (tools/selinux-port-stock-rules.py) ---
 allow hal_somc_charger_daemon dumpstate:binder { transfer };
 allow hal_somc_charger_daemon hal_somc_charger_daemon_exec:file { read getattr map execute open entrypoint };
 allow hal_somc_charger_daemon hal_somc_charger_hwservice:hwservice_manager { add find };
