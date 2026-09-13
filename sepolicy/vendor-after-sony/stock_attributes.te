@@ -1,0 +1,19 @@
+# Attribute memberships that stock gives to domains which
+# hardware/sony/sepolicy declares. They cannot go into sepolicy/vendor: that
+# directory comes before hardware/sony/sepolicy in the policy, and checkpolicy
+# rejects a typeattribute statement (hal_client_domain() expands to two) for a
+# type it has not seen declared yet. BoardConfig.mk lists this directory after
+# hardware/sony/sepolicy.
+
+# keyprovd and the secd HAL are keymint HAL clients on stock, which also lets
+# them find the remotely provisioned component service. Stock also makes both
+# clients of the QTI soter HAL, whose attribute this policy does not have.
+hal_client_domain(keyprovd, hal_keymint)
+hal_client_domain(vendor_hal_secd_default, hal_keymint)
+
+# The IDD HAL is an allocator HAL client on stock.
+hal_client_domain(vendor_hal_idd_default, hal_allocator)
+
+# idd and tad are mlstrustedsubject on stock.
+typeattribute idd mlstrustedsubject;
+typeattribute tad mlstrustedsubject;

@@ -288,6 +288,11 @@ include device/qcom/sepolicy_vndr/SEPolicy.mk
 # PORTING-NOTES.md.
 include hardware/sony/sepolicy/qti/SEPolicy.mk
 
+# Statements about types that the two policies above declare. checkpolicy
+# reads the policy directories in this order and needs a type declared before
+# a typeattribute statement names it.
+BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor-after-sony
+
 # BRING-UP ONLY -- REVERT BOTH.
 # The qva/ policy contains `allow dumpstate vold:binder call`, which violates an
 # AOSP neverallow. That rule needs fixing properly; this bypasses the check.
