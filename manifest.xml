@@ -25,18 +25,8 @@
          AIDL HAL (android.hardware.cas-service.example, running as
          vendor.cas-default). Sony's HIDL cas@1.2 blob has no .rc and never runs. -->
 
-    <!-- NO android.hardware.audio.core here on purpose.
-         It used to declare IModule/usb, which the com.android.hardware.audio
-         apex omitted. That apex is gone: audio is now the QTI AIDL HAL built
-         from source, and libaudiocorehal.default ships its own fragment
-         (manifest_audiocorehal_default.xml) declaring IConfig/default,
-         IModule/default, IModule/r_submix AND IModule/usb. Declaring usb here
-         as well makes checkvintf fail the build:
-           VINTF parse error: Cannot add manifest fragment
-           manifest_audiocorehal_default.xml: HAL "android.hardware.audio.core"
-           has a conflict: Conflicting FqInstance
-         Same trap as the soundtrigger vintf_fragment earlier: if the module
-         ships its own fragment, do not also declare it here. -->
+    <!-- No android.hardware.audio.core (AIDL): audio is the stock HIDL
+         audio@7.0 HAL below. -->
     <!-- Stock HIDL audio HAL (vendor/bin/hw/android.hardware.audio.service_64).
          frameworks/av/media/libaudiohal/FactoryHal.cpp falls back from AIDL to
          HIDL 7.1/7.0/6.0 and looks up exactly these two:

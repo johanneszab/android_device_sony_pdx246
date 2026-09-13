@@ -53,16 +53,9 @@ TARGET_SCREEN_DENSITY := 450
 # Kernel
 BOARD_BOOT_HEADER_VERSION := 4
 BOARD_KERNEL_BASE := 0x00000000
-# printk.devkmsg=on lifts the rate limit on userspace /dev/kmsg writes; without
-# it init's messages are dropped after the module-load flood and its errors
-# never reach ramoops.
-# loglevel=7 because the bootloader passes loglevel=6, which prints only
-# levels 0-5 and therefore filters out init's LOG(INFO) -- including every
-# "starting service" line, which makes it impossible to tell whether a service
-# ran at all. ignore_loglevel would also work but prints every kernel debug
-# message and wraps the 256K ramoops console buffer well before the
-# interesting part of the boot. DEBUG ONLY.
-BOARD_KERNEL_CMDLINE := video=vfb:640x400,bpp=32,memsize=3072000 bootconfig printk.devkmsg=on loglevel=7
+# To debug init, add printk.devkmsg=on loglevel=7 (see PORTING-NOTES.md, "log
+# visibility").
+BOARD_KERNEL_CMDLINE := video=vfb:640x400,bpp=32,memsize=3072000 bootconfig
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_KERNEL_IMAGE_NAME := Image
@@ -186,15 +179,6 @@ BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := ext4
-
-# Audio
-# hardware/interfaces/audio/aidl/default ships audio_effects_config.xml behind
-# this soong config; it is off by default, so PRODUCT_PACKAGES cannot reference
-# the module without it. android.hardware.audio.effect.service-aidl.example
-# (EffectMain.cpp kDefaultConfigName) looks for exactly that filename, and our
-# blobs only carry the legacy HIDL audio_effects.xml. Enabling it pairs AOSP's
-# effects config with the AOSP effect libs bundled in com.android.hardware.audio.
-$(call soong_config_set_bool,hardware_interfaces_audio,use_default_audio_effects_config,true)
 
 # Platform
 # NOTE: BOARD_USES_QCOM_HARDWARE is deliberately NOT set. It gates

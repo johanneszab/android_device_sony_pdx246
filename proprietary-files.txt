@@ -180,9 +180,6 @@ vendor/lib64/libznr.so
 
 vendor/etc/audio/sku_parrot/audio_effects.conf
 vendor/etc/audio/sku_parrot/audio_effects.xml
-# Restored: the QTI AIDL audio HAL source build is BLOCKED (audio.core V2 vs
-# V4 -- see PORTING-NOTES.md "AUDIO: REAL BLOCKER"). These blobs come back so
-# the AOSP AIDL HAL configuration boots.
 vendor/bin/aw882xx_cali_32
 
 vendor/etc/audio/sku_parrot/mixer_paths_parrot_idp.xml
@@ -2390,11 +2387,14 @@ vendor/lib64/hw/vibrator.default.so
 # NOT extracted: vendor/etc/init/hostapd.android.rc. hostapd is built from
 # source (device.mk) and installs its own AIDL rc at that path; stock's rc
 # declares the HIDL hostapd interfaces, whose binary we do not ship.
+# NOT extracted: vendor/etc/init/android.hardware.wifi.supplicant-service.rc.
+# Its wpa_supplicant service duplicates the one in rootdir/etc/init.qcom.rc,
+# which init keeps, and its two mkdirs (/data/vendor/log and
+# /data/vendor/log/wifi) are in init.qcom.rc as well.
 vendor/bin/hw/android.hardware.wifi@1.0-service
 vendor/bin/cnss-daemon
 vendor/bin/hostapd_cli
 vendor/bin/wpa_cli
-vendor/etc/init/android.hardware.wifi.supplicant-service.rc
 vendor/etc/init/android.hardware.wifi@1.0-service.rc
 vendor/etc/init/vendor.qti.hardware.wifi.wifilearner@1.0-service.rc
 vendor/etc/vintf/manifest/android.hardware.wifi@1.0-service.xml
