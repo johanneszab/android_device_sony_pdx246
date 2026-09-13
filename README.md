@@ -36,7 +36,7 @@ That does everything reproducible in one pass:
 - runs `extract-files.py`, which regenerates **all** of `vendor/sony/pdx246`
   from `proprietary-files.txt` — including `Android.bp`, `pdx246-vendor.mk`
   and every `blob_fixup`
-- verifies the results, including that the GNSS binary patch took
+- verifies that the blobs which broke the boot before are present
 
 Then build:
 
@@ -69,8 +69,7 @@ it fails over to the empty slot b and red-states with "device is corrupt".
 **`vendor/sony/pdx246` is generated and unversioned.** Never hand-edit it —
 `setup.sh` overwrites it wholesale. Anything that must persist belongs in
 `proprietary-files.txt` (which files to pull) or in `extract-files.py`
-(`blob_fixups`, for modifications to a blob). The GNSS binary patch lives there
-for exactly this reason; see `patches/gnss-hidl-nonfatal.md`.
+(`blob_fixups`, for modifications to a blob).
 
 **Out-of-tree source changes** live in `patches/aosp/`. They are re-applied by
 `setup.sh` rather than upstreamed, since they are too device-specific to land.

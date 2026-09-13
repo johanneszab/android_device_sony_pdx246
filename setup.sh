@@ -117,9 +117,8 @@ done
 # ------------------------------------------------------------- 2. the blobs --
 # extract-files.py regenerates vendor/sony/pdx246 ENTIRELY from
 # proprietary-files.txt, including Android.bp and pdx246-vendor.mk, and applies
-# every blob_fixup (among them the GNSS HIDL patch -- see
-# patches/gnss-hidl-nonfatal.md). Nothing in vendor/ should ever be hand-edited:
-# it is generated, unversioned, and this step overwrites it.
+# every blob_fixup. Nothing in vendor/ should ever be hand-edited: it is
+# generated, unversioned, and this step overwrites it.
 info "Extracting proprietary blobs from $DUMP"
 info "(this rewrites vendor/${VENDOR}/${DEVICE} from scratch -- expect a few minutes)"
 # extract-files.py's shebang sets a RELATIVE PYTHONPATH
@@ -143,13 +142,7 @@ check "$V/proprietary/vendor/lib64/libcld80211.so"                        "libcl
 check "$V/proprietary/vendor/lib64/hw/android.hardware.gnss@2.1-impl-qti.so" "gnss impl"
 check "$V/proprietary/system_ext/etc/permissions/wfd-system-ext-privapp-permissions-qti.xml" "wfd privapp allowlist"
 
-gnss="$V/proprietary/vendor/bin/hw/android.hardware.gnss-aidl-service-qti"
-if [ -f "$gnss" ]; then
-    word=$(python3 -c "import struct,sys;print('%08x'%struct.unpack_from('<I',open(sys.argv[1],'rb').read(),0x54c4)[0])" "$gnss")
-    if [ "$word" = "14000030" ]; then printf '    ok       gnss HIDL patch applied (0x54c4=0x%s)\n' "$word"
-    else printf '    %sBAD%s      gnss HIDL patch NOT applied (0x54c4=0x%s, want 14000030)\n' "$RED" "$RST" "$word"; fail=1; fi
-fi
-[ "$fail" -eq 0 ] || die "setup incomplete -- see the MISSING/BAD lines above"
+[ "$fail" -eq 0 ] || die "setup incomplete -- see the MISSING lines above"
 
 # ------------------------------------------------------------------- done --
 cat <<EOF

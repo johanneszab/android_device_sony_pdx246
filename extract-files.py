@@ -28,68 +28,6 @@ namespace_imports = [
     'vendor/qcom/opensource/dataservices',
 ]
 
-def gnss_hidl_registration_nonfatal(ctx, file, file_path: str, *args, **kwargs):
-    """Make the GNSS HAL survive a failed HIDL registration.
-
-    CORRECTION (2026-09-10): the premise below is WRONG. HIDL gnss@2.1 CAN be
-    registered, and the framework NEEDS it. The QTI HAL is AIDL IGnss V1, which
-    has no start/stop/setPositionMode, so frameworks/base/.../jni/gnss/Gnss.cpp
-    falls back to IGnss_V2_1::getService() for every control call. Device
-    target-level is 6, and compatibility_matrix.6.xml still lists HIDL gnss
-    2.0-1. The real 2026-09-07 registration failure was the then-missing
-    android.hardware.gnss@2.1-impl-qti.so. With that extracted and the stock
-    fragment declaring @1.1 + @2.1 restored, lshal shows the whole chain
-    DM,FC,Y and GnssLocationProvider starts. The patch is kept only as a safety
-    net: it keeps the AIDL half alive if the HIDL registration ever fails again.
-    See PORTING-NOTES.md "FIXED: apps got no GPS".
-
-    Android 16 removed HIDL gnss: every framework compatibility matrix lists
-    only <hal format="aidl">android.hardware.gnss</hal> 2-6, so
-    hwservicemanager can never accept android.hardware.gnss@2.1. QTI's binary
-    registers BOTH transports and treats the HIDL failure as fatal:
-
-        register IGnss AIDL service success        <- what the framework wants
-        Error while registering IGnss HIDL 2.1 service: 1
-        init: Service 'gnss_service' exited with status 1
-
-    so it kills its own working AIDL registration and restarts forever. There
-    is no property to gate it -- the binary has no property strings at all.
-
-    At 0x54c4, right after the registration call whose status lands in w20:
-
-        cbz w20, 0x5584   (0x34000614)   ->   b 0x5584   (0x14000030)
-
-    i.e. take the success path unconditionally. Same displacement, so nothing
-    moves and the file size is unchanged. 0x5584 is the genuine success
-    continuation (dlGetSymFromLib, an INFO log, then the rest of init).
-
-    See device/sony/pdx246/patches/gnss-hidl-nonfatal.md.
-    """
-    import struct
-
-    OFFSET = 0x54C4
-    CBZ_W20_PLUS48 = 0x34000614
-    B_PLUS48 = 0x14000030
-
-    with open(file_path, 'rb') as f:
-        data = bytearray(f.read())
-
-    current = struct.unpack_from('<I', data, OFFSET)[0]
-    if current == B_PLUS48:
-        return  # already patched, keep this idempotent
-
-    if current != CBZ_W20_PLUS48:
-        raise ValueError(
-            f'{file.dst}: expected 0x{CBZ_W20_PLUS48:08x} at 0x{OFFSET:x}, '
-            f'found 0x{current:08x}. The blob changed -- re-check the offset '
-            f'against patches/gnss-hidl-nonfatal.md before shipping.'
-        )
-
-    struct.pack_into('<I', data, OFFSET, B_PLUS48)
-    with open(file_path, 'wb') as f:
-        f.write(bytes(data))
-
-
 def lib_fixup_vendor_suffix(lib: str, partition: str, *args, **kwargs):
     return f'{lib}_{partition}' if partition == 'vendor' else None
 
@@ -251,9 +189,6 @@ blob_fixups: blob_fixups_user_type = {
         .add_needed('libhidlbase_shim.so'),
     'vendor/lib/vendor.libdpmframework.so': blob_fixup()
         .add_needed('libhidlbase_compat32.so'),
-    # Without this the GNSS HAL crash-loops and there is no gps provider.
-    'vendor/bin/hw/android.hardware.gnss-aidl-service-qti': blob_fixup()
-        .call(gnss_hidl_registration_nonfatal, need_tmp_dir=False),
     'vendor/etc/wfdconfig.xml': blob_fixup()
         .regex_replace('<M4Enable>0</M4Enable>', '<M4Enable>1</M4Enable>')
         .regex_replace('<UIBCValid>0</UIBCValid>', '<UIBCValid>1</UIBCValid>')
