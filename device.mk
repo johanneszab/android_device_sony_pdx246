@@ -96,8 +96,8 @@ PRODUCT_PACKAGES += \
 #   - android.hardware.light.xml declares a shared LIBRARY, not a feature, and
 #     points at /system/framework/android.hardware.light-V2.0-java.jar, which
 #     is not present even in the stock dump.
-#   - android.hardware.hardware_keystore.xml has no AOSP source and a
-#     device-specific version, so it lives in permissions/ here instead.
+#   - android.hardware.hardware_keystore.xml: AOSP ships the same declaration
+#     as a module, installed below.
 #
 # Deliberately NOT copied, though stock has them:
 #   android.software.freeform_window_management.xml -- pdx257 does not ship it
@@ -148,6 +148,15 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
     frameworks/native/data/etc/android.software.verified_boot.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.verified_boot.xml
+
+# Keystore: stock declares android.hardware.hardware_keystore version 100
+# (KeyMint 1.0). AOSP's KeyMint default ships exactly that declaration as the
+# vendor module android.hardware.hardware_keystore_V1.xml, installed under its
+# own file name (the feature inside is what counts). Without it the feature
+# was undeclared, and apps and the framework read it to learn which
+# hardware-backed keystore the device has.
+PRODUCT_PACKAGES += \
+    android.hardware.hardware_keystore_V1.xml
 
 # Lights -- LineageOS AIDL lights HAL, built from source.
 # Replaces the QTI blob, which declared ILights v1 against a v2 framework and
