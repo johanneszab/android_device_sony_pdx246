@@ -16,3 +16,9 @@ genfscon sysfs /devices/platform/HardwareInfo/gyro u:object_r:vendor_sysfs_gyro:
 genfscon sysfs /devices/platform/soc/a80000.i2c/i2c-2/2-0028/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/22800000.qcom,icnss/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/a94000.qcom,qup_uart/wakeup u:object_r:sysfs_wakeup:s0
+
+# The WCD937x codec's extcon device (headset jack detection). AOSP labels only
+# /class/extcon as sysfs_extcon; the device directory its symlinks point to
+# stayed plain sysfs, so system_server's ExtconUEventObserver could not read
+# the cable names (4 denials per boot and a logged exception).
+genfscon sysfs /devices/platform/soc/soc:spf_core_platform/soc:spf_core_platform:lpass-cdc/wcd937x-codec/extcon u:object_r:sysfs_extcon:s0
