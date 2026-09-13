@@ -28,6 +28,46 @@ namespace_imports = [
     'vendor/qcom/opensource/dataservices',
 ]
 
+def c2_store_allocation_fixup(offset: int):
+    """Allocate utils::ComponentStore with the size of our libcodec2_hidl.
+
+    The Codec2 services allocate their utils::ComponentStore (libcodec2_hidl)
+    themselves, with the size stock's Android 14 headers gave: 0x108 bytes.
+    Since 2024 the class has more members (the MultiAccessUnit interface and
+    reflector, a vector of param reflectors) and is 0x120 bytes, and the
+    constructor in our Android 16 libcodec2_hidl fills all of it. Its virtual
+    RefBase base lies at the end, past the allocation, so the next allocation
+    there overwrites mRefs and the service crashes in RefBase::decStrong (at
+    boot, in _hidl_listComponents), at some boots only. Load 0x120 instead of
+    0x108 before the operator new call.
+    """
+    import struct
+
+    MOV_W0_0X108 = 0x52802100
+    MOV_W0_0X120 = 0x52802400
+
+    def fixup(ctx, file, file_path: str, *args, **kwargs):
+        with open(file_path, 'rb') as f:
+            data = bytearray(f.read())
+
+        current = struct.unpack_from('<I', data, offset)[0]
+        if current == MOV_W0_0X120:
+            return  # already patched, keep this idempotent
+
+        if current != MOV_W0_0X108:
+            raise ValueError(
+                f'{file.dst}: expected mov w0, #0x108 (0x{MOV_W0_0X108:08x}) at '
+                f'0x{offset:x}, found 0x{current:08x}. The blob changed -- find '
+                f'the operator new call before the ComponentStore constructor again.'
+            )
+
+        struct.pack_into('<I', data, offset, MOV_W0_0X120)
+        with open(file_path, 'wb') as f:
+            f.write(bytes(data))
+
+    return fixup
+
+
 def lib_fixup_vendor_suffix(lib: str, partition: str, *args, **kwargs):
     return f'{lib}_{partition}' if partition == 'vendor' else None
 
@@ -207,6 +247,29 @@ blob_fixups: blob_fixups_user_type = {
         .regex_replace(r'(type="AUDIO_DEVICE_OUT_BLUETOOTH_A2DP\w*"[^>]*encodedFormats=")[^"]*',
                        r'\1AUDIO_FORMAT_SBC AUDIO_FORMAT_AAC AUDIO_FORMAT_APTX '
                        r'AUDIO_FORMAT_APTX_HD AUDIO_FORMAT_LDAC'),
+    # The Codec2 HALs run under minijail with these seccomp policies. When a
+    # HAL crashes, debuggerd's handler writes the tombstone from inside the
+    # process and needs the calls of AOSP's crash_dump policy
+    # (system/core/debuggerd/seccomp_policy), which AOSP's media codec
+    # policies include. Stock's policies lack the ones below, so the handler
+    # was killed at uname(): every crash ended as SIGSYS, without a tombstone.
+    ('vendor/etc/seccomp_policy/codec2.vendor.ext-arm64.policy',
+     'vendor/etc/seccomp_policy/c2audio.vendor.ext-arm64.policy'): blob_fixup()
+        .add_line_if_missing('setsockopt: 1')
+        .add_line_if_missing('uname: 1'),
+    'vendor/etc/seccomp_policy/vendor.sony.tsr.media.c2-default-seccomp_policy': blob_fixup()
+        .add_line_if_missing('recvfrom: 1')
+        .add_line_if_missing('setsockopt: 1')
+        .add_line_if_missing('sysinfo: 1')
+        .add_line_if_missing('uname: 1'),
+    # See c2_store_allocation_fixup(): the offset of the mov w0, #0x108 before
+    # operator new and the utils::ComponentStore constructor in each service.
+    'vendor/bin/hw/vendor.qti.media.c2@1.0-service': blob_fixup()
+        .call(c2_store_allocation_fixup(0x2304), need_tmp_dir=False),
+    'vendor/bin/hw/vendor.qti.media.c2audio@1.0-service': blob_fixup()
+        .call(c2_store_allocation_fixup(0x3e00), need_tmp_dir=False),
+    'vendor/bin/hw/vendor.sony.tsr.media.c2-service': blob_fixup()
+        .call(c2_store_allocation_fixup(0x10d8), need_tmp_dir=False),
     'vendor/lib64/camera/components/com.arcsoft.node.dual_smooth_transition.so': blob_fixup()
         .add_needed('liblog.so'),
     'vendor/lib64/libarcsoft_high_dynamic_range_v5.so': blob_fixup()
