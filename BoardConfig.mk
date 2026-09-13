@@ -293,11 +293,6 @@ include hardware/sony/sepolicy/qti/SEPolicy.mk
 # a typeattribute statement names it.
 BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor-after-sony
 
-# BRING-UP ONLY -- REVERT BOTH.
-# The qva/ policy contains `allow dumpstate vold:binder call`, which violates an
-# AOSP neverallow. That rule needs fixing properly; this bypasses the check.
-SELINUX_IGNORE_NEVERALLOWS := true
-
 # VINTF
 DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
 

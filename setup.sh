@@ -66,6 +66,7 @@ info "Applying out-of-tree patches"
 declare -A PATCH_PROJECT=(
   [frameworks_native]="frameworks/native"
   [system_sepolicy]="system/sepolicy"
+  [device_qcom_sepolicy]="device/qcom/sepolicy"
   [device_qcom_sepolicy_vndr_sm8450]="device/qcom/sepolicy_vndr/sm8450"
   [external_skia]="external/skia"
   [external_google-highway]="external/google-highway"

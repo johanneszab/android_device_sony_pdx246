@@ -1,0 +1,11 @@
+diff --git a/generic/private/dumpstate.te b/generic/private/dumpstate.te
+index de1a67df..c7389353 100644
+--- a/generic/private/dumpstate.te
++++ b/generic/private/dumpstate.te
+@@ -3,6 +3,3 @@
+ 
+ get_prop(dumpstate,vendor_sys_bugreport_cpuinfo_disable)
+ binder_call(dumpstate, virtualizationservice)
+-
+-# Allow dumpstate to make binder calls to vold
+-binder_call(dumpstate, vold)
