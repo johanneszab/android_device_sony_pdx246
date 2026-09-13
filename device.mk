@@ -28,14 +28,17 @@ PRODUCT_PACKAGES += \
     checkpoint_gc \
     otapreopt_script
 
-# android.hardware.boot: NOT CURRENTLY PROVIDED.
-# The matrix only accepts AIDL, so the HIDL @1.2 service is useless here, but
-# QTI's AIDL replacement does not build against our prebuilt kernel headers:
-#   libgptutils.qti: bionic/libc/include/sched.h:99: redefinition of
-#   'sched_param' (previous definition in the generated kernel headers'
-#   linux/sched/types.h)
-# It is only needed by update_engine for A/B slot management, not to boot, so
-# it is left out. REVISIT before OTAs are expected to work.
+# Boot control: QTI's AIDL HAL from hardware/qcom-caf/bootctrl, as on pdx257,
+# plus its recovery variant for adb sideload. update_engine switches slots
+# through it, and update_verifier and vold mark a good boot successful; without
+# it vold logged "not marking slot as successful" on every boot. Stock ships
+# the HIDL @1.2 service, which compatibility_matrix.6.android17 (our target
+# level) no longer lists. patches/aosp/hardware_qcom-caf_bootctrl.patch keeps
+# its gpt-utils off the generated kernel headers: in UFS BSG mode it needs only
+# headers bionic has, and Sony's 5.10 UAPI headers clash with bionic's sched.h.
+PRODUCT_PACKAGES += \
+    android.hardware.boot-service.qti \
+    android.hardware.boot-service.qti.recovery
 
 PRODUCT_PACKAGES += \
     update_engine \

@@ -73,6 +73,7 @@ declare -A PATCH_PROJECT=(
   [external_mdnsresponder]="external/mdnsresponder"
   [external_XMP-Toolkit-SDK]="external/XMP-Toolkit-SDK"
   [hardware_interfaces]="hardware/interfaces"
+  [hardware_qcom-caf_bootctrl]="hardware/qcom-caf/bootctrl"
   [bionic]="bionic"
 )
 for name in "${!PATCH_PROJECT[@]}"; do
