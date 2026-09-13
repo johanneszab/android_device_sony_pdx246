@@ -43,6 +43,14 @@
 /(vendor|system/vendor)/bin/hw/vendor\.sony\.tsr\.media\.c2\-service u:object_r:mediacodec_exec:s0
 /(vendor|system/vendor|odm|vendor/odm)/bin/trigger_ffu            u:object_r:vendor_misc_writer_exec:s0
 
+# A/B partitions that stock labels in vendor_file_contexts and QTI's list does
+# not (stock's lines). The boot control HAL stats every *_a partition when it
+# updates the GPT slot attributes. QTI's hal_bootctl.te lets it getattr
+# system_block_device, but an unlabeled block_device was denied ("Unable to
+# stat block device: .../oem_a, Permission denied").
+/dev/block/platform/soc/1d84000.ufshc/by-name/oem_[ab]              u:object_r:system_block_device:s0
+/dev/block/platform/soc/1d84000.ufshc/by-name/system_ext_[ab]      u:object_r:system_block_device:s0
+
 # Files that stock's rules for the Sony domains use (stock's lines from
 # odm_file_contexts; types in stock_types.te).
 /data/vendor/charge_log(/.*)?                    u:object_r:charge_log_file:s0
