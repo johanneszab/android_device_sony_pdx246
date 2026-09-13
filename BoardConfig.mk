@@ -87,14 +87,11 @@ BOARD_BOOTCONFIG += \
     androidboot.memcg=1 \
     androidboot.usbcontroller=a600000.dwc3
 
-# ---- DEBUG BUILD ONLY: revert both of these before any daily use ----
-# selinux=permissive because there is no device sepolicy yet and the stock
-# Sony blobs will generate denials. Stock also sets
-# androidboot.init_fatal_panic=true, which is deliberately omitted here so an
-# init failure logs and continues rather than panicking the kernel instantly,
-# which left us with nothing to read.
+# ---- DEBUG BUILD ONLY: revert before any daily use ----
+# Stock sets androidboot.init_fatal_panic=true. It is deliberately omitted here,
+# so an init failure logs and reboots to recovery instead of panicking the
+# kernel at once, which left nothing to read.
 BOARD_BOOTCONFIG += \
-    androidboot.selinux=permissive \
     androidboot.init_fatal_reboot_target=recovery
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_KERNEL_SEPARATED_DTBO := true
