@@ -7,3 +7,12 @@ genfscon sysfs /devices/platform/HardwareInfo/gsensor u:object_r:vendor_sysfs_gs
 genfscon sysfs /devices/platform/HardwareInfo/msensor u:object_r:vendor_sysfs_msensor:s0
 genfscon sysfs /devices/platform/HardwareInfo/alsps u:object_r:vendor_sysfs_alsps:s0
 genfscon sysfs /devices/platform/HardwareInfo/gyro u:object_r:vendor_sysfs_gyro:s0
+
+# Wakeup sources at board-specific device paths that neither QTI's parrot list
+# nor Sony's shared policy labels, so system_suspend and system_server could
+# not read their statistics (stock denies those reads too): the NXP NFC
+# controller (nxp,sn-nci), the Wi-Fi (icnss2) and a QUP serial port
+# (msm_geni_serial).
+genfscon sysfs /devices/platform/soc/a80000.i2c/i2c-2/2-0028/wakeup u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/soc/22800000.qcom,icnss/wakeup u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/soc/a94000.qcom,qup_uart/wakeup u:object_r:sysfs_wakeup:s0
