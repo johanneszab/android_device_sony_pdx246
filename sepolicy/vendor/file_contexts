@@ -43,12 +43,6 @@
 /(vendor|system/vendor)/bin/hw/vendor\.sony\.tsr\.media\.c2\-service u:object_r:mediacodec_exec:s0
 /(vendor|system/vendor|odm|vendor/odm)/bin/trigger_ffu            u:object_r:vendor_misc_writer_exec:s0
 
-# Not on stock: our soundtrigger@2.3 wrapper (device/sony/pdx246/soundtrigger).
-# Stock registers ISoundTriggerHw from its audio HAL process; here this wrapper
-# is the only server (lshal). AOSP gives that interface to hal_audio, so the
-# wrapper runs in the audio HAL's domain.
-/(vendor|system/vendor)/bin/hw/android\.hardware\.soundtrigger@2\.3-service\.sony  u:object_r:hal_audio_default_exec:s0
-
 # Files that stock's rules for the Sony domains use (stock's lines from
 # odm_file_contexts; types in stock_types.te).
 /data/vendor/charge_log(/.*)?                    u:object_r:charge_log_file:s0

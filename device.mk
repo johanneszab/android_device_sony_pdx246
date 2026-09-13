@@ -261,19 +261,19 @@ PRODUCT_PACKAGES += \
 # DefaultHalFactory.create() falls back to ISoundTriggerHw.getService(true) --
 # a HIDL call that retries forever -- whenever the soundtrigger3 AIDL service is
 # not declared. With no soundtrigger HAL at all, system_server's main thread
-# blocks there and Watchdog panics the device at 66 s, exactly as AudioService
-# did before it.
+# blocks there and Watchdog panics the device at 66 s.
 #
-# Stock has no standalone soundtrigger service: QTI's audio HAL binary registers
-# the interface itself, and we do not use that HAL. AOSP ships the passthrough
-# impl (@2.3-impl, which dlopens sound_trigger.primary.$(ro.board.platform).so
-# through libhardware -- our extracted sound_trigger.primary.parrot.so) but no
-# binderized service, and HIDL Java clients cannot use passthrough. So
-# soundtrigger/ provides a small hwbinder wrapper around it.
+# As on stock, the audio HAL service (android.hardware.audio.service_64)
+# registers the interface in-process ("Soundtrigger API"), from the passthrough
+# @2.3-impl, which dlopens sound_trigger.primary.$(ro.board.platform).so
+# through libhardware -- our extracted sound_trigger.primary.parrot.so. A
+# separate hwbinder wrapper registered the same instance until 2026-09-13;
+# whenever system_server got that one, its second PAL instance collided with
+# the audio HAL's at the AGM service at boot (AGM or the wrapper crashed). See
+# PORTING-NOTES.md.
 # HIDL soundtrigger@2.3 is still in framework compatibility_matrix 6/7/8.
 PRODUCT_PACKAGES += \
-    android.hardware.soundtrigger@2.3-impl \
-    android.hardware.soundtrigger@2.3-service.sony
+    android.hardware.soundtrigger@2.3-impl
 
 # Sensors
 # The multihal binary was shipped as a blob but its init .rc was not, so no
