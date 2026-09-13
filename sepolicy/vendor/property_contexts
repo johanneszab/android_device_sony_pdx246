@@ -10,6 +10,7 @@ ro.odm.sony.partition_info.                     u:object_r:odm_partition_info_pr
 ro.vendor.nfc.clfstate                          u:object_r:vendor_public_vendor_default_prop:s0
 vendor.360ra.                                   u:object_r:vendor_360ra_prop:s0
 vendor.camera.cali                              u:object_r:vendor_cali_prop:s0
+vendor.camera.sensor.name                       u:object_r:vendor_somc_camera_prop:s0
 vendor.egis.retry                               u:object_r:vendor_default_status_prop:s0
 vendor.idd.product.name                         u:object_r:vendor_idd_vendor_product_name_prop:s0
 vendor.idd.startupprober.start                  u:object_r:vendor_idd_startupprober_start_prop:s0
