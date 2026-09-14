@@ -1,4 +1,9 @@
-# Stock's rule for the NFC app (the platform nfc domain) on the vendor NFC data
-# files (/vendor/etc/selinux/vendor_sepolicy.cil), found as a permissive denial
-# and checked against stock's policy with tools/selinux-stock-allows.py.
+# Stock's rules for the NFC app (the platform nfc domain) on the vendor NFC data
+# in /data/vendor/nfc (NFA_STORAGE in libnfc-nci.conf), from stock's
+# /vendor/etc/selinux/vendor_sepolicy.cil and checked against it with
+# tools/selinux-stock-allows.py. The file rule came from a permissive denial.
+# The dir rule showed up only at the first boot after a data wipe (2026-09-14),
+# when the app has to create its storage files; on the boots over existing data
+# they were already there.
+allow nfc vendor_nfc_vendor_data_file:dir { ioctl read write create getattr setattr lock rename open watch watch_reads add_name remove_name reparent search rmdir };
 allow nfc vendor_nfc_vendor_data_file:file { ioctl read write create getattr setattr lock append map unlink rename open watch watch_reads };
