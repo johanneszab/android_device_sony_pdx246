@@ -78,18 +78,31 @@ it fails over to the empty slot b and red-states with "device is corrupt".
 **Out-of-tree source changes** live in `patches/aosp/`. They are re-applied by
 `setup.sh` rather than upstreamed, since they are too device-specific to land.
 
+## Signing and updates
+
+Builds are signed with the AOSP test keys on purpose: there is no
+`vendor/lineage-priv`. Every build made from this tree therefore carries the
+same signatures, so a newer build can be flashed over an existing install,
+whoever built it. Signing with private keys would need a data wipe for every
+switch to or from those keys.
+
+During the port, builds of the same variant were flashed over existing data
+many times without trouble. `ro.build.fingerprint` is spoofed to Sony stock and
+never changes, but Android's package cache still re-reads every APK that is
+newer than its cache entry, just as on the LineageOS devices that spoof a stock
+fingerprint and update weekly.
+
 ## Wiping data
 
-Wipe `/data` after **any** change to what is on `/system` that does not change
-the fingerprint — a build-variant switch above all. `ro.build.fingerprint` is
-spoofed to Sony stock and is therefore identical across our builds, so Android
-never invalidates `/data/dalvik-cache` or the RRO idmaps by itself, and you get
-a new system running against the old build's artifacts (Zygote dies, ~10 s of
-boot animation, reboot loop).
+Wipe `/data` after a **build-variant switch** (e.g. eng to userdebug). Because
+the fingerprint stays the same, Android does not invalidate
+`/data/dalvik-cache` or the RRO idmaps by itself, and you get a new system
+running against the old build's artifacts (Zygote dies, ~10 s of boot
+animation, reboot loop).
 
 Conversely do **not** wipe merely because a boot is slow: an interrupted dexopt
 resumes from `/data/dalvik-cache`, and wiping restarts it. The question is "did
-the system image change underneath the existing /data?", not "is this slow?".
+the build variant change underneath the existing /data?", not "is this slow?".
 
 ## Current state / where to resume
 
@@ -98,9 +111,9 @@ the system image change underneath the existing /data?", not "is this slow?".
 done, what is unproven, and what to do next.
 
 Short version: the device boots to the LineageOS UI with no crash-looping
-services. Wi-Fi, cellular, audio and GPS are verified working; a full feature
-test pass has not been done yet. SELinux is still permissive, and the build
-still carries debug-only settings (see "MUST REVERT before any real use").
+services, in the release configuration: SELinux enforcing, secure adb, AOSP
+test keys. The full manual feature test list (see PORTING-NOTES.md) passed on
+2026-09-14 on a clean install of a build from the tree synced on 2026-09-13.
 
 ## Flashing
 
