@@ -127,6 +127,10 @@ Short version: the device boots to the LineageOS UI with no crash-looping
 services, in the release configuration: SELinux enforcing, secure adb, AOSP
 test keys. The full manual feature test list (see PORTING-NOTES.md) passed on
 2026-09-14 on a clean install of a build from the tree synced on 2026-09-13.
+Added and tested on the phone since (2026-09-14 and 15): stock's feature
+declarations, its Wi-Fi, display and mobile values and power profile, charging
+control, the LineageOS extras with LiveDisplay, and the 5 GHz hotspot. Tap to
+wake is not possible: the touch firmware reports no gestures.
 
 ## Flashing
 

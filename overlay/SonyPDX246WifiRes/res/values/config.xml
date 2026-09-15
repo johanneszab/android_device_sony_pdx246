@@ -44,4 +44,12 @@
     <integer name="config_wifi_framework_wifi_score_bad_rssi_threshold_5GHz">-81</integer>
     <integer name="config_wifi_framework_wifi_score_entry_rssi_threshold_24GHz">-78</integer>
     <integer name="config_wifi_framework_wifi_score_entry_rssi_threshold_5GHz">-78</integer>
+
+    <!-- The hotspot on 5 GHz. ApConfigUtil only offers a band when
+         config_wifi5ghzSupport and config_wifiSoftap5ghzSupported are both
+         true. AOSP defaults the first to false, and without it a 5 GHz hotspot
+         had no channel at all and fell back to 2.4 GHz. With it, ACS picked
+         channel 149 (5745 MHz) in Germany and the hotspot started at once
+         (2026-09-15). -->
+    <bool name="config_wifi5ghzSupport">true</bool>
 </resources>

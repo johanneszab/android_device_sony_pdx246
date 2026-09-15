@@ -51,6 +51,8 @@ echo "== super (largest, ~4-6 min; most likely to hit the USB drop) =="
 flash super super.img || exit 1
 
 echo "== vbmeta =="
+# Right after super, the bootloader takes about 67 s to accept vbmeta_a (seen
+# on every flash since the builds with the GApps reserve). That is not a hang.
 flash vbmeta_a        vbmeta.img        --disable-verity --disable-verification || exit 1
 flash vbmeta_system_a vbmeta_system.img --disable-verity --disable-verification || exit 1
 
