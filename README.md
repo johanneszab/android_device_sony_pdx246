@@ -129,8 +129,11 @@ test keys. The full manual feature test list (see PORTING-NOTES.md) passed on
 2026-09-14 on a clean install of a build from the tree synced on 2026-09-13.
 Added and tested on the phone since (2026-09-14 and 15): stock's feature
 declarations, its Wi-Fi, display and mobile values and power profile, charging
-control, the LineageOS extras with LiveDisplay, and the 5 GHz hotspot. Tap to
-wake is not possible: the touch firmware reports no gestures.
+control, the LineageOS extras with LiveDisplay, the 5 GHz hotspot, and the
+ultra-wide camera for apps. Known issue: Qualcomm's camera provider sometimes
+dies from SIGPIPE while a camera streams (seen on the main and the ultra-wide
+camera); apps show a camera error until they reopen the camera. Tap to wake is
+not possible: the touch firmware reports no gestures.
 
 ## Flashing
 

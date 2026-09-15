@@ -10,8 +10,13 @@ persist.vendor.btstack.aac_frm_ctl.enabled=true
 ro.bluetooth.library_name=libbluetooth_qti.so
 
 # Camera
-persist.vendor.camera.privapp.list=org.codeaurora.snapcam
-vendor.camera.aux.packagelist=org.codeaurora.snapcam
+# No vendor.camera.aux.packagelist or persist.vendor.camera.privapp.list. The
+# stock dump set both to org.codeaurora.snapcam, an app we do not ship.
+# LineageOS's Camera.shouldExposeAuxCamera() gives cameras past the first two
+# only to the listed packages, so every app, Aperture included, saw only the
+# main back and the front camera: no ultra-wide (camera 2) and no logical
+# cameras (3 and 4). Unset, all apps see all cameras, as on pdx257. The privapp
+# list only matters for the same app.
 
 # CNE
 persist.vendor.cne.feature=1
