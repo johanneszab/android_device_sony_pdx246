@@ -92,6 +92,19 @@ never changes, but Android's package cache still re-reads every APK that is
 newer than its cache entry, just as on the LineageOS devices that spoof a stock
 fingerprint and update weekly.
 
+## GApps
+
+The system, system_ext and product images keep free space for GApps
+(LineageOS's `BoardConfigReservedSize.mk`, included from `BoardConfig.mk`).
+Install them before the first boot: in recovery, Factory reset → Format data,
+then Apply update → Apply from ADB, `adb sideload` the package, and reboot.
+Installing GApps after the first boot needs another Format data. Tested with
+MindTheGapps 16.0.0 arm64.
+
+Flashing `super.img` with fastboot replaces the partitions GApps live on.
+Sideload them again in recovery before booting that build; LineageOS OTA
+updates keep them through `addon.d`.
+
 ## Wiping data
 
 Wipe `/data` after a **build-variant switch** (e.g. eng to userdebug). Because

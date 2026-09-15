@@ -138,6 +138,14 @@ BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := \
 # which reboots the device to the bootloader before second-stage init starts.
 BOARD_USES_METADATA_PARTITION := true
 
+# Free space in system, system_ext and product for add-ons such as GApps, from
+# LineageOS's BoardConfigReservedSize.mk as on pdx257. Device trees include it
+# themselves; without it the ext4 images are built full and MindTheGapps aborts
+# with "Not enough space for GApps!". false picks the larger product reserve
+# (1957691392 bytes instead of 1188036608 for virtual A/B).
+BOARD_PRODUCTIMAGE_MINIMAL_PARTITION_RESERVED_SIZE := false
+-include vendor/lineage/config/BoardConfigReservedSize.mk
+
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
 BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
 BOARD_DTBOIMG_PARTITION_SIZE := 25165824
