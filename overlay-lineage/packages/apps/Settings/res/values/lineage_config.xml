@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Show the battery cycle count, as on pdx257. The health HAL reports it
+         (healthd logged cc=30 on 2026-09-15). -->
+    <bool name="config_show_battery_cycle_count">true</bool>
+</resources>

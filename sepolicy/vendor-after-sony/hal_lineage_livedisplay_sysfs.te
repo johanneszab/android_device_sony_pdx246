@@ -1,0 +1,7 @@
+# LineageOS's sysfs LiveDisplay service (device.mk) writes the panel's high
+# brightness mode, /sys/devices/dsi_panel_driver/hbm_mode, for sunlight
+# enhancement. hardware/sony labels that directory sysfs_dp and grants it to
+# hal_lineage_livedisplay_qti (the SDM service and Sony's own service), not to
+# the sysfs service's domain.
+allow hal_lineage_livedisplay_sysfs sysfs_dp:dir search;
+allow hal_lineage_livedisplay_sysfs sysfs_dp:file rw_file_perms;

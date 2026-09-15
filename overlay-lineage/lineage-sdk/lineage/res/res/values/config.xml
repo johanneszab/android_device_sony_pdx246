@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Actions in the advanced restart menu: LineageOS's defaults plus
+         fastboot, as on pdx257. The recovery has fastbootd (dynamic
+         partitions). -->
+    <string-array name="config_restartActionsList">
+        <item>restart</item>
+        <item>restart_recovery</item>
+        <item>restart_bootloader</item>
+        <item>restart_fastboot</item>
+    </string-array>
+
+    <!-- The panel is 1080x2520 (21:9). Enables LineageOS's long screen
+         setting (LongScreen), as on pdx257. -->
+    <bool name="config_haveHigherAspectRatioScreen">true</bool>
+</resources>

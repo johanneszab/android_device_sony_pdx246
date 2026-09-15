@@ -87,6 +87,13 @@ on post-fs-data
 on early-boot
     start vendor.sensors
     verity_update_state
+    # The panel's high brightness mode, written by LiveDisplay's sunlight
+    # enhancement (vendor.lineage.livedisplay-service.sysfs, see device.mk). The
+    # display driver creates the node 0644 root; the service runs as system.
+    # Not in "on boot": AOSP's init.rc starts class hal in its own boot action,
+    # before the vendor ones, and the service aborts when it cannot open the
+    # node ("None of SunlightEnhancement paths could be opened", 2026-09-15).
+    chown system system /sys/devices/dsi_panel_driver/hbm_mode
 
 on boot
     write /dev/cpuset/audio-app/cpus 4-7

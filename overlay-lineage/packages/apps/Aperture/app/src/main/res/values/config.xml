@@ -4,9 +4,12 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
-    <!-- List of ID of auxiliary cameras that must be ignored by the app. -->
-    <string-array name="config_ignoredAuxCameraIds">
-        <item>2</item>
-    </string-array>
+    <!-- Auxiliary cameras, as on pdx257. The back cameras are 0 (main,
+         4.71 mm) and 2 (ultra-wide, 1.65 mm); 3 and 4 are logical cameras over
+         0 and 2, which Aperture ignores by default
+         (config_ignoreLogicalAuxCameras). Camera 2 used to be listed in
+         config_ignoredAuxCameraIds, from the first adjustments, before any
+         test on the phone. -->
+    <bool name="config_enableAuxCameras">true</bool>
 </resources>
 

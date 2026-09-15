@@ -354,6 +354,23 @@ $(call soong_config_set,lineage_health,charging_control_charging_disabled,1)
 PRODUCT_PACKAGES += \
     vendor.lineage.health-service.default
 
+# LiveDisplay: picture adjustment through QTI's SDM display APIs (the sdm
+# service; display modes off, as in pdx257's Sony service, which leaves color
+# modes to Android's settings) and sunlight enhancement through the panel's
+# high brightness mode (the sysfs service; rootdir/etc/init.target.rc gives the
+# node to system). pdx257 ships Sony's vendor.lineage.livedisplay-service.sony
+# instead, which needs the hardware/sony Soong namespace; that namespace also
+# defines nine HIDL libraries we ship as stock blobs
+# (vendor.semc.hardware.display@2.0-2.5, charger@1.0-1.1,
+# vendor.egistec.hardware.fingerprint@4.0).
+$(call soong_config_set_bool,livedisplay_sdm,enable_dm,false)
+$(call soong_config_set_bool,livedisplay_sysfs,enable_se,true)
+$(call soong_config_set,livedisplay_sysfs,se_path,/sys/devices/dsi_panel_driver/hbm_mode)
+
+PRODUCT_PACKAGES += \
+    vendor.lineage.livedisplay-service.sdm \
+    vendor.lineage.livedisplay-service.sysfs
+
 # QCC
 # The framework VINTF entry for Qualcomm's QCC system HAL (Android.bp). The
 # service, its libraries and the QCC app come from proprietary-files.txt;
