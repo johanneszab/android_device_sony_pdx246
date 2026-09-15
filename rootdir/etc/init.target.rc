@@ -113,6 +113,12 @@ on boot
     chmod 0664 /sys/bus/i2c/drivers/fts_ts/3-0038/fts_test
     #add fingerprint dump path
     mkdir /dev/image  0666 system system
+    # Sony's SmartCharge interface, used by LineageOS charging control
+    # (vendor.lineage.health-service.default, see device.mk). Stock activates it
+    # only through Sony's battery care service (persist.vendor.battery.smt_chg in
+    # the odm init.sony-platform.rc), which this build does not have.
+    wait /sys/class/battchg_ext/smart_charging_activation
+    write /sys/class/battchg_ext/smart_charging_activation 1
 
 on property:vendor.qcom.charge=1
     chmod 0664 /sys/class/power_supply/battery/charge_control_limit

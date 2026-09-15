@@ -102,11 +102,13 @@ PRODUCT_PACKAGES += \
 #   - android.hardware.hardware_keystore.xml: AOSP ships the same declaration
 #     as a module, installed below.
 #
-# Deliberately NOT copied, though stock has them:
+# Deliberately NOT copied, though stock has it:
 #   android.software.freeform_window_management.xml -- pdx257 does not ship it
-#     either and it is unrelated to bring-up; revisit if freeform is wanted.
-#   android.software.{opengles,vulkan}.deqp.level.xml -- generated per device by
-#     the build with a dEQP level value, not static files in AOSP.
+#     either and it changes multitasking; revisit if freeform is wanted.
+# Added from the pdx257 comparison (PORTING-NOTES.md), as stock declares them:
+# android.software.connectionservice (AOSP's handheld_core_hardware.xml lacks
+# it), com.nxp.mifare, and the OpenGL ES and Vulkan dEQP levels at stock's
+# 2021-03-01.
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
     frameworks/native/data/etc/android.hardware.audio.pro.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.pro.xml \
@@ -341,6 +343,16 @@ PRODUCT_PACKAGES += \
 # Health
 PRODUCT_PACKAGES += \
     android.hardware.health-service.qti
+
+# Lineage Health: charging control on Sony's SmartCharge interface, as on
+# pdx257. Writing 1 to smart_charging_interruption suspends charging, 0 resumes
+# it; rootdir/etc/init.target.rc activates the interface at boot.
+$(call soong_config_set,lineage_health,charging_control_charging_path,/sys/class/battchg_ext/smart_charging_interruption)
+$(call soong_config_set,lineage_health,charging_control_charging_enabled,0)
+$(call soong_config_set,lineage_health,charging_control_charging_disabled,1)
+
+PRODUCT_PACKAGES += \
+    vendor.lineage.health-service.default
 
 # QCC
 # The framework VINTF entry for Qualcomm's QCC system HAL (Android.bp). The
