@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!--
+     The values of stock's ServiceWifiRes-columbia-Overlay that differ from the
+     defaults of AOSP's Wi-Fi module. Left out: Sony's branding (hotspot SSID and
+     Wi-Fi Direct name prefix), its dialog for third-party apps enabling Wi-Fi,
+     the carrier-specific authentication failure overrides, and keys AOSP's Wi-Fi
+     module does not have.
+-->
+<resources>
+    <!-- What the Wi-Fi chip, its driver and hostapd support -->
+    <bool name="config_wifi_background_scan_support">true</bool>
+    <bool name="config_wifi_connected_mac_randomization_supported">true</bool>
+    <bool name="config_wifi_fast_bss_transition_enabled">true</bool>
+    <bool name="config_wifi_p2p_mac_randomization_supported">true</bool>
+    <bool name="config_wifi_softap_acs_supported">true</bool>
+    <bool name="config_wifi_softap_ieee80211ac_supported">true</bool>
+    <bool name="config_wifi_softap_sae_supported">true</bool>
+    <bool name="config_wifiDriverSupportedNl80211RegChangedEvent">true</bool>
+    <bool name="config_wifiSaeH2eSupported">true</bool>
+    <bool name="config_wifiSoftApDynamicCountryCodeUpdateSupported">true</bool>
+
+    <!-- Stock's scanning, country code and signal tuning -->
+    <bool name="config_wifiEnablePartialInitialScan">true</bool>
+    <bool name="config_wifiScanOnCellularDataLossEnabled">true</bool>
+    <bool name="config_wifi_revert_country_code_on_cellular_loss">true</bool>
+    <integer name="config_wifiPnoScanIntervalMultiplier">15</integer>
+    <integer-array name="config_wifiDisconnectedScanIntervalScheduleSec">
+        <item>15</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+    </integer-array>
+    <integer-array name="config_wifiRssiLevelThresholds">
+        <item>-83</item>
+        <item>-79</item>
+        <item>-72</item>
+        <item>-64</item>
+    </integer-array>
+    <integer name="config_wifi_framework_wifi_score_bad_rssi_threshold_5GHz">-81</integer>
+    <integer name="config_wifi_framework_wifi_score_entry_rssi_threshold_24GHz">-78</integer>
+    <integer name="config_wifi_framework_wifi_score_entry_rssi_threshold_5GHz">-78</integer>
+</resources>

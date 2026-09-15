@@ -366,12 +366,14 @@ PRODUCT_ENFORCE_RRO_TARGETS := *
 
 # SonyPDX246TelephonyRes and SonyPDX246CarrierConfig carry the IMS setup for
 # VoLTE and Wi-Fi calling, together with the IMS flags in SonyPDX246FrameworksRes.
+# SonyPDX246WifiRes carries stock's Wi-Fi capabilities and tuning.
 PRODUCT_PACKAGES += \
     SonyPDX246SystemUIRes \
     SonyPDX246NfcNciRes \
     SonyPDX246FrameworksRes \
     SonyPDX246TelephonyRes \
-    SonyPDX246CarrierConfig
+    SonyPDX246CarrierConfig \
+    SonyPDX246WifiRes
 
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay-lineage
