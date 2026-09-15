@@ -80,4 +80,118 @@
          returns config_fusedLocationProviderPackageName, which is AOSP's.
          See PORTING-NOTES.md "FIXED (2026-09-10): websites got no location". -->
     <bool name="config_enableFusedLocationOverlay" translatable="false">false</bool>
+
+    <!-- Adaptive brightness, from stock's framework-res product RRO, which wins
+         over its vendor overlay (static overlays are ordered by partition first).
+         The display config (vendor/etc/displayconfig) maps brightness to nits,
+         0.002 to 2 nits and 1.0 to 1000 nits, and sets the ambient thresholds, but
+         has no lux-to-brightness curve: that comes from these two arrays. The
+         setting range matches the display config's map. -->
+    <bool name="config_automatic_brightness_available">true</bool>
+    <integer-array name="config_autoBrightnessLevels">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>8</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+        <item>500</item>
+        <item>1000</item>
+        <item>3000</item>
+        <item>5000</item>
+        <item>7000</item>
+        <item>10000</item>
+        <item>20000</item>
+    </integer-array>
+    <array name="config_autoBrightnessDisplayValuesNits">
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>13</item>
+        <item>37</item>
+        <item>43</item>
+        <item>80</item>
+        <item>100</item>
+        <item>100</item>
+        <item>113</item>
+        <item>133</item>
+        <item>143</item>
+        <item>157</item>
+        <item>200</item>
+        <item>343</item>
+        <item>487</item>
+        <item>600</item>
+        <item>720</item>
+        <item>1000</item>
+    </array>
+    <integer name="config_autoBrightnessBrighteningLightDebounce">1000</integer>
+    <integer name="config_autoBrightnessDarkeningLightDebounce">3000</integer>
+    <item name="config_screenBrightnessSettingMinimumFloat" format="float" type="dimen">0.002</item>
+    <item name="config_screenBrightnessSettingMaximumFloat" format="float" type="dimen">1.0</item>
+    <item name="config_screenBrightnessDimFloat" format="float" type="dimen">0.02</item>
+
+    <!-- Rounded display corners, from stock's product RRO. -->
+    <dimen name="rounded_corner_radius">16dp</dimen>
+
+    <!-- Color modes: natural, boosted and automatic, as in stock's
+         FrameworksResCommon_Sys. Stock also lists Sony's vendor modes 256 to 265,
+         which Sony's own color gamut app names; LineageOS Settings has no names
+         for them, so they are left out. -->
+    <integer-array name="config_availableColorModes">
+        <item>0</item>
+        <item>1</item>
+        <item>3</item>
+    </integer-array>
+
+    <!-- Night Light: stock's default color temperature and coefficients. -->
+    <integer name="config_nightDisplayColorTemperatureDefault">3339</integer>
+    <string-array name="config_nightDisplayColorTemperatureCoefficients" translatable="false">
+        <item>0.0000000000</item>
+        <item>0.0000000000</item>
+        <item>1.0000000000</item>
+        <item>0.0000000336</item>
+        <item>0.0000809374</item>
+        <item>0.1105088045</item>
+        <item>0.0000001713</item>
+        <item>-0.0005989563</item>
+        <item>0.5902579775</item>
+    </string-array>
+    <string-array name="config_nightDisplayColorTemperatureCoefficientsNative" translatable="false">
+        <item>0.0000000000</item>
+        <item>0.0000000000</item>
+        <item>1.0000000000</item>
+        <item>0.0000000336</item>
+        <item>0.0000809374</item>
+        <item>0.1105088045</item>
+        <item>0.0000001713</item>
+        <item>-0.0005989563</item>
+        <item>0.5902579775</item>
+    </string-array>
+
+    <!-- 5G: stock's FrameworksResCommon_Sys enables both standalone and
+         non-standalone NR. -->
+    <bool name="config_telephony5gStandalone">true</bool>
+    <bool name="config_telephony5gNonStandalone">true</bool>
+
+    <!-- eSIM: two physical slots, slot 1 being the built-in eUICC, and the modem's
+         eUICC capabilities, from stock's FrameworkRes-Odm-Overlay and
+         FrameworksRes-Esim-Capabilities-Rel16-Overlay. Managing eSIM profiles
+         needs an LPA app; Google's comes with GApps. -->
+    <integer name="config_num_physical_slots">2</integer>
+    <integer-array name="non_removable_euicc_slots">
+        <item>1</item>
+    </integer-array>
+    <string-array name="config_telephonyEuiccDeviceCapabilities" translatable="false">
+        <item>gsm,9</item>
+        <item>utran,9</item>
+        <item>eutran,16</item>
+        <item>nrepc,16</item>
+        <item>nr5gc,16</item>
+        <item>eutran5gc,16</item>
+    </string-array>
 </resources>
