@@ -16,12 +16,15 @@ today.
    `vendor/`, `system/`, `product/` and `odm/` at its top level.
    Blobs are not redistributable, so this cannot be shipped here; the
    dump used for the current state was Sony build `70.2.A.4.22`.
-4. **The kernel**, at `kernel/sony/pdx246` and `kernel/sony/pdx246-modules`.
-   Currently these are Sony's GPL release (`70.2.A.4.22.tar.bz2`) with
-   `a16-columbia/kernel_platform/msm-kernel` and `a16-columbia/vendor`
-   symlinked into place. **The kernel is not built** — `TARGET_PREBUILT_KERNEL`
-   wins and `prebuilts/kernel` ships verbatim — so these are only needed for
-   headers. See the "Sony kernel source release" section of the notes.
+4. **The kernel source**, at `kernel/sony/sm6450` and
+   `kernel/sony/sm6450-modules`. The kernel is LineageOS's
+   `android_kernel_sony_sm8450` (lineage-23.2) with the `pdx246` branch on top,
+   which adds pdx246's drivers and changes from Sony's source release
+   (`70.2.A.4.22`). The modules repo holds Sony's vendor module sources and
+   LineageOS's WLAN driver. Both repos are local for now, not on a remote yet;
+   the build compiles the kernel and all 351 modules from them. The device
+   trees are still stock's (`prebuilts/dtb.img`, `prebuilts/dtbo.img`). See
+   "Kernel from source: 5.10 base options" in the notes.
 
 ### Then
 

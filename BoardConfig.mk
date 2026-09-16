@@ -60,10 +60,11 @@ BOARD_KERNEL_PAGESIZE := 4096
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_KERNEL_IMAGE_NAME := Image
 
-# This device boots a stock GKI kernel, so declare it. Among other things this
-# makes the build create the first_stage_ramdisk/ skeleton in the generic
-# ramdisk, which the GKI first-stage init pivots into -- without it there is no
-# first stage layout for the vendor ramdisk to land in. pdx257 sets this too.
+# The kernel is a GKI (android12-5.10) kernel, so declare it. Among other
+# things this makes the build create the first_stage_ramdisk/ skeleton in the
+# generic ramdisk, which the GKI first-stage init pivots into -- without it
+# there is no first stage layout for the vendor ramdisk to land in. pdx257 sets
+# this too.
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
 
 # Stock and pdx257 both compress the ramdisks with LZ4; we were defaulting to
@@ -83,50 +84,58 @@ BOARD_BOOTCONFIG += \
 # No androidboot.init_fatal_* options, as on pdx257: a fatal init error reboots
 # to the bootloader. (Stock sets androidboot.init_fatal_panic=true.) For init
 # debugging, androidboot.init_fatal_reboot_target=recovery keeps adb reachable.
-BOARD_INCLUDE_DTB_IN_BOOTIMG := true
-BOARD_KERNEL_SEPARATED_DTBO := true
-TARGET_KERNEL_CONFIG := pdx246_defconfig
-TARGET_KERNEL_SOURCE := kernel/sony/pdx246
 
-# Kernel - prebuilt
-TARGET_FORCE_PREBUILT_KERNEL := true
-ifeq ($(TARGET_FORCE_PREBUILT_KERNEL),true)
-TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilts/kernel
+# The kernel is built from source: LineageOS's Sony 5.10 kernel (sm8450) with
+# pdx246's drivers and config from Sony's source release, and the vendor
+# modules from Sony's module sources plus LineageOS's WLAN driver. See
+# PORTING-NOTES.md, "Kernel from source".
+TARGET_KERNEL_SOURCE := kernel/sony/sm6450
+TARGET_KERNEL_CONFIG := \
+    gki_defconfig \
+    vendor/parrot_GKI.config \
+    vendor/sony/columbia.config
+
+# The device trees are still stock's: vendor_boot.img carries the stock dtb.img
+# (--dtb goes there with boot header v4) and dtbo.img is flashed as is. (The
+# kernel repo has no pdx246 device trees.)
 TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilts/dtb.img
 BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
-BOARD_INCLUDE_DTB_IN_BOOTIMG := 
 BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilts/dtbo.img
-BOARD_KERNEL_SEPARATED_DTBO := 
-endif
 
-# Kernel modules
-# The device boots a stock GKI image, so the 265 vendor modules come from the
-# stock vendor_dlkm rather than being built from source. modules.load.order
-# preserves stock's load sequence -- the default (alphabetical) order breaks
-# drivers that must be probed in a particular sequence. depmod regenerates
-# modules.dep/alias/softdep at build time, so those are not carried over.
-BOARD_VENDOR_KERNEL_MODULES := \
-    $(wildcard $(DEVICE_PATH)/prebuilts/modules/*.ko)
-BOARD_VENDOR_KERNEL_MODULES_LOAD := \
-    $(addprefix $(DEVICE_PATH)/prebuilts/modules/,\
-        $(shell cat $(DEVICE_PATH)/prebuilts/modules/modules.load.order))
-BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := \
-    $(DEVICE_PATH)/prebuilts/modules/modules.blocklist
+# Kernel modules, with stock's load lists and order (the default alphabetical
+# order breaks drivers that must probe in sequence). The vendor_boot ramdisk
+# loads modules.load in first stage: clk, pinctrl, regulator and smmu have to be
+# up before the dynamic partitions can be mounted. Recovery also loads
+# recovery.modules.load, and vendor_dlkm loads vendor_dlkm.modules.load. As on
+# stock, the vendor_boot modules are in vendor_dlkm too.
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/vendor_dlkm.modules.load))
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/vendor_dlkm.modules.blocklist
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules.load $(DEVICE_PATH)/recovery.modules.load))
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/vendor_dlkm.modules.blocklist
+BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
 
-# First-stage modules live in the vendor_boot ramdisk, not vendor_dlkm: clk,
-# pinctrl, regulator and smmu have to be up before the dynamic partitions can
-# even be mounted. 210 of these are byte-identical to the vendor_dlkm copies;
-# stock ships both sets, so mirror that rather than trying to share one copy.
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES := \
-    $(wildcard $(DEVICE_PATH)/prebuilts/modules-vendor_boot/*.ko)
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := \
-    $(addprefix $(DEVICE_PATH)/prebuilts/modules-vendor_boot/,\
-        $(shell cat $(DEVICE_PATH)/prebuilts/modules-vendor_boot/modules.load.order))
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := \
-    $(addprefix $(DEVICE_PATH)/prebuilts/modules-vendor_boot/,\
-        $(shell cat $(DEVICE_PATH)/prebuilts/modules-vendor_boot/modules.load.recovery.order))
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := \
-    $(DEVICE_PATH)/prebuilts/modules-vendor_boot/modules.blocklist
+# Symbol providers come before their users (mmrm, rmnet core, rmnet shs).
+TARGET_KERNEL_EXT_MODULE_ROOT := kernel/sony/sm6450-modules
+TARGET_KERNEL_EXT_MODULES := \
+    qcom/opensource/mmrm-driver \
+    qcom/opensource/audio-kernel \
+    qcom/opensource/camera-kernel \
+    qcom/opensource/dataipa/drivers/platform/msm \
+    qcom/opensource/datarmnet/core \
+    qcom/opensource/datarmnet-ext/aps \
+    qcom/opensource/datarmnet-ext/offload \
+    qcom/opensource/datarmnet-ext/shs \
+    qcom/opensource/datarmnet-ext/perf \
+    qcom/opensource/datarmnet-ext/perf_tether \
+    qcom/opensource/datarmnet-ext/sch \
+    qcom/opensource/datarmnet-ext/wlan \
+    qcom/opensource/display-drivers/msm \
+    qcom/opensource/video-driver \
+    qcom/opensource/wlan/qcacld-3.0/.adrastea \
+    semc/hardware/charge/kernel-modules/battchg_ext \
+    semc/ramdump/kernel-modules/last_logs \
+    semc/ramdump/kernel-modules/rdtags
 
 # Partitions
 # The device has a real metadata partition (rootdir/etc/fstab.default mounts it
