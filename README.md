@@ -1,148 +1,168 @@
-# LineageOS 23.x for the Sony Xperia 10 VI (pdx246)
+# LineageOS 23.2 for the Sony Xperia 10 VI (pdx246)
 
-Bring-up in progress. Boots to the LineageOS UI with Wi-Fi, cellular, audio and
-GPS working; see [PORTING-NOTES.md](PORTING-NOTES.md) for the full engineering
-history, and its ">>> PICK UP HERE <<<" section for what does and does not work
-today.
+An unofficial port, built and used daily on the author's device. The kernel is
+built from source; the proprietary parts come from a stock firmware dump that
+you supply yourself.
 
-## Reproducing a build
+[PORTING-NOTES.md](PORTING-NOTES.md) is the engineering log of the port: why
+things are the way they are, what was tried, and what is still open. Its
+">>> PICK UP HERE <<<" section is the current state. Paths in it refer to the
+author's machine.
 
-### What you need
+## State of the port
 
-1. **A LineageOS 23.x tree**, synced.
-2. **This device tree** at `device/sony/pdx246` (local manifest).
-3. **A stock firmware dump** for the device, extracted — e.g. with
-   [dumpyara](https://github.com/AndroidDumps/dumpyara). It must have
-   `vendor/`, `system/`, `product/` and `odm/` at its top level.
-   Blobs are not redistributable, so this cannot be shipped here; the
-   dump used for the current state was Sony build `70.2.A.4.22`.
-4. **The kernel source**, at `kernel/sony/sm6450` and
-   `kernel/sony/sm6450-modules`. The kernel is LineageOS's
-   `android_kernel_sony_sm8450` (lineage-23.2) with the `pdx246` branch on top,
-   which adds pdx246's drivers and changes from Sony's source release
-   (`70.2.A.4.22`). The modules repo holds Sony's vendor module sources and
-   LineageOS's WLAN driver. Both repos are local for now, not on a remote yet;
-   the build compiles the kernel and all 351 modules from them. The device
-   trees are still stock's (`prebuilts/dtb.img`, `prebuilts/dtbo.img`). See
-   "Kernel from source: 5.10 base options" in the notes.
+Working: boot to the UI, display and touch, Wi-Fi (including the 5 GHz
+hotspot), Bluetooth, NFC with the secure element, mobile data, calls, VoLTE and
+Wi-Fi calling, GPS, audio including the speaker, headset and in-call paths, all
+five cameras with photo and video, hardware video decoding, the fingerprint
+sensor, sensors, the vibrator, charging with LineageOS charging control,
+LiveDisplay, and suspend on battery (98% asleep with the screen off). SELinux
+is enforcing.
 
-### Then
+Not working or absent:
+
+| | |
+|---|---|
+| FM radio | Never worked. The stock device tree has no node for the tuner chip, so the driver finds no device. |
+| Tap to wake | Not possible with this touch firmware: the controller reports gesture id 0, so the driver can never tell a double tap from anything else. |
+| Firefox (156 and newer) | Crashes at startup, on this port and on any Android 16 device: it targets SDK 37 and calls a hidden `MessageQueue` method the platform blocks. Not a port problem; other browsers work. |
+| Device trees | `prebuilts/dtb.img` and `prebuilts/dtbo.img` are still the stock binaries. Everything else, kernel and all 351 vendor modules, is built from source. |
+
+Two things to know before you install it: the build uses AOSP test keys (so it
+is not a "secure" release build), and an occasional crash of the vendor audio
+HAL at boot has been seen once in about forty boots. It restarts itself and
+audio works.
+
+## What you need
+
+1. **A LineageOS 23.2 tree.** About 220 GB for `.repo` plus the checkout, and
+   another ~210 GB for `out/`, so plan for roughly 450 GB free. A full build
+   takes about three hours on a 20-core machine.
+2. **This device tree and the two kernel repos**, via the local manifest below.
+   They are all the port needs on top of the LineageOS default manifest, plus
+   `hardware/sony`, which the default manifest does not carry.
+3. **A stock firmware dump** for this exact device, extracted (for example with
+   [dumpyara](https://github.com/AndroidDumps/dumpyara)), with `vendor/`,
+   `system/`, `product/` and `odm/` at its top level. Blobs are not
+   redistributable, so they are not part of any of these repos. The current
+   state was built from `XQ-ES54_EEA-user 16 70.2.A.4.168`
+   (`070002A004016801749288677`). A different firmware version may work but has
+   not been tested; PORTING-NOTES.md describes how a wrong dump shows up.
+
+The kernel repos are separate because the kernel is built from source:
+
+| Path | Repo | Branch |
+|---|---|---|
+| `device/sony/pdx246` | `android_device_sony_pdx246` | `bringup` |
+| `kernel/sony/sm6450` | `android_kernel_sony_sm6450` | `pdx246` |
+| `kernel/sony/sm6450-modules` | `android_kernel_sony_sm6450-modules` | `lineage-23.2` |
+
+The kernel is a fork of LineageOS's `android_kernel_sony_sm8450` (its
+`lineage-23.2` branch is that upstream unchanged; `pdx246` adds this device's
+drivers and config). The modules repo holds Sony's vendor module sources plus
+LineageOS's WLAN driver. SM6450 is this device's SoC — do not confuse it with
+the sm8450 devices (Xperia 1 IV, 5 IV).
+
+## Checkout
+
+```bash
+repo init -u https://github.com/LineageOS/android.git -b lineage-23.2 --git-lfs
+mkdir -p .repo/local_manifests
+cp /path/to/pdx246.xml .repo/local_manifests/pdx246.xml   # see below
+repo sync -c -j8
+```
+
+The manifest to copy is [local_manifests/pdx246.xml](local_manifests/pdx246.xml)
+in this repo; its content is:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="johanneszab" fetch="https://github.com/johanneszab" />
+
+  <project path="device/sony/pdx246" name="android_device_sony_pdx246"
+           remote="johanneszab" revision="bringup" />
+  <project path="kernel/sony/sm6450" name="android_kernel_sony_sm6450"
+           remote="johanneszab" revision="pdx246" />
+  <project path="kernel/sony/sm6450-modules" name="android_kernel_sony_sm6450-modules"
+           remote="johanneszab" revision="lineage-23.2" />
+
+  <project path="hardware/sony" name="LineageOS/android_hardware_sony"
+           remote="github" />
+</manifest>
+```
+
+`lineage.dependencies` in this repo only names `hardware/sony`, because
+roomservice can only fetch repos owned by the LineageOS organisation. The three
+repos above therefore have to come from the local manifest.
+
+The kernel repo carries the full upstream history and is about 3.8 GB. Add
+`clone-depth="1"` to that project if you do not need the history; the build
+does not.
+
+## Setup and build
 
 ```bash
 ./device/sony/pdx246/setup.sh /path/to/stock/dump
-```
-
-That does everything reproducible in one pass:
-
-- re-applies the out-of-tree patches in `patches/aosp/` to AOSP/LineageOS
-  projects (a `repo sync` reverts these, so re-run setup after every sync)
-- runs `extract-files.py`, which regenerates **all** of `vendor/sony/pdx246`
-  from `proprietary-files.txt` — including `Android.bp`, `pdx246-vendor.mk`
-  and every `blob_fixup`
-- verifies that the blobs which broke the boot before are present
-
-Then build:
-
-```bash
 source build/envsetup.sh
 lunch lineage_pdx246-trunk_staging-userdebug
 rm -f out/target/product/pdx246/{boot,vendor_boot}.img
 mka bacon && m superimage
 ```
 
-Two things about that invocation are not optional:
+`setup.sh` is idempotent and does three things: it re-applies the out-of-tree
+patches in `patches/aosp/`, regenerates `vendor/sony/pdx246` from your dump with
+`extract-files.py`, and checks that the blobs that used to break the boot are
+present. Run it again after every `repo sync`, because a sync reverts the
+patches.
+
+The patches touch eleven upstream projects. `repo sync` will complain about
+those projects while the patches are applied; reverse them first, or let the
+sync overwrite them and re-run `setup.sh` afterwards:
+
+```bash
+for p in device/sony/pdx246/patches/aosp/*.patch; do
+    n=$(basename "$p" .patch)
+    git -C "${n//_//}" apply -R "$p" 2>/dev/null
+done
+```
+
+Four points about that build invocation:
 
 | | why |
 |---|---|
-| `-userdebug`, never `-eng` | `eng` sets `OVERRIDE_DISABLE_DEXOPT_ALL`, which disables dexpreopt. First boot then compiles the boot classpath on device for both architectures — measured at over two hours. |
-| `rm -f ...boot.img` | `--dtb` is passed via `BOARD_MKBOOTIMG_ARGS` and is **not** a tracked dependency, so a changed `prebuilts/dtb.img` silently ships stale. |
+| `lunch lineage_pdx246-...` in full | `breakfast pdx246` and `brunch pdx246` take the release from `vendor/lineage/vars/aosp_target_release` (currently `bp4a`) and silently build a different release configuration. |
+| `-userdebug`, never `-eng` | `eng` disables dexpreopt, and the first boot then compiles the boot classpath on the device for over two hours. |
+| `rm -f ...vendor_boot.img` | The stock dtb reaches mkbootimg through `BOARD_MKBOOTIMG_ARGS`, which ninja does not track. With boot header v4 the dtb rides in `vendor_boot.img`, so a changed `prebuilts/dtb.img` otherwise ships stale. |
+| a default `OUT_DIR` | A custom `OUT_DIR` breaks soong bootstrap for `test_package` modules. Move an old `out/` aside instead. |
 
 This builds the release configuration: LineageOS sets `ro.adb.secure=1` and
-`ro.debuggable=0`, so USB debugging needs the authorization prompt on the
-phone and `adb root` is not available. For bring-up or debugging builds, run
-`export WITH_ADB_INSECURE=true` first: adb then works without the prompt (also
-when the UI does not come up), and the build stays debuggable.
-
-Keep `trunk_staging` as the release. `lineage_pdx246-bp2a-userdebug` also
-resolves but silently changes the release config as well as the variant.
-
-Flashing: see the "Flashing" section of the notes. **Always use explicit `_a`
-suffixes and finish with `fastboot --set-active=a`** — the bootloader
-under-reports `has-slot`, and a failed boot burns the slot retry counter until
-it fails over to the empty slot b and red-states with "device is corrupt".
-
-## What is deliberately not in this repo
-
-**`vendor/sony/pdx246` is generated and unversioned.** Never hand-edit it —
-`setup.sh` overwrites it wholesale. Anything that must persist belongs in
-`proprietary-files.txt` (which files to pull) or in `extract-files.py`
-(`blob_fixups`, for modifications to a blob).
-
-**Out-of-tree source changes** live in `patches/aosp/`. They are re-applied by
-`setup.sh` rather than upstreamed, since they are too device-specific to land.
-
-## Signing and updates
-
-Builds are signed with the AOSP test keys on purpose: there is no
-`vendor/lineage-priv`. Every build made from this tree therefore carries the
-same signatures, so a newer build can be flashed over an existing install,
-whoever built it. Signing with private keys would need a data wipe for every
-switch to or from those keys.
-
-During the port, builds of the same variant were flashed over existing data
-many times without trouble. `ro.build.fingerprint` is spoofed to Sony stock and
-never changes, but Android's package cache still re-reads every APK that is
-newer than its cache entry, just as on the LineageOS devices that spoof a stock
-fingerprint and update weekly.
-
-## GApps
-
-The system, system_ext and product images keep free space for GApps
-(LineageOS's `BoardConfigReservedSize.mk`, included from `BoardConfig.mk`).
-Install them before the first boot: in recovery, Factory reset → Format data,
-then Apply update → Apply from ADB, `adb sideload` the package, and reboot.
-Installing GApps after the first boot needs another Format data. Tested with
-MindTheGapps 16.0.0 arm64.
-
-Flashing `super.img` with fastboot replaces the partitions GApps live on.
-Sideload them again in recovery before booting that build; LineageOS OTA
-updates keep them through `addon.d`.
-
-## Wiping data
-
-Wipe `/data` after a **build-variant switch** (e.g. eng to userdebug). Because
-the fingerprint stays the same, Android does not invalidate
-`/data/dalvik-cache` or the RRO idmaps by itself, and you get a new system
-running against the old build's artifacts (Zygote dies, ~10 s of boot
-animation, reboot loop).
-
-Conversely do **not** wipe merely because a boot is slow: an interrupted dexopt
-resumes from `/data/dalvik-cache`, and wiping restarts it. The question is "did
-the build variant change underneath the existing /data?", not "is this slow?".
-
-## Current state / where to resume
-
-`PORTING-NOTES.md` is the working log. Start at the section
-**">>> PICK UP HERE (next session) <<<"** at the top -- it says exactly what is
-done, what is unproven, and what to do next.
-
-Short version: the device boots to the LineageOS UI with no crash-looping
-services, in the release configuration: SELinux enforcing, secure adb, AOSP
-test keys. The full manual feature test list (see PORTING-NOTES.md) passed on
-2026-09-14 on a clean install of a build from the tree synced on 2026-09-13.
-Added and tested on the phone since (2026-09-14 and 15): stock's feature
-declarations, its Wi-Fi, display and mobile values and power profile, charging
-control, the LineageOS extras with LiveDisplay, the 5 GHz hotspot, and the
-ultra-wide camera for apps. Known issue: Qualcomm's camera provider sometimes
-dies from SIGPIPE while a camera streams (seen on the main and the ultra-wide
-camera); apps show a camera error until they reopen the camera. Tap to wake is
-not possible: the touch firmware reports no gestures.
+`ro.debuggable=0`, so USB debugging needs the prompt on the phone and `adb root`
+is unavailable. For bring-up work, `export WITH_ADB_INSECURE=true` before
+building; adb then works without the prompt, also when the UI does not come up,
+and the build stays debuggable. It is an `ifdef`, so `unset WITH_ADB_INSECURE`
+to go back — setting it to `false` still enables it.
 
 ## Flashing
 
-    ./device/sony/pdx246/flash.sh
+`flash.sh` next to the built images does the whole sequence. The essentials, if
+you flash by hand:
 
-Do not flash by hand unless you have read the "Flashing" section of
-PORTING-NOTES.md -- `super.img` needs `fastboot -S 256M` on this bootloader, and
-a dropped USB partway through leaves the device unbootable until super is
-rewritten.
+- Unlock the bootloader first (Sony's official unlock; it wipes the device).
+- Flash every partition with an explicit `_a` suffix and finish with
+  `fastboot --set-active=a`. The bootloader under-reports `has-slot`, and a
+  failed boot burns the slot retry counter until it falls over to the empty
+  slot b and red-states with "device is corrupt".
+- `fastboot flash super super.img` replaces the partitions that GApps live on.
+  If you use GApps, reboot to recovery and sideload them again before booting.
+- A `fastboot reboot` may print `usb_read failed`. The phone reboots anyway.
+
+The "Flashing" section of PORTING-NOTES.md has the full sequence, including
+recovery, the first boot after a data wipe, and what to do when a boot fails.
+
+## Reporting problems
+
+Include: the build you flashed, whether you used the same firmware dump version,
+`adb shell getprop ro.lineage.version`, and a `logcat -b all` from the boot. For
+kernel-side problems, `logcat -b kernel -d` carries the whole boot since the
+kernel log buffer was raised to 1 MB.

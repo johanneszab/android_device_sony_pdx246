@@ -5,8 +5,11 @@
 #
 # One-shot setup for a pdx246 (Sony Xperia 10 VI) build.
 #
-# Takes a freshly `repo sync`ed LineageOS 23.x tree plus a stock firmware dump
+# Takes a freshly `repo sync`ed LineageOS 23.2 tree plus a stock firmware dump
 # and leaves you ready to build. Safe to re-run: every step is idempotent.
+#
+# See README.md for the local manifest that brings in this device tree, the two
+# kernel repos and hardware/sony.
 #
 #   ./device/sony/pdx246/setup.sh /path/to/stock/dump
 #
@@ -26,6 +29,26 @@ die()   { printf '%s[x]%s %s\n'   "$RED" "$RST" "$*" >&2; exit 1; }
     || die "run this from the ROOT of the LineageOS tree (where .repo lives)"
 [ -d "$DEVICE_PATH" ] \
     || die "$DEVICE_PATH missing -- add it to your local manifest and repo sync"
+
+# The kernel is built from source and BoardConfig.mk includes hardware/sony's
+# sepolicy, so these three have to be in the tree before anything else works.
+# They come from the local manifest in README.md, not from lineage.dependencies
+# (roomservice can only fetch repos owned by the LineageOS organisation).
+for p in kernel/sony/sm6450/Makefile \
+         kernel/sony/sm6450-modules/qcom/opensource \
+         hardware/sony/sepolicy/qti/SEPolicy.mk; do
+    [ -e "$p" ] || die "missing: $p
+
+The local manifest in $DEVICE_PATH/README.md brings in the device tree, the two
+kernel repos (kernel/sony/sm6450 and kernel/sony/sm6450-modules) and
+hardware/sony. Copy it to .repo/local_manifests/pdx246.xml and repo sync."
+done
+
+# The kernel config fragments BoardConfig.mk names, in the kernel repo.
+for c in gki_defconfig vendor/parrot_GKI.config vendor/sony/columbia.config; do
+    [ -f "kernel/sony/sm6450/arch/arm64/configs/$c" ] \
+        || die "kernel/sony/sm6450 is missing arch/arm64/configs/$c -- wrong branch? (expected 'pdx246')"
+done
 
 DUMP="${1:-}"
 [ -n "$DUMP" ] || die "usage: $0 /path/to/stock/dump
@@ -96,6 +119,8 @@ Upstream has probably moved. Rebase the patch by hand, then re-run."
 done
 
 # ----------------------------------------------- 1b. pdx257 reference trees --
+# Only relevant if your tree also carries the pdx257 (Xperia 1 VI) trees, as the
+# author's does; this step does nothing otherwise.
 # device/sony/pdx257 and vendor/sony/pdx257, where present, are only a reference:
 # nothing in the pdx246 build uses them. soong parses every Android.bp in the
 # tree whatever the lunch target, and pdx257's vendor tree fails analysis here
@@ -155,18 +180,25 @@ $(printf '%s==>%s') Setup complete. To build:
     rm -f out/target/product/${DEVICE}/{boot,vendor_boot}.img
     mka bacon && m superimage
 
+Spell the lunch target out. 'breakfast ${DEVICE}' and 'brunch ${DEVICE}' take the
+release from vendor/lineage/vars/aosp_target_release (currently bp4a) and build a
+different release configuration.
+
 That is the release configuration: LineageOS sets ro.adb.secure=1 and
 ro.debuggable=0, so USB debugging needs the prompt on the phone and 'adb root'
 is gone. For bring-up or debugging, 'export WITH_ADB_INSECURE=true' before
 building: adb then works without the prompt, also when the UI does not come
-up, and the build stays debuggable.
+up, and the build stays debuggable. It is an ifdef, so 'unset WITH_ADB_INSECURE'
+to go back -- setting it to false still enables it.
 
 Do NOT build 'eng': it disables dexpreopt entirely and the first boot then
 spends 2+ hours compiling the boot classpath on device.
 
-The 'rm -f ...boot.img' is not optional -- --dtb is passed through
-BOARD_MKBOOTIMG_ARGS and is not a tracked dependency, so a changed
-prebuilts/dtb.img otherwise ships stale.
+The 'rm -f ...' is not optional -- --dtb is passed through BOARD_MKBOOTIMG_ARGS
+and is not a tracked dependency, so a changed prebuilts/dtb.img otherwise ships
+stale. With boot header v4 the dtb rides in vendor_boot.img, which is why that
+one matters most.
 
-Flashing instructions: see the "Flashing" section of $DEVICE_PATH/PORTING-NOTES.md
+Flashing: $DEVICE_PATH/README.md has the short version, and the "Flashing"
+section of $DEVICE_PATH/PORTING-NOTES.md the full sequence.
 EOF
