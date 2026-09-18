@@ -5,10 +5,10 @@
      Copy this file to .repo/local_manifests/pdx246.xml in a LineageOS 23.2
      tree and run `repo sync`. See README.md for the full build instructions.
 
-     The four projects below are everything this port needs on top of the
+     The five projects below are everything this port needs on top of the
      LineageOS default manifest.
 
-     Why the device tree and the two kernel repos need their own <remote>:
+     Why the device tree and the three kernel repos need their own <remote>:
      roomservice (vendor/lineage/build/tools/roomservice.py) builds every
      project name as "LineageOS/<repository>", so lineage.dependencies can
      only ever name LineageOS-owned repos.
@@ -24,7 +24,8 @@
      android_kernel_sony_sm8450 (branch lineage-23.2 in that repo is the
      unchanged upstream; branch pdx246 carries this device's changes). The
      modules tree hardcodes the directory name sm6450-modules in its Kbuild
-     and trace include paths, so these two paths cannot be renamed freely.
+     and trace include paths, and the kernel reaches the device trees through
+     a relative symlink, so none of these three paths can be renamed freely.
 -->
 <manifest>
 
@@ -45,6 +46,12 @@
   <!-- TARGET_KERNEL_EXT_MODULE_ROOT points here. -->
   <project path="kernel/sony/sm6450-modules"
            name="android_kernel_sony_sm6450-modules"
+           remote="johanneszab"
+           revision="lineage-23.2" />
+
+  <!-- kernel/sony/sm6450/arch/arm64/boot/dts/vendor symlinks here. -->
+  <project path="kernel/sony/sm6450-devicetrees"
+           name="android_kernel_sony_sm6450-devicetrees"
            remote="johanneszab"
            revision="lineage-23.2" />
 

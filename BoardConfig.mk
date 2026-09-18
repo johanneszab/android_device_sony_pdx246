@@ -92,12 +92,18 @@ TARGET_KERNEL_CONFIG := \
     vendor/parrot_GKI.config \
     vendor/sony/columbia.config
 
-# The device trees are still stock's: vendor_boot.img carries the stock dtb.img
-# (--dtb goes there with boot header v4) and dtbo.img is flashed as is. (The
-# kernel repo has no pdx246 device trees.)
-TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilts/dtb.img
-BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
-BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilts/dtbo.img
+# The device trees are built from source too, from kernel/sony/sm6450-devicetrees
+# (Sony's copyleft device tree release), which the kernel picks up through
+# arch/arm64/boot/dts/vendor. The build compiles the base DTBs and the board and
+# techpack overlays, merge_dtbs.py folds the techpack overlays into the board
+# ones, and the result becomes dtb.img (inside vendor_boot.img, with boot header
+# v4) and dtbo.img. The wildcards keep the other SoCs in Sony's release out of
+# the images; only parrot is enabled in the kernel config anyway.
+BOARD_INCLUDE_DTB_IN_BOOTIMG := true
+BOARD_USES_QCOM_MERGE_DTBS_SCRIPT := true
+TARGET_NEEDS_DTBOIMAGE := true
+TARGET_MERGE_DTBS_WILDCARD := parrot*
+TARGET_MERGE_DTBOS_WILDCARD := parrot*
 
 # Kernel modules, with stock's load lists and order (the default alphabetical
 # order breaks drivers that must probe in sequence). The vendor_boot ramdisk

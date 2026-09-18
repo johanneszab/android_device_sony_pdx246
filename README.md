@@ -1,8 +1,8 @@
 # LineageOS 23.2 for the Sony Xperia 10 VI (pdx246)
 
-An unofficial port, built and used daily on the author's device. The kernel is
-built from source; the proprietary parts come from a stock firmware dump that
-you supply yourself.
+An unofficial port, built and used daily on the author's device. The kernel,
+the vendor modules and the device trees are built from source; the proprietary
+parts come from a stock firmware dump that you supply yourself.
 
 The engineering log of the port - why things are the way they are, what was
 tried, what is still open - lives in a separate repository,
@@ -27,7 +27,6 @@ Not working or absent:
 | FM radio | Never worked. The stock device tree has no node for the tuner chip, so the driver finds no device. |
 | Tap to wake | Not possible with this touch firmware: the controller reports gesture id 0, so the driver can never tell a double tap from anything else. |
 | Firefox (156 and newer) | Crashes at startup, on this port and on any Android 16 device: it targets SDK 37 and calls a hidden `MessageQueue` method the platform blocks. Not a port problem; other browsers work. |
-| Device trees | `prebuilts/dtb.img` and `prebuilts/dtbo.img` are still the stock binaries. Everything else, kernel and all 351 vendor modules, is built from source. |
 
 Two things to know before you install it: the build uses AOSP test keys (so it
 is not a "secure" release build), and an occasional crash of the vendor audio
@@ -58,12 +57,15 @@ The kernel repos are separate because the kernel is built from source:
 | `device/sony/pdx246` | `android_device_sony_pdx246` | `lineage-23.2` |
 | `kernel/sony/sm6450` | `android_kernel_sony_sm6450` | `pdx246` |
 | `kernel/sony/sm6450-modules` | `android_kernel_sony_sm6450-modules` | `lineage-23.2` |
+| `kernel/sony/sm6450-devicetrees` | `android_kernel_sony_sm6450-devicetrees` | `lineage-23.2` |
 
 The kernel is a fork of LineageOS's `android_kernel_sony_sm8450` (its
 `lineage-23.2` branch is that upstream unchanged; `pdx246` adds this device's
 drivers and config). The modules repo holds Sony's vendor module sources plus
-LineageOS's WLAN driver. SM6450 is this device's SoC — do not confuse it with
-the sm8450 devices (Xperia 1 IV, 5 IV).
+LineageOS's WLAN driver. The devicetrees repo is Sony's copyleft device tree
+release; the kernel picks it up through `arch/arm64/boot/dts/vendor`, so it has
+to sit next to the kernel under that exact name. SM6450 is this device's SoC —
+do not confuse it with the sm8450 devices (Xperia 1 IV, 5 IV).
 
 ## Checkout
 
@@ -88,6 +90,8 @@ in this repo; its content is:
            remote="johanneszab" revision="pdx246" />
   <project path="kernel/sony/sm6450-modules" name="android_kernel_sony_sm6450-modules"
            remote="johanneszab" revision="lineage-23.2" />
+  <project path="kernel/sony/sm6450-devicetrees" name="android_kernel_sony_sm6450-devicetrees"
+           remote="johanneszab" revision="lineage-23.2" />
 
   <project path="hardware/sony" name="LineageOS/android_hardware_sony"
            remote="github" />
@@ -95,7 +99,7 @@ in this repo; its content is:
 ```
 
 `lineage.dependencies` in this repo only names `hardware/sony`, because
-roomservice can only fetch repos owned by the LineageOS organisation. The three
+roomservice can only fetch repos owned by the LineageOS organisation. The four
 repos above therefore have to come from the local manifest.
 
 The kernel repo carries the full upstream history and is about 3.8 GB. Add
@@ -108,7 +112,6 @@ does not.
 ./device/sony/pdx246/setup.sh /path/to/stock/dump
 source build/envsetup.sh
 lunch lineage_pdx246-trunk_staging-userdebug
-rm -f out/target/product/pdx246/{boot,vendor_boot}.img
 mka bacon && m superimage
 ```
 
@@ -129,13 +132,12 @@ for p in device/sony/pdx246/patches/aosp/*.patch; do
 done
 ```
 
-Four points about that build invocation:
+Three points about that build invocation:
 
 | | why |
 |---|---|
 | `lunch lineage_pdx246-...` in full | `breakfast pdx246` and `brunch pdx246` take the release from `vendor/lineage/vars/aosp_target_release` (currently `bp4a`) and silently build a different release configuration. |
 | `-userdebug`, never `-eng` | `eng` disables dexpreopt, and the first boot then compiles the boot classpath on the device for over two hours. |
-| `rm -f ...vendor_boot.img` | The stock dtb reaches mkbootimg through `BOARD_MKBOOTIMG_ARGS`, which ninja does not track. With boot header v4 the dtb rides in `vendor_boot.img`, so a changed `prebuilts/dtb.img` otherwise ships stale. |
 | a default `OUT_DIR` | A custom `OUT_DIR` breaks soong bootstrap for `test_package` modules. Move an old `out/` aside instead. |
 
 This builds the release configuration: LineageOS sets `ro.adb.secure=1` and

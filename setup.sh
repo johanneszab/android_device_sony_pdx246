@@ -30,19 +30,29 @@ die()   { printf '%s[x]%s %s\n'   "$RED" "$RST" "$*" >&2; exit 1; }
 [ -d "$DEVICE_PATH" ] \
     || die "$DEVICE_PATH missing -- add it to your local manifest and repo sync"
 
-# The kernel is built from source and BoardConfig.mk includes hardware/sony's
-# sepolicy, so these three have to be in the tree before anything else works.
-# They come from the local manifest in README.md, not from lineage.dependencies
-# (roomservice can only fetch repos owned by the LineageOS organisation).
+# The kernel, its modules and the device trees are built from source, and
+# BoardConfig.mk includes hardware/sony's sepolicy, so these four have to be in
+# the tree before anything else works. They come from the local manifest in
+# README.md, not from lineage.dependencies (roomservice can only fetch repos
+# owned by the LineageOS organisation).
 for p in kernel/sony/sm6450/Makefile \
          kernel/sony/sm6450-modules/qcom/opensource \
+         kernel/sony/sm6450-devicetrees/qcom/parrot.dtsi \
          hardware/sony/sepolicy/qti/SEPolicy.mk; do
     [ -e "$p" ] || die "missing: $p
 
-The local manifest in $DEVICE_PATH/README.md brings in the device tree, the two
-kernel repos (kernel/sony/sm6450 and kernel/sony/sm6450-modules) and
-hardware/sony. Copy it to .repo/local_manifests/pdx246.xml and repo sync."
+The local manifest in $DEVICE_PATH/README.md brings in the device tree, the
+three kernel repos (kernel/sony/sm6450, kernel/sony/sm6450-modules and
+kernel/sony/sm6450-devicetrees) and hardware/sony. Copy it to
+.repo/local_manifests/pdx246.xml and repo sync."
 done
+
+# The kernel reaches the device trees through a relative symlink, so they have
+# to sit next to it under exactly that name.
+[ -e kernel/sony/sm6450/arch/arm64/boot/dts/vendor/qcom/parrot.dtsi ] \
+    || die "kernel/sony/sm6450/arch/arm64/boot/dts/vendor does not resolve.
+It is a symlink to ../../../../../sm6450-devicetrees; check that
+kernel/sony/sm6450-devicetrees is checked out under that exact name." 
 
 # The kernel config fragments BoardConfig.mk names, in the kernel repo.
 for c in gki_defconfig vendor/parrot_GKI.config vendor/sony/columbia.config; do
@@ -177,7 +187,6 @@ $(printf '%s==>%s') Setup complete. To build:
 
     source build/envsetup.sh
     lunch lineage_${DEVICE}-trunk_staging-userdebug
-    rm -f out/target/product/${DEVICE}/{boot,vendor_boot}.img
     mka bacon && m superimage
 
 Spell the lunch target out. 'breakfast ${DEVICE}' and 'brunch ${DEVICE}' take the
@@ -193,11 +202,6 @@ to go back -- setting it to false still enables it.
 
 Do NOT build 'eng': it disables dexpreopt entirely and the first boot then
 spends 2+ hours compiling the boot classpath on device.
-
-The 'rm -f ...' is not optional -- --dtb is passed through BOARD_MKBOOTIMG_ARGS
-and is not a tracked dependency, so a changed prebuilts/dtb.img otherwise ships
-stale. With boot header v4 the dtb rides in vendor_boot.img, which is why that
-one matters most.
 
 Flashing: see $DEVICE_PATH/README.md and the flash.sh next to the built images.
 EOF
