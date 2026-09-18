@@ -5,11 +5,6 @@
 
 DEVICE_PATH := device/sony/pdx246
 
-# Sony's ramdump tooling in kernel/sony/pdx246-modules ships a soong plugin.
-# Soong rejects plugins it does not already know about, and that repo is
-# repo-synced, so allow-list it here instead of patching it there.
-BUILD_BROKEN_PLUGIN_VALIDATION += soong-somc_platform_flag_default
-
 # A/B
 AB_OTA_UPDATER := true
 AB_OTA_PARTITIONS += \
