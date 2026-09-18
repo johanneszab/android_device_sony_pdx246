@@ -147,10 +147,64 @@ building; adb then works without the prompt, also when the UI does not come up,
 and the build stays debuggable. It is an `ifdef`, so `unset WITH_ADB_INSECURE`
 to go back — setting it to `false` still enables it.
 
-## Flashing
+## Installing
 
-`flash.sh` next to the built images does the whole sequence. The essentials, if
-you flash by hand:
+The build produces two things you can install: a flashable zip
+(`lineage-23.2-<date>-UNOFFICIAL-pdx246.zip`, an A/B payload) and the raw
+partition images. Install the zip through LineageOS Recovery; that is the
+path an end user takes, and the only one that exercises `update_engine`, so
+it is also what later updates will use. The raw images are the development
+path — see the next section.
+
+### Once per device, before the first install
+
+The Xperia 10 VI has two slots, and LineageOS only ever writes one of them.
+Whatever firmware the other slot holds stays there: on a phone that has been
+updated a few times, that can be much older than the active slot, and booting
+into it can range from "no modem" to a hard brick. Sony's own official
+LineageOS devices (pdx203, pdx206, pdx214, pdx215, pdx223, pdx224, pdx225,
+pdx234, pdx235, pdx237, pdx245, pdx257 — all of them) carry this same step,
+and it exists because this is not a hypothetical.
+
+Copy the active slot's firmware onto the inactive one, once:
+
+1. Unlock the bootloader (Sony's official unlock — it wipes the device).
+2. Boot LineageOS Recovery.
+3. Download
+   [`copy-partitions-20220613-signed.zip`](https://mirrorbits.lineageos.org/tools/copy-partitions-20220613-signed.zip).
+4. On the phone choose *Apply update* → *Apply from ADB*, then on the host:
+
+   ```bash
+   adb -d sideload copy-partitions-20220613-signed.zip
+   ```
+
+5. *Advanced* → *Reboot to recovery*.
+
+You never need to repeat this on the same phone. (The script is by the
+LineageOS developers erfanoabdi and filipepferraz.)
+
+### Installing the zip
+
+From LineageOS Recovery, with the phone showing *Apply from ADB*:
+
+```bash
+adb -d sideload lineage-23.2-<date>-UNOFFICIAL-pdx246.zip
+```
+
+Then *Reboot system now*. Coming from stock, factory reset first
+(*Factory reset* → *Format data/factory reset*); the stock userdata is
+encrypted with keys this build does not have.
+
+If you use GApps, sideload them **before** the first boot, in the same
+recovery session — `update_engine` has just replaced the partitions they live
+on. Booting once in between leaves GMS installed but unprivileged, which looks
+like it works and then fails in odd ways.
+
+## Flashing the built images directly
+
+This is the development path: it writes the raw images over fastboot and skips
+`update_engine` entirely. `flash.sh`, next to the built images, does the whole
+sequence. The essentials, if you flash by hand:
 
 - Unlock the bootloader first (Sony's official unlock; it wipes the device).
 - Flash every partition with an explicit `_a` suffix and finish with
@@ -163,6 +217,9 @@ you flash by hand:
 
 `flash.sh` covers recovery, the first boot after a data wipe and the retry
 behaviour this device needs; read it before flashing by hand.
+
+Because this path only ever writes slot a, it does not keep the two slots in
+step — do the copy-partitions step above as well.
 
 ## Reporting problems
 
