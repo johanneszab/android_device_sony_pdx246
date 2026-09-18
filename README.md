@@ -178,7 +178,18 @@ Copy the active slot's firmware onto the inactive one, once:
    adb -d sideload copy-partitions-20220613-signed.zip
    ```
 
-5. *Advanced* → *Reboot to recovery*.
+5. *Advanced* → *Reboot to recovery*. **Not optional**, and it is the step
+   that is easy to skip: copying the partitions leaves the logical
+   partitions mapped, and `update_engine` refuses to install an OTA in that
+   state with
+
+   ```
+   ERROR: recovery: Logical partitions are mapped. Please reboot recovery
+   before installing an OTA update
+   ```
+
+   You find out only after sending the whole package, so skipping it costs
+   a full transfer.
 
 You never need to repeat this on the same phone. (The script is by the
 LineageOS developers erfanoabdi and filipepferraz.)
@@ -191,13 +202,22 @@ From LineageOS Recovery, with the phone showing *Apply from ADB*:
 adb -d sideload lineage-23.2-<date>-UNOFFICIAL-pdx246.zip
 ```
 
+Watch the phone, not the terminal: `adb sideload` prints `Total xfer: 1.00x`
+and exits 0 once the package has been *sent*, whether or not recovery then
+installed it. A refused package looks exactly like a successful one on the
+host. The screen shows the install progress and any `ERROR:` line, so treat
+it as the result — this matters if you script the sequence.
+
 Then *Reboot system now*. Coming from stock, factory reset first
 (*Factory reset* → *Format data/factory reset*); the stock userdata is
 encrypted with keys this build does not have.
 
-If you use GApps, sideload them **before** the first boot, in the same
-recovery session — `update_engine` has just replaced the partitions they live
-on. Booting once in between leaves GMS installed but unprivileged, which looks
+If you use GApps, sideload them **before** the first boot — but recovery
+will ask you to reboot *recovery* first, for the same reason as above, and
+that is fine: rebooting recovery is not booting Android. What you must not do
+is boot the system in between, because `update_engine` has just replaced the
+partitions GApps live on, and booting once leaves GMS installed from
+`/data` but unprivileged, with no privapp-permissions whitelist. It looks
 like it works and then fails in odd ways.
 
 ## Flashing the built images directly
