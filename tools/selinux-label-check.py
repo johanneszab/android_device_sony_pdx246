@@ -17,7 +17,9 @@ import re
 import subprocess
 
 # The stock firmware dump (dumpyara); set PDX246_STOCK_DUMP to use another one.
-DUMP = os.environ.get("PDX246_STOCK_DUMP", "/run/media/jmeyer/android/dumpyara/working/FILE_21036843")
+DUMP = os.environ.get("PDX246_STOCK_DUMP", "")
+if not DUMP:
+    raise SystemExit("set PDX246_STOCK_DUMP to an extracted stock firmware dump")
 OUT = "out/target/product/pdx246"
 # Labels that give an executable no domain of its own.
 GENERIC = {"vendor_file", "vendor_toolbox_exec", "odm_file", "-"}

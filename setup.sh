@@ -199,6 +199,5 @@ and is not a tracked dependency, so a changed prebuilts/dtb.img otherwise ships
 stale. With boot header v4 the dtb rides in vendor_boot.img, which is why that
 one matters most.
 
-Flashing: $DEVICE_PATH/README.md has the short version, and the "Flashing"
-section of $DEVICE_PATH/PORTING-NOTES.md the full sequence.
+Flashing: see $DEVICE_PATH/README.md and the flash.sh next to the built images.
 EOF

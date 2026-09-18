@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# SPDX-FileCopyrightText: The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
 # Flash pdx246. Handles this host's flaky USB by waiting for the device and
 # retrying each step. Safe to re-run: every step is idempotent.
 #

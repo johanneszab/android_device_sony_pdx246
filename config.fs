@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: The LineageOS Project
+# SPDX-License-Identifier: Apache-2.0
+
 [AID_VENDOR_QTI_DIAG]
 value:2901
 

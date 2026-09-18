@@ -34,7 +34,7 @@
   <project path="device/sony/pdx246"
            name="android_device_sony_pdx246"
            remote="johanneszab"
-           revision="bringup" />
+           revision="lineage-23.2" />
 
   <!-- TARGET_KERNEL_SOURCE points here. -->
   <project path="kernel/sony/sm6450"

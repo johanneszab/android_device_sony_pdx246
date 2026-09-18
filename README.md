@@ -4,10 +4,11 @@ An unofficial port, built and used daily on the author's device. The kernel is
 built from source; the proprietary parts come from a stock firmware dump that
 you supply yourself.
 
-[PORTING-NOTES.md](PORTING-NOTES.md) is the engineering log of the port: why
-things are the way they are, what was tried, and what is still open. Its
-">>> PICK UP HERE <<<" section is the current state. Paths in it refer to the
-author's machine.
+The engineering log of the port - why things are the way they are, what was
+tried, what is still open - lives in a separate repository,
+`android_device_sony_pdx246_notes`. It is a working log full of machine-specific
+paths rather than documentation, so it is kept out of this repo; ask if you want
+access.
 
 ## State of the port
 
@@ -47,13 +48,14 @@ audio works.
    redistributable, so they are not part of any of these repos. The current
    state was built from `XQ-ES54_EEA-user 16 70.2.A.4.168`
    (`070002A004016801749288677`). A different firmware version may work but has
-   not been tested; PORTING-NOTES.md describes how a wrong dump shows up.
+   not been tested. A wrong dump usually shows up as a boot that stops before
+   the UI, or as missing telephony.
 
 The kernel repos are separate because the kernel is built from source:
 
 | Path | Repo | Branch |
 |---|---|---|
-| `device/sony/pdx246` | `android_device_sony_pdx246` | `bringup` |
+| `device/sony/pdx246` | `android_device_sony_pdx246` | `lineage-23.2` |
 | `kernel/sony/sm6450` | `android_kernel_sony_sm6450` | `pdx246` |
 | `kernel/sony/sm6450-modules` | `android_kernel_sony_sm6450-modules` | `lineage-23.2` |
 
@@ -81,7 +83,7 @@ in this repo; its content is:
   <remote name="johanneszab" fetch="https://github.com/johanneszab" />
 
   <project path="device/sony/pdx246" name="android_device_sony_pdx246"
-           remote="johanneszab" revision="bringup" />
+           remote="johanneszab" revision="lineage-23.2" />
   <project path="kernel/sony/sm6450" name="android_kernel_sony_sm6450"
            remote="johanneszab" revision="pdx246" />
   <project path="kernel/sony/sm6450-modules" name="android_kernel_sony_sm6450-modules"
@@ -157,8 +159,8 @@ you flash by hand:
   If you use GApps, reboot to recovery and sideload them again before booting.
 - A `fastboot reboot` may print `usb_read failed`. The phone reboots anyway.
 
-The "Flashing" section of PORTING-NOTES.md has the full sequence, including
-recovery, the first boot after a data wipe, and what to do when a boot fails.
+`flash.sh` covers recovery, the first boot after a data wipe and the retry
+behaviour this device needs; read it before flashing by hand.
 
 ## Reporting problems
 

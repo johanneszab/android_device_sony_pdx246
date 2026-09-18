@@ -78,7 +78,7 @@
          Verified 2026-09-10: Jelly got a real gps fix (hAcc 8.9 m) through it.
          With this false, CurrentUserServiceSupplier.retrieveExplicitPackage()
          returns config_fusedLocationProviderPackageName, which is AOSP's.
-         See PORTING-NOTES.md "FIXED (2026-09-10): websites got no location". -->
+         See the notes repo, "FIXED (2026-09-10): websites got no location". -->
     <bool name="config_enableFusedLocationOverlay" translatable="false">false</bool>
 
     <!-- Adaptive brightness, from stock's framework-res product RRO, which wins
