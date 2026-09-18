@@ -21,10 +21,17 @@ PRODUCT_MODEL := XQ-ES54
 
 PRODUCT_GMS_CLIENTID_BASE := android-sonymobile
 
+# Stock's own values, from product/etc/build.prop of the
+# XQ-ES54_EEA-user 16 70.2.A.4.168 dump the blobs come from:
+#   ro.build.description, ro.build.fingerprint, ro.product.device,
+#   ro.product.name. The fingerprint's third field is the device
+#   (XQ-ES54) and its second is the product (XQ-ES54_EEA); DeviceName
+#   and DeviceProduct have to match those, or the props next to the
+#   fingerprint disagree with it.
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    BuildDesc="XQ-ES54_EEA-user 16 70.3.A.4.168 070002A004016801749288677 release-keys" \
-    BuildFingerprint=Sony/XQ-ES54_EEA/XQ-ES54:14/70.0.A.3.169/070000A003016900523174845:user/release-keys \
+    BuildDesc="XQ-ES54_EEA-user 16 70.2.A.4.168 070002A004016801749288677 release-keys" \
+    BuildFingerprint=Sony/XQ-ES54_EEA/XQ-ES54:16/70.2.A.4.168/070002A004016801749288677:user/release-keys \
     DeviceName=XQ-ES54 \
-    DeviceProduct=XQ-ES54 \
+    DeviceProduct=XQ-ES54_EEA \
     SystemDevice=XQ-ES54 \
-    SystemName=XQ-ES54
+    SystemName=XQ-ES54_EEA
