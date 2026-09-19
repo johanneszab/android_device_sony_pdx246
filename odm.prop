@@ -13,3 +13,14 @@ ro.com.android.prov_mobiledata=false
 ro.lmk.critical_available_threshold=12
 ro.vendor.qti.va_odm.support=1
 
+# SKU
+# The bootloader hands each unit its market code in ro.boot.hardware.sku, and
+# Sony's own odm customization files turn that into the model: c999990 and
+# seven others chain to XQ-ES54_EEA/config.prop, c001526, c001707 and c001884
+# to XQ-ES72/config.prop. extract-files.py rewrites those from
+# ro.product.vendor.* to ro.product.odm.*, so putting odm first in the source
+# order lets them win over the values this build generates, and an XQ-ES72
+# then reports itself as one -- which is also what makes Sony's twenty
+# device="XQ-ES72" carrier_config blocks apply. Same two lines as pdx257.
+ro.product.property_source_order=odm,product,vendor,system_ext,system
+import /odm/etc/customization/${ro.boot.hardware.sku}/config.prop

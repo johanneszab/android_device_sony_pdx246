@@ -21,6 +21,15 @@ AB_OTA_PARTITIONS += \
     vendor_boot \
     vendor_dlkm
 
+# One build serves the XQ-ES54 and the XQ-ES72, and odm.prop makes each report
+# its own model, so the flashable zip has to accept both. This writes
+# ota_override_device into misc_info.txt (build/make/core/Makefile), which
+# becomes the package's pre-device list; recovery compares ro.product.device
+# against it and splits on '|' (bootable/recovery/install/install.cpp). Without
+# it the zip would carry only whichever model this build was configured as, and
+# would be refused on the other one.
+TARGET_OTA_ASSERT_DEVICE := pdx246|XQ-ES54|XQ-ES72
+
 # Architecture
 # Stock runs ro.zygote=zygote64_32, and ~100 vendor components (wfdservice,
 # the CAS/OMX HALs, the soundtrigger impl, ssgqmigd) ship 32-bit only, so the
