@@ -33,22 +33,56 @@ is not a "secure" release build), and an occasional crash of the vendor audio
 HAL at boot has been seen once in about forty boots. It restarts itself and
 audio works.
 
+## Supported variants
+
+| Model | Market | Tested |
+|---|---|---|
+| `XQ-ES54` | EEA (Europe) | yes, this is the author's device |
+| `XQ-ES72` | Hong Kong, Taiwan, Singapore, Malaysia, Thailand, Vietnam, Macau | no, see below |
+
+One build serves both, because the two are the same device with a different
+sticker. Comparing Sony's `70.2.A.4.168` firmware for each, byte for byte:
+`vendor` (3437 files), `system_ext` (1830), `vendor_dlkm` (274), `odm` (47) and
+`system` (2981) are **identical**, and of the 3208 blobs this port extracts,
+3207 are identical. The single exception is the NFC RF tuning table, and the
+phone picks the right one by itself at runtime: the NFC HAL reads
+`/sys/devices/platform/HardwareInfo/modem_id` and loads
+`/vendor/etc/libnfc-nxp_RF_C2.conf` on an `XQ-ES72` instead of
+`/vendor/libnfc-nxp_RF.conf`. Both files ship.
+
+What an `XQ-ES72` does **not** get right, because the build carries one
+identity for everyone and it is the author's:
+
+- *Settings > About phone* reports the model as `XQ-ES54`.
+- Sony's carrier configuration is keyed on the model, so nine settings meant
+  for the `XQ-ES72` are missed: VoNR stays enabled where stock disables it on
+  Hong Kong (454-12/13/30), Malaysia (502-12), Thailand (520-01/03) and
+  Singapore (525-03/05), and 5G NR availability is not cleared on Vietnam
+  (452). Everything else about mobile data and calls is shared.
+
+Nobody on this port owns an `XQ-ES72`, so the above is what a firmware
+comparison can establish and no more: it has never been booted on one. If you
+have that model, a report either way is welcome. The `XQ-ES44` is deliberately
+not claimed.
+
 ## What you need
 
 1. **A LineageOS 23.2 tree.** About 220 GB for `.repo` plus the checkout, and
    another ~210 GB for `out/`, so plan for roughly 450 GB free. A full build
    takes about three hours on a 20-core machine.
-2. **This device tree and the two kernel repos**, via the local manifest below.
-   They are all the port needs on top of the LineageOS default manifest, plus
-   `hardware/sony`, which the default manifest does not carry.
+2. **This device tree and the three kernel repos**, via the local manifest
+   below. They are all the port needs on top of the LineageOS default
+   manifest, plus `hardware/sony`, which the default manifest does not carry.
 3. **A stock firmware dump** for this exact device, extracted (for example with
    [dumpyara](https://github.com/AndroidDumps/dumpyara)), with `vendor/`,
    `system/`, `product/` and `odm/` at its top level. Blobs are not
    redistributable, so they are not part of any of these repos. The current
    state was built from `XQ-ES54_EEA-user 16 70.2.A.4.168`
-   (`070002A004016801749288677`). A different firmware version may work but has
-   not been tested. A wrong dump usually shows up as a boot that stops before
-   the UI, or as missing telephony.
+   (`070002A004016801749288677`). The matching `XQ-ES72` firmware works just as
+   well as a source: every blob this port takes is identical between the two
+   except the NFC RF table, which is selected at runtime anyway. A different
+   firmware *version* may work but has not been tested. A wrong dump usually
+   shows up as a boot that stops before the UI, or as missing telephony.
 
 The kernel repos are separate because the kernel is built from source:
 
