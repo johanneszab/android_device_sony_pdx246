@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# SPDX-FileCopyrightText: The LineageOS Project
+# SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
 # SPDX-License-Identifier: Apache-2.0
 #
 # One-shot setup for a pdx246 (Sony Xperia 10 VI) build.
