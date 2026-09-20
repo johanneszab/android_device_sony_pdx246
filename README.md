@@ -1,14 +1,8 @@
 # LineageOS 23.2 for the Sony Xperia 10 VI (pdx246)
 
-An unofficial port, built and used daily on the author's device. The kernel,
+An unofficial port, as close to the official LinageOS charter as possible. The kernel,
 the vendor modules and the device trees are built from source; the proprietary
 parts come from a stock firmware dump that you supply yourself.
-
-The engineering log of the port - why things are the way they are, what was
-tried, what is still open - lives in a separate repository,
-`android_device_sony_pdx246_notes`. It is a working log full of machine-specific
-paths rather than documentation, so it is kept out of this repo; ask if you want
-access.
 
 ## State of the port
 
@@ -19,19 +13,6 @@ five cameras with photo and video, hardware video decoding, the fingerprint
 sensor, sensors, the vibrator, charging with LineageOS charging control,
 LiveDisplay, and suspend on battery (98% asleep with the screen off). SELinux
 is enforcing.
-
-Not working or absent:
-
-| | |
-|---|---|
-| FM radio | Never worked. The stock device tree has no node for the tuner chip, so the driver finds no device. |
-| Tap to wake | Not possible with this touch firmware: the controller reports gesture id 0, so the driver can never tell a double tap from anything else. |
-| Firefox (156 and newer) | Crashes at startup, on this port and on any Android 16 device: it targets SDK 37 and calls a hidden `MessageQueue` method the platform blocks. Not a port problem; other browsers work. |
-
-Two things to know before you install it: the build uses AOSP test keys (so it
-is not a "secure" release build), and an occasional crash of the vendor audio
-HAL at boot has been seen once in about forty boots. It restarts itself and
-audio works.
 
 ## Supported variants
 
@@ -59,11 +40,6 @@ identity for everyone and it is the author's:
   Hong Kong (454-12/13/30), Malaysia (502-12), Thailand (520-01/03) and
   Singapore (525-03/05), and 5G NR availability is not cleared on Vietnam
   (452). Everything else about mobile data and calls is shared.
-
-Nobody on this port owns an `XQ-ES72`, so the above is what a firmware
-comparison can establish and no more: it has never been booted on one. If you
-have that model, a report either way is welcome. The `XQ-ES44` is deliberately
-not claimed.
 
 ## What you need
 
@@ -166,29 +142,11 @@ for p in device/sony/pdx246/patches/aosp/*.patch; do
 done
 ```
 
-Three points about that build invocation:
-
-| | why |
-|---|---|
-| `lunch lineage_pdx246-...` in full | `breakfast pdx246` and `brunch pdx246` take the release from `vendor/lineage/vars/aosp_target_release` (currently `bp4a`) and silently build a different release configuration. |
-| `-userdebug`, never `-eng` | `eng` disables dexpreopt, and the first boot then compiles the boot classpath on the device for over two hours. |
-| a default `OUT_DIR` | A custom `OUT_DIR` breaks soong bootstrap for `test_package` modules. Move an old `out/` aside instead. |
-
-This builds the release configuration: LineageOS sets `ro.adb.secure=1` and
-`ro.debuggable=0`, so USB debugging needs the prompt on the phone and `adb root`
-is unavailable. For bring-up work, `export WITH_ADB_INSECURE=true` before
-building; adb then works without the prompt, also when the UI does not come up,
-and the build stays debuggable. It is an `ifdef`, so `unset WITH_ADB_INSECURE`
-to go back — setting it to `false` still enables it.
-
 ## Installing
 
 The build produces two things you can install: a flashable zip
 (`lineage-23.2-<date>-UNOFFICIAL-pdx246.zip`, an A/B payload) and the raw
-partition images. Install the zip through LineageOS Recovery; that is the
-path an end user takes, and the only one that exercises `update_engine`, so
-it is also what later updates will use. The raw images are the development
-path — see the next section.
+partition images.
 
 ### Once per device, before the first install
 
@@ -222,12 +180,6 @@ Copy the active slot's firmware onto the inactive one, once:
    before installing an OTA update
    ```
 
-   You find out only after sending the whole package, so skipping it costs
-   a full transfer.
-
-You never need to repeat this on the same phone. (The script is by the
-LineageOS developers erfanoabdi and filipepferraz.)
-
 ### Installing the zip
 
 From LineageOS Recovery, with the phone showing *Apply from ADB*:
@@ -236,48 +188,8 @@ From LineageOS Recovery, with the phone showing *Apply from ADB*:
 adb -d sideload lineage-23.2-<date>-UNOFFICIAL-pdx246.zip
 ```
 
-Watch the phone, not the terminal: `adb sideload` prints `Total xfer: 1.00x`
-and exits 0 once the package has been *sent*, whether or not recovery then
-installed it. A refused package looks exactly like a successful one on the
-host. The screen shows the install progress and any `ERROR:` line, so treat
-it as the result — this matters if you script the sequence.
-
 Then *Reboot system now*. Coming from stock, factory reset first
 (*Factory reset* → *Format data/factory reset*); the stock userdata is
 encrypted with keys this build does not have.
 
-If you use GApps, sideload them **before** the first boot — but recovery
-will ask you to reboot *recovery* first, for the same reason as above, and
-that is fine: rebooting recovery is not booting Android. What you must not do
-is boot the system in between, because `update_engine` has just replaced the
-partitions GApps live on, and booting once leaves GMS installed from
-`/data` but unprivileged, with no privapp-permissions whitelist. It looks
-like it works and then fails in odd ways.
-
-## Flashing the built images directly
-
-This is the development path: it writes the raw images over fastboot and skips
-`update_engine` entirely. `flash.sh`, next to the built images, does the whole
-sequence. The essentials, if you flash by hand:
-
-- Unlock the bootloader first (Sony's official unlock; it wipes the device).
-- Flash every partition with an explicit `_a` suffix and finish with
-  `fastboot --set-active=a`. The bootloader under-reports `has-slot`, and a
-  failed boot burns the slot retry counter until it falls over to the empty
-  slot b and red-states with "device is corrupt".
-- `fastboot flash super super.img` replaces the partitions that GApps live on.
-  If you use GApps, reboot to recovery and sideload them again before booting.
-- A `fastboot reboot` may print `usb_read failed`. The phone reboots anyway.
-
-`flash.sh` covers recovery, the first boot after a data wipe and the retry
-behaviour this device needs; read it before flashing by hand.
-
-Because this path only ever writes slot a, it does not keep the two slots in
-step — do the copy-partitions step above as well.
-
-## Reporting problems
-
-Include: the build you flashed, whether you used the same firmware dump version,
-`adb shell getprop ro.lineage.version`, and a `logcat -b all` from the boot. For
-kernel-side problems, `logcat -b kernel -d` carries the whole boot since the
-kernel log buffer was raised to 1 MB.
+If you use GApps, sideload them **before** the first boot

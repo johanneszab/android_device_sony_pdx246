@@ -128,28 +128,6 @@ Upstream has probably moved. Rebase the patch by hand, then re-run."
     fi
 done
 
-# ----------------------------------------------- 1b. pdx257 reference trees --
-# Only relevant if your tree also carries the pdx257 (Xperia 1 VI) trees, as the
-# author's does; this step does nothing otherwise.
-# device/sony/pdx257 and vendor/sony/pdx257, where present, are only a reference:
-# nothing in the pdx246 build uses them. soong parses every Android.bp in the
-# tree whatever the lunch target, and pdx257's vendor tree fails analysis here
-# (its vendor.libdpmframework links the system_ext copy of
-# com.qualcomm.qti.dpm.api@1.0, which has no vendor variant). A .find-ignore file
-# makes soong's finder skip its directory, so both trees are hidden instead of
-# patched; they go together because device/sony/pdx257/qcril-database refers to
-# the vendor tree. Delete the two files to build pdx257.
-info "Hiding the pdx257 reference trees from the build"
-for ref in device/sony/pdx257 vendor/sony/pdx257; do
-    [ -d "$ref" ] || continue
-    if [ -e "$ref/.find-ignore" ]; then
-        printf '    already hidden   %s\n' "$ref"
-    else
-        touch "$ref/.find-ignore"
-        printf '    hidden           %s\n' "$ref"
-    fi
-done
-
 # ------------------------------------------------------------- 2. the blobs --
 # extract-files.py regenerates vendor/sony/pdx246 ENTIRELY from
 # proprietary-files.txt, including Android.bp and pdx246-vendor.mk, and applies
@@ -188,20 +166,6 @@ $(printf '%s==>%s') Setup complete. To build:
     source build/envsetup.sh
     lunch lineage_${DEVICE}-trunk_staging-userdebug
     mka bacon && m superimage
-
-Spell the lunch target out. 'breakfast ${DEVICE}' and 'brunch ${DEVICE}' take the
-release from vendor/lineage/vars/aosp_target_release (currently bp4a) and build a
-different release configuration.
-
-That is the release configuration: LineageOS sets ro.adb.secure=1 and
-ro.debuggable=0, so USB debugging needs the prompt on the phone and 'adb root'
-is gone. For bring-up or debugging, 'export WITH_ADB_INSECURE=true' before
-building: adb then works without the prompt, also when the UI does not come
-up, and the build stays debuggable. It is an ifdef, so 'unset WITH_ADB_INSECURE'
-to go back -- setting it to false still enables it.
-
-Do NOT build 'eng': it disables dexpreopt entirely and the first boot then
-spends 2+ hours compiling the boot classpath on device.
 
 Flashing: see $DEVICE_PATH/README.md and the flash.sh next to the built images.
 EOF
