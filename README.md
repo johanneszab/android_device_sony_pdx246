@@ -4,6 +4,12 @@ An unofficial port, as close to the official LinageOS charter as possible. The k
 the vendor modules and the device trees are built from source; the proprietary
 parts come from a stock firmware dump that you supply yourself.
 
+__Note:__ This port is to large parts vide-coded. See the commits. I created the initial
+device tree, but Opus 5 fixed most of the blob / version issues. I'll likely only
+irregular create new updates, if at all. Keep that in mind in case of you're going to
+install one of the releases. However, as the releases are not signed, everyone with the
+code can create a new update and install it over the existing installation.
+
 ## State of the port
 
 Working: boot to the UI, display and touch, Wi-Fi (including the 5 GHz
