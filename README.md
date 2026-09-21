@@ -1,12 +1,12 @@
 # LineageOS 23.2 for the Sony Xperia 10 VI (pdx246)
 
-An unofficial port, as close to the official LinageOS charter as possible. The kernel,
+An unofficial port, as close to the official LineageOS charter as possible. The kernel,
 the vendor modules and the device trees are built from source; the proprietary
 parts come from a stock firmware dump that you supply yourself.
 
-__Note:__ This port is to large parts vide-coded. See the commits. I created the initial
+__Note:__ This port is in large parts vibe-coded. See the commits. I created the initial
 device tree, but Opus 5 fixed most of the blob / version issues. I'll likely only
-irregular create new updates, if at all. Keep that in mind in case of you're going to
+create new updates irregularly, if at all. Keep that in mind in case you're going to
 install one of the releases. However, as the releases are not signed, everyone with the
 code can create a new update and install it over the existing installation.
 
@@ -190,4 +190,4 @@ Then *Reboot system now*. Coming from stock, factory reset first
 (*Factory reset* → *Format data/factory reset*); the stock userdata is
 encrypted with keys this build does not have.
 
-If you use GApps, sideload them **before** the first boot
+If you use GApps, sideload them **before** the first boot.
