@@ -415,7 +415,6 @@ PRODUCT_CHARACTERISTICS := default
 
 # Rootdir
 PRODUCT_PACKAGES += \
-    AudioPlayback.sh \
     init.class_main.sh \
     init.crda.sh \
     init.mdm.sh \

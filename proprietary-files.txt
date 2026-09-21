@@ -2589,7 +2589,6 @@ vendor/app/CACertService/CACertService.apk
 vendor/app/CalibrationService/CalibrationService.apk
 vendor/app/CalibrationTool/CalibrationTool.apk
 vendor/app/TrustZoneAccessService/TrustZoneAccessService.apk
-vendor/bin/AudioTest
 vendor/bin/PalTest
 vendor/bin/PktRspTest
 vendor/bin/StoreKeybox

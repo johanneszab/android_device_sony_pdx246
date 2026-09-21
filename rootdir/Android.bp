@@ -5,12 +5,6 @@
 
 // Init scripts
 sh_binary {
-    name: "AudioPlayback.sh",
-    src: "bin/AudioPlayback.sh",
-    vendor: true,
-}
-
-sh_binary {
     name: "init.class_main.sh",
     src: "bin/init.class_main.sh",
     vendor: true,
