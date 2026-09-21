@@ -33,9 +33,9 @@ PRODUCT_PACKAGES += \
 # through it, and update_verifier and vold mark a good boot successful; without
 # it vold logged "not marking slot as successful" on every boot. Stock ships
 # the HIDL @1.2 service, which compatibility_matrix.6.android17 (our target
-# level) no longer lists. patches/aosp/hardware_qcom-caf_bootctrl.patch keeps
-# its gpt-utils off the generated kernel headers: in UFS BSG mode it needs only
-# headers bionic has, and Sony's 5.10 UAPI headers clash with bionic's sched.h.
+# level) no longer lists. It builds unmodified: gpt-utils includes the kernel's
+# generated UAPI headers, and those from kernel/sony/sm6450 no longer define
+# struct sched_param (Sony's 5.10 release did, which clashed with bionic).
 PRODUCT_PACKAGES += \
     android.hardware.boot-service.qti \
     android.hardware.boot-service.qti.recovery

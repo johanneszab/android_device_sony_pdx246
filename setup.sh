@@ -8,7 +8,7 @@
 # Takes a freshly `repo sync`ed LineageOS 23.2 tree plus a stock firmware dump
 # and leaves you ready to build. Safe to re-run: every step is idempotent.
 #
-# See README.md for the local manifest that brings in this device tree, the two
+# See README.md for the local manifest that brings in this device tree, the three
 # kernel repos and hardware/sony.
 #
 #   ./device/sony/pdx246/setup.sh /path/to/stock/dump
@@ -91,44 +91,7 @@ They are broken and carry no data, so deleting them is safe:
 then re-run this script."
 fi
 
-# --------------------------------------------------- 1. out-of-tree patches --
-# Changes to AOSP/LineageOS projects that a `repo sync` will revert. They are
-# device-specific enough that upstreaming them is not realistic, so they live
-# here and get re-applied.
-info "Applying out-of-tree patches"
-declare -A PATCH_PROJECT=(
-  [frameworks_native]="frameworks/native"
-  [system_sepolicy]="system/sepolicy"
-  [device_qcom_sepolicy]="device/qcom/sepolicy"
-  [device_qcom_sepolicy_vndr_sm8450]="device/qcom/sepolicy_vndr/sm8450"
-  [external_skia]="external/skia"
-  [external_google-highway]="external/google-highway"
-  [external_mdnsresponder]="external/mdnsresponder"
-  [external_XMP-Toolkit-SDK]="external/XMP-Toolkit-SDK"
-  [hardware_interfaces]="hardware/interfaces"
-  [hardware_qcom-caf_bootctrl]="hardware/qcom-caf/bootctrl"
-  [bionic]="bionic"
-)
-for name in "${!PATCH_PROJECT[@]}"; do
-    patch_file="$PWD/$DEVICE_PATH/patches/aosp/${name}.patch"
-    project="${PATCH_PROJECT[$name]}"
-    [ -f "$patch_file" ] || { warn "no patch file for $name, skipping"; continue; }
-    if [ ! -d "$project" ]; then
-        warn "project $project not in this tree, skipping ${name}.patch"
-        continue
-    fi
-    if git -C "$project" apply --reverse --check "$patch_file" >/dev/null 2>&1; then
-        printf '    already applied  %s\n' "$project"
-    elif git -C "$project" apply --check "$patch_file" >/dev/null 2>&1; then
-        git -C "$project" apply "$patch_file"
-        printf '    applied          %s\n' "$project"
-    else
-        die "${name}.patch does not apply to $project.
-Upstream has probably moved. Rebase the patch by hand, then re-run."
-    fi
-done
-
-# ------------------------------------------------------------- 2. the blobs --
+# ------------------------------------------------------------- 1. the blobs --
 # extract-files.py regenerates vendor/sony/pdx246 ENTIRELY from
 # proprietary-files.txt, including Android.bp and pdx246-vendor.mk, and applies
 # every blob_fixup. Nothing in vendor/ should ever be hand-edited: it is
@@ -141,7 +104,7 @@ info "(this rewrites vendor/${VENDOR}/${DEVICE} from scratch -- expect a few min
 PYTHONPATH="$PWD/tools/extract-utils${PYTHONPATH:+:$PYTHONPATH}" \
     python3 "$DEVICE_PATH/extract-files.py" "$DUMP"
 
-# ------------------------------------------------------------ 3. sanity check --
+# ------------------------------------------------------------ 2. sanity check --
 info "Verifying the results"
 fail=0
 check() { # path, description
@@ -164,7 +127,7 @@ cat <<EOF
 $(printf '%s==>%s') Setup complete. To build:
 
     source build/envsetup.sh
-    lunch lineage_${DEVICE}-trunk_staging-userdebug
+    lunch lineage_${DEVICE}-bp4a-userdebug
     mka bacon && m superimage
 
 Flashing: see $DEVICE_PATH/README.md and the flash.sh next to the built images.

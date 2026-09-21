@@ -127,26 +127,18 @@ does not.
 ```bash
 ./device/sony/pdx246/setup.sh /path/to/stock/dump
 source build/envsetup.sh
-lunch lineage_pdx246-trunk_staging-userdebug
+lunch lineage_pdx246-bp4a-userdebug
 mka bacon && m superimage
 ```
 
-`setup.sh` is idempotent and does three things: it re-applies the out-of-tree
-patches in `patches/aosp/`, regenerates `vendor/sony/pdx246` from your dump with
-`extract-files.py`, and checks that the blobs that used to break the boot are
-present. Run it again after every `repo sync`, because a sync reverts the
-patches.
+`setup.sh` is idempotent and does two things: it regenerates
+`vendor/sony/pdx246` from your dump with `extract-files.py`, and checks that the
+blobs that used to break the boot are present. The port changes nothing outside
+its own four repositories, so a `repo sync` leaves it intact and other devices in
+the same tree build exactly as upstream.
 
-The patches touch eleven upstream projects. `repo sync` will complain about
-those projects while the patches are applied; reverse them first, or let the
-sync overwrite them and re-run `setup.sh` afterwards:
-
-```bash
-for p in device/sony/pdx246/patches/aosp/*.patch; do
-    n=$(basename "$p" .patch)
-    git -C "${n//_//}" apply -R "$p" 2>/dev/null
-done
-```
+`bp4a` is the release configuration LineageOS itself builds 23.2 with (it is what
+`breakfast` picks, from `vendor/lineage/vars/aosp_target_release`).
 
 ## Installing
 
