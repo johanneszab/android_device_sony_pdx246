@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+# SPDX-License-Identifier: Apache-2.0
 """Check permissive SELinux denials against stock's and this build's policy (2026-09-12).
 
 For each denied permission in a logcat capture, a policy is compiled with

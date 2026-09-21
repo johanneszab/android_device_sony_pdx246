@@ -1,0 +1,244 @@
+# SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+# SPDX-License-Identifier: Apache-2.0
+
+# Copyright and licensing for the files that cannot say it themselves, or
+# whose content is only partly this project's. Files whose own header already
+# names every holder and licence are not listed. Entries with precedence
+# "aggregate" keep the file's own notices and add only what its header leaves
+# out: the Sony stock material in an overlay, the port's share, or the SPDX
+# licence identifier for a notice that has none.
+#
+# LicenseRef-Sony-Firmware marks material from Sony's stock firmware for which
+# this project holds no licence; see LICENSES/LicenseRef-Sony-Firmware.txt.
+# In a file with that identifier, the rest is under the other licence named and
+# belongs to the other holders named for that file, in the file itself or in
+# its annotation below: this project's comments and selection, or an
+# upstream's such as LineageOS or NXP, as each annotation says.
+
+version = 1
+SPDX-PackageName = "android_device_sony_pdx246"
+SPDX-PackageSupplier = "Johannes Meyer zum Alten Borgloh"
+SPDX-PackageDownloadLocation = "https://github.com/johanneszab/android_device_sony_pdx246"
+
+# Written for this port, in files that carry no header by convention.
+# proprietary-files.txt began as aospdtgen's list from the stock dump: the blob
+# paths are stock's, and the first line, most section headings and most entries
+# are still that generated output. The later curation, the added sections and
+# the comments are this project's.
+[[annotations]]
+path = [".gitignore", "README.md", "proprietary-files.txt", "sepolicy/vendor/README.md"]
+SPDX-FileCopyrightText = "Johannes Meyer zum Alten Borgloh"
+SPDX-License-Identifier = "Apache-2.0"
+
+# SELinux policy ported from stock. The types, labels and allow rules come from
+# stock's /odm and /vendor policy (odm_sepolicy.cil, vendor_sepolicy.cil and the
+# *_contexts files); the Wi-Fi IDD HAL attributes come from stock's /product
+# policy (product_sepolicy.cil). The /vendor policy also holds suppliers'
+# policy: the source markers in stock's context files name Qualcomm's and NXP's
+# trees next to Sony's, and the compiled .cil does not record whose each rule
+# is. The NFC and secure element rules (nxp* types, and hal_wired_se_hwservice
+# for vendor.nxp.nxpwiredse) may be NXP's. The comments, the selection and the
+# renaming are this project's: stock's names are mapped to the names that
+# hardware/sony/sepolicy and the QTI policy use for the same domains and
+# services (for example hal_idd_default is vendor_hal_idd_default and
+# nxpnfc_service is vendor_hal_nxpnfc_service), and stock's
+# hal_somc_wifi_idd_default is called somc_wifi_idd_hal_service here.
+[[annotations]]
+path = [
+    "sepolicy/vendor-after-sony/stock_attributes.te",
+    "sepolicy/vendor/attributes",
+    "sepolicy/vendor/charge_service.te",
+    "sepolicy/vendor/chargemon.te",
+    "sepolicy/vendor/file_contexts",
+    "sepolicy/vendor/genfs_contexts",
+    "sepolicy/vendor/hal_audio_default.te",
+    "sepolicy/vendor/hal_fingerprint_default.te",
+    "sepolicy/vendor/hal_nfc_default.te",
+    "sepolicy/vendor/hal_secure_element_default.te",
+    "sepolicy/vendor/hal_sensors_default.te",
+    "sepolicy/vendor/hal_somc_charger_daemon.te",
+    "sepolicy/vendor/hal_somc_thermal_daemon.te",
+    "sepolicy/vendor/hal_somc_wifidriver.te",
+    "sepolicy/vendor/hal_superstamina.te",
+    "sepolicy/vendor/hwservice.te",
+    "sepolicy/vendor/hwservice_contexts",
+    "sepolicy/vendor/idd.te",
+    "sepolicy/vendor/keyprovd.te",
+    "sepolicy/vendor/mlog_qmi_service.te",
+    "sepolicy/vendor/nfc.te",
+    "sepolicy/vendor/pip_firewall.te",
+    "sepolicy/vendor/pmic_key_reset.te",
+    "sepolicy/vendor/service.te",
+    "sepolicy/vendor/service_contexts",
+    "sepolicy/vendor/somc_check_ffu.te",
+    "sepolicy/vendor/somc_check_update.te",
+    "sepolicy/vendor/somc_wifi_idd_hal_service.te",
+    "sepolicy/vendor/spcdeld.te",
+    "sepolicy/vendor/stock_clients.te",
+    "sepolicy/vendor/stock_types.te",
+    "sepolicy/vendor/ta_qmi_service.te",
+    "sepolicy/vendor/tad.te",
+    "sepolicy/vendor/vendor_agmservice_qti.te",
+    "sepolicy/vendor/vendor_hal_idd_default.te",
+    "sepolicy/vendor/vendor_hal_secd_default.te",
+]
+precedence = "override"
+SPDX-FileCopyrightText = ["Sony Corporation", "Johannes Meyer zum Alten Borgloh"]
+SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-Sony-Firmware"
+
+# Property types ported from stock, with stock's names and classes. They are
+# Sony's, except vendor_strongbox_prop: stock's only label for it sits in the
+# section that stock's source marker names as NXP's
+# vendor/nxp/SNxxx/sepolicy/property_contexts. The comments, the selection and
+# the reclassified classes are this project's.
+[[annotations]]
+path = "sepolicy/vendor/property.te"
+precedence = "override"
+SPDX-FileCopyrightText = ["Sony Corporation", "NXP", "Johannes Meyer zum Alten Borgloh"]
+SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-Sony-Firmware"
+
+# Property labels from stock's odm_ and vendor_property_contexts. Their source
+# markers show where each came from: 20 lines from Sony's trees (the section
+# from device/somc/sepolicy_vndr carries "Copyright 2023 Sony Corporation"),
+# 2 from NXP's vendor/nxp/SNxxx, and 2 that sit in stock's copy of a Qualcomm
+# file but are not in Qualcomm's open copy. The comments are this project's.
+[[annotations]]
+path = "sepolicy/vendor/property_contexts"
+precedence = "override"
+SPDX-FileCopyrightText = ["2023 Sony Corporation", "NXP", "Johannes Meyer zum Alten Borgloh"]
+SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-Sony-Firmware"
+
+# Stock values: properties from stock's vendor, system, system_ext and odm
+# build.prop; in config.fs, the vendor AIDs from stock's vendor/etc/passwd and
+# the file modes and capabilities from its vendor/etc/fs_config_files; and a
+# selection of stock's ServiceWifiRes overlay values. The comments, the
+# selection and the changed ro.audio.ihaladaptervendorextension_enabled value in
+# system_ext.prop are this project's. odm.prop's ro.product.property_source_order
+# line is the same as in LineageOS's device/sony/pdx257, as its comment says.
+[[annotations]]
+path = [
+    "config.fs",
+    "odm.prop",
+    "system.prop",
+    "system_ext.prop",
+    "vendor.prop",
+    "overlay/SonyPDX246WifiRes/res/values/config.xml",
+]
+precedence = "override"
+SPDX-FileCopyrightText = ["Sony Corporation", "Johannes Meyer zum Alten Borgloh"]
+SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-Sony-Firmware"
+
+# Overlay files that started as LineageOS files (their notice stays in the
+# file) and hold values from Sony's stock overlays: framework-res overlay
+# values, TelephonyResCommon_Sys values, and the NFC SKU list, which LineageOS's
+# pdx234 (Xperia 1 V) added and pdx237 inherited; it equals the list in the
+# Xperia 5 V's stock NfcNci-273-yodo-res overlay (stock pdx246 ships no such
+# overlay).
+[[annotations]]
+path = [
+    "overlay/SonyPDX246FrameworksRes/res/values/config.xml",
+    "overlay/SonyPDX246NfcNciRes/res/values/arrays.xml",
+    "overlay/SonyPDX246TelephonyRes/res/values/config.xml",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Sony Corporation"
+SPDX-License-Identifier = "LicenseRef-Sony-Firmware"
+
+# Sony's carrier config database, unchanged: decompiled from Sony's
+# CarrierConfig-Platform-Overlay.apk and byte-identical to the copy in
+# LineageOS's device/sony/pdx257 (it matches stock pdx246's APK element for
+# element). No header, so the two stay comparable.
+[[annotations]]
+path = [
+    "overlay/SonyPDX246CarrierConfig/res/xml/vendor.xml",
+    "overlay/SonyPDX246CarrierConfig/res/xml/vendor_no_sim.xml",
+]
+precedence = "override"
+SPDX-FileCopyrightText = "Sony Corporation"
+SPDX-License-Identifier = "LicenseRef-Sony-Firmware"
+
+# The Xperia 5 V's (XQ-DE44) stock libnfc-nxp.conf, libnfc-nxp_RF.conf and
+# libnfc-nci.conf, concatenated (taken from LineageOS's device/sony/pdx237).
+# The comment skeleton is NXP's config template from hardware/nxp/nfc
+# (Apache-2.0); the values are Sony's.
+[[annotations]]
+path = "nfc/libnfc-nxp-typef.conf"
+precedence = "override"
+SPDX-FileCopyrightText = ["NXP", "Sony Corporation"]
+SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-Sony-Firmware"
+
+# The Linux Foundation's scripts and init files from stock, some with Sony's
+# changes. Each carries its owners' notices and the full licence text but no
+# SPDX identifier for it, so the identifier is stated here.
+[[annotations]]
+path = [
+    "rootdir/bin/init.class_main.sh",
+    "rootdir/bin/init.crda.sh",
+    "rootdir/bin/init.mdm.sh",
+    "rootdir/bin/init.qcom.class_core.sh",
+    "rootdir/bin/init.qcom.coex.sh",
+    "rootdir/bin/init.qcom.early_boot.sh",
+    "rootdir/bin/init.qcom.efs.sync.sh",
+    "rootdir/bin/init.qcom.post_boot.sh",
+    "rootdir/bin/init.qcom.sdio.sh",
+    "rootdir/bin/init.qcom.sensors.sh",
+    "rootdir/bin/init.qcom.sh",
+    "rootdir/bin/qca6234-service.sh",
+    "rootdir/etc/init.qcom.factory.rc",
+    "rootdir/etc/init.qti.ufs.rc",
+    "rootdir/etc/init.recovery.qcom.rc",
+]
+precedence = "aggregate"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+# Stock's init.qcom.rc and init.target.rc (their Linux Foundation and Sony
+# notices stay in the files) with this port's comments and a few commands it
+# added: the LiveDisplay hbm_mode chown; the SmartCharge activation, as in
+# LineageOS's device/sony/pdx257 init.sony.rc; the Wi-Fi log directories, as in
+# stock's supplicant rc; and the supplicant's user, groups and capabilities, as
+# in AOSP's supplicant rc. The port's additions are under the files'
+# BSD-3-Clause.
+[[annotations]]
+path = ["rootdir/etc/init.qcom.rc", "rootdir/etc/init.target.rc"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Johannes Meyer zum Alten Borgloh"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+# Linux Foundation files with Qualcomm Innovation Center changes under
+# BSD-3-Clause-Clear. init.qti.display_boot.sh and init.qcom.usb.sh are stock's
+# (usb.sh with Sony's changes); init.qcom.usb.rc is not stock's but QTI's
+# version from vendor/qcom/opensource/usb, unchanged.
+[[annotations]]
+path = [
+    "rootdir/bin/init.qcom.usb.sh",
+    "rootdir/bin/init.qti.display_boot.sh",
+    "rootdir/etc/init.qcom.usb.rc",
+]
+precedence = "aggregate"
+SPDX-License-Identifier = "BSD-3-Clause AND BSD-3-Clause-Clear"
+
+[[annotations]]
+path = "rootdir/etc/fstab.default"
+precedence = "aggregate"
+SPDX-License-Identifier = "BSD-3-Clause-Clear"
+
+# AOSP's notice with the Apache licence boilerplate but no SPDX identifier.
+[[annotations]]
+path = "overlay/SonyPDX246SystemUIRes/res/values/dimens.xml"
+precedence = "aggregate"
+SPDX-License-Identifier = "Apache-2.0"
+
+# LineageOS's roomservice list from device/sony/pdx257; the one entry left
+# (hardware/sony) is that file's first, unchanged. JSON cannot carry a header.
+[[annotations]]
+path = "lineage.dependencies"
+precedence = "override"
+SPDX-FileCopyrightText = "The LineageOS Project"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Deliberately not annotated: stock facts with nothing of this project's in
+# them, so there is no one to name. Module load lists (modules.load,
+# recovery.modules.load, vendor_dlkm.modules.load), stock property values
+# (product.prop) and stock pdx246's measured power profile
+# (overlay/SonyPDX246FrameworksRes/res/xml/power_profile.xml). system_dlkm.prop
+# holds no properties, only aospdtgen's "# Miscellaneous" heading.

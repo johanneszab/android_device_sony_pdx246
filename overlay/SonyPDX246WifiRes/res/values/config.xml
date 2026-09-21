@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     SPDX-FileCopyrightText: The LineageOS Project
-     SPDX-License-Identifier: Apache-2.0
--->
-<!--
      The values of stock's ServiceWifiRes-columbia-Overlay that differ from the
      defaults of AOSP's Wi-Fi module. Left out: Sony's branding (hotspot SSID and
      Wi-Fi Direct name prefix), its dialog for third-party apps enabling Wi-Fi,

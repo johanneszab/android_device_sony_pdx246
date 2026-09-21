@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+# SPDX-License-Identifier: Apache-2.0
 """SELinux label pre-check for pdx246 (2026-09-12).
 
 Compares the SELinux file label of every executable we ship in /vendor/bin and

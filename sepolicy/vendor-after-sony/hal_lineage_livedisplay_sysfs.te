@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+# SPDX-License-Identifier: Apache-2.0
+
 # LineageOS's sysfs LiveDisplay service (device.mk) writes the panel's high
 # brightness mode, /sys/devices/dsi_panel_driver/hbm_mode, for sunlight
 # enhancement. hardware/sony labels that directory sysfs_dp and grants it to

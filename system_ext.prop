@@ -7,7 +7,8 @@
 # (its QTI AIDL audio HAL only exists in the 6.6-era CAF branches). With it
 # true, audioserver blocks forever, AudioService.<init> blocks behind it, and
 # system_server's Watchdog panics the device via /proc/sysrq-trigger at 66 s.
-# Stock pdx246 does not set this property at all.
+# Stock pdx246 sets it to true, but ships its own implementation
+# (system_ext/lib64/libaudiohalvendorextn.so).
 ro.audio.ihaladaptervendorextension_enabled=false
 
 # DPM

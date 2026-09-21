@@ -1,5 +1,6 @@
 /*
- * SPDX-FileCopyrightText: The LineageOS Project
+ * Copyright (C) 2024 The LineageOS Project
+ * SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
  * SPDX-License-Identifier: Apache-2.0
  *
  * hardware/lineage/compat's libhidlbase_shim restores

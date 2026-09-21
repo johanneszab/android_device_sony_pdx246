@@ -1,11 +1,12 @@
 //
 // SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
 // SPDX-License-Identifier: Apache-2.0
 //
 
 // Sony's carrier config database for com.android.carrierconfig. res/xml is
 // taken from device/sony/pdx257 and matches stock pdx246's
-// CarrierConfig-Platform-Overlay.apk (527 carrier blocks, 194
+// CarrierConfig-Platform-Overlay.apk (526 carrier blocks, 194
 // carrier_volte_available_bool entries). Without it the platform defaults
 // keep VoLTE and Wi-Fi calling off, e.g. for 262-01.
 runtime_resource_overlay {

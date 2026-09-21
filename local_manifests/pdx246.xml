@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+     SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!--
      Sony Xperia 10 VI (pdx246) for LineageOS 23.2.
 
      Copy this file to .repo/local_manifests/pdx246.xml in a LineageOS 23.2

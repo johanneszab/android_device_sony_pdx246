@@ -1,0 +1,11 @@
+A file marked with this identifier, or the part of it described in REUSE.toml,
+is derived from material distributed by Sony Corporation in the stock firmware
+of its Xperia devices, for example their SELinux policy, build properties or
+configuration files.
+
+This project holds no licence for this material from its owners and claims
+no rights to it. All rights in it remain with its owners: Sony Corporation,
+or the supplier from whom Sony took it.
+
+The other parts of such a file are licensed under the terms stated alongside
+this identifier.

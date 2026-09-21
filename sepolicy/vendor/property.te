@@ -1,5 +1,5 @@
-# Vendor properties of Sony services that stock labels in /odm and /vendor
-# property_contexts, with stock's type names and classes. vendor_nfc_prop and
+# Vendor properties of Sony services, and NXP's strongbox property, that stock
+# labels in /odm and /vendor property_contexts, with stock's type names and classes. vendor_nfc_prop and
 # vendor_public_vendor_default_prop already exist in the QTI policy; they only
 # get their property_contexts lines.
 vendor_internal_prop(vendor_360ra_prop)

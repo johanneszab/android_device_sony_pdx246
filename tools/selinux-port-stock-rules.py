@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+# SPDX-License-Identifier: Apache-2.0
 """Port stock's SELinux rules for Sony domains (2026-09-12, extended 2026-09-13).
 
 Reads stock's /odm/etc/selinux/odm_sepolicy.cil and converts to .te syntax:

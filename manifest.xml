@@ -1,4 +1,8 @@
 <!--
+    SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+    SPDX-License-Identifier: Apache-2.0
+-->
+<!--
     target-level is the Shipping FCM Version of the *vendor* implementation,
     not the system. Sony's own vendor/etc/vintf/manifest_parrot.xml and
     manifest_ravelin.xml declare target-level="6", and the blobs serve the

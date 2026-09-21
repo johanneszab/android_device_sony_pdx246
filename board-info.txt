@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+# SPDX-License-Identifier: Apache-2.0
+#
 # Both variants this port claims, plus the codename, because the bootloader
 # reports one of them as fastboot's "product". Sony gives pdx246 no family-wide
 # device name (unlike pdx257's XQ-FE), so each model has to be named.
