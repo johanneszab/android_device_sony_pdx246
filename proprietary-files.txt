@@ -1549,6 +1549,25 @@ vendor/etc/xtwifi.conf
 
 # Health
 
+# Init (Qualcomm)
+# Qualcomm's kernel tuning and init scripts. They are marked "Confidential and
+# Proprietary - Qualcomm Technologies, Inc.", so they are extracted from the
+# builder's own firmware like any other blob instead of being kept as source in
+# this repo, the way pdx257 does it. Only the ones something launches are listed:
+# init.qti.kernel.rc (imported by rootdir/etc/init.target.rc) starts
+# post_boot, qti.kernel, write and vendor_modprobe, and post_boot hands off to its
+# -parrot variant by soc_id. Stock's debug and early_debug scripts,
+# init.qti.touch_boot.sh and post_boot-ravelin (another SoC) are not shipped:
+# nothing in stock or here starts them.
+vendor/bin/init.kernel.post_boot-parrot.sh
+vendor/bin/init.kernel.post_boot.sh
+vendor/bin/init.qti.kernel.sh
+vendor/bin/init.qti.media.sh
+vendor/bin/init.qti.qcv.sh
+vendor/bin/init.qti.write.sh
+vendor/bin/vendor_modprobe.sh
+vendor/etc/init/hw/init.qti.kernel.rc
+
 # IPA
 vendor/bin/ipacm
 vendor/bin/ipacm-diag

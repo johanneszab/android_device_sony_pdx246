@@ -23,24 +23,6 @@ sh_binary {
 }
 
 sh_binary {
-    name: "init.kernel.post_boot-parrot.sh",
-    src: "bin/init.kernel.post_boot-parrot.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.kernel.post_boot-ravelin.sh",
-    src: "bin/init.kernel.post_boot-ravelin.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.kernel.post_boot.sh",
-    src: "bin/init.kernel.post_boot.sh",
-    vendor: true,
-}
-
-sh_binary {
     name: "init.mdm.sh",
     src: "bin/init.mdm.sh",
     vendor: true,
@@ -107,74 +89,8 @@ sh_binary {
 }
 
 sh_binary {
-    name: "init.qti.kernel.debug-parrot.sh",
-    src: "bin/init.qti.kernel.debug-parrot.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.kernel.debug-ravelin.sh",
-    src: "bin/init.qti.kernel.debug-ravelin.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.kernel.debug.sh",
-    src: "bin/init.qti.kernel.debug.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.kernel.early_debug-parrot.sh",
-    src: "bin/init.qti.kernel.early_debug-parrot.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.kernel.early_debug.sh",
-    src: "bin/init.qti.kernel.early_debug.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.kernel.sh",
-    src: "bin/init.qti.kernel.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.media.sh",
-    src: "bin/init.qti.media.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.qcv.sh",
-    src: "bin/init.qti.qcv.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.touch_boot.sh",
-    src: "bin/init.qti.touch_boot.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qti.write.sh",
-    src: "bin/init.qti.write.sh",
-    vendor: true,
-}
-
-sh_binary {
     name: "qca6234-service.sh",
     src: "bin/qca6234-service.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "vendor_modprobe.sh",
-    src: "bin/vendor_modprobe.sh",
     vendor: true,
 }
 
@@ -196,13 +112,6 @@ prebuilt_etc {
 prebuilt_etc {
     name: "init.qcom.usb.rc",
     src: "etc/init.qcom.usb.rc",
-    sub_dir: "init/hw",
-    vendor: true,
-}
-
-prebuilt_etc {
-    name: "init.qti.kernel.rc",
-    src: "etc/init.qti.kernel.rc",
     sub_dir: "init/hw",
     vendor: true,
 }

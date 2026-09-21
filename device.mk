@@ -418,9 +418,6 @@ PRODUCT_PACKAGES += \
     AudioPlayback.sh \
     init.class_main.sh \
     init.crda.sh \
-    init.kernel.post_boot-parrot.sh \
-    init.kernel.post_boot-ravelin.sh \
-    init.kernel.post_boot.sh \
     init.mdm.sh \
     init.qcom.class_core.sh \
     init.qcom.coex.sh \
@@ -432,18 +429,7 @@ PRODUCT_PACKAGES += \
     init.qcom.sh \
     init.qcom.usb.sh \
     init.qti.display_boot.sh \
-    init.qti.kernel.debug-parrot.sh \
-    init.qti.kernel.debug-ravelin.sh \
-    init.qti.kernel.debug.sh \
-    init.qti.kernel.early_debug-parrot.sh \
-    init.qti.kernel.early_debug.sh \
-    init.qti.kernel.sh \
-    init.qti.media.sh \
-    init.qti.qcv.sh \
-    init.qti.touch_boot.sh \
-    init.qti.write.sh \
     qca6234-service.sh \
-    vendor_modprobe.sh \
 
 PRODUCT_PACKAGES += \
     fstab.default \
@@ -451,7 +437,6 @@ PRODUCT_PACKAGES += \
     init.qcom.factory.rc \
     init.qcom.rc \
     init.qcom.usb.rc \
-    init.qti.kernel.rc \
     init.qti.ufs.rc \
     init.target.rc \
     init.recovery.qcom.rc \
