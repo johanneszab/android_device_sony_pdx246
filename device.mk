@@ -237,6 +237,12 @@ PRODUCT_PACKAGES += \
     qti_telephony_utils_prd.xml \
     telephony-ext
 
+# qcril's database, generated at build time with persist.vendor.radio.poweron_opt
+# off; without that, incoming SMS are dropped while the screen is off. See
+# qcril-database/config/13.1_config.sql.
+PRODUCT_PACKAGES += \
+    qcrilNrDb_vendor
+
 # Wi-Fi userspace
 #
 # pdx246 shipped NONE of these. We extract the HIDL wifi HAL blob

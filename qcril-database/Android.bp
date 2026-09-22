@@ -1,0 +1,44 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// qcril's database, generated from Sony's SQL files plus config/13.1_config.sql
+// instead of shipping Sony's prebuilt qcrilNr.db. Built from Sony's scripts
+// alone, the database is identical to the prebuilt one, table by table; see
+// config/13.1_config.sql for the one change. Same approach as
+// device/sony/pdx257/qcril-database.
+
+filegroup {
+    name: "rildb_config_sql_files",
+    srcs: [
+        "config/13.1_config.sql",
+    ],
+}
+
+genrule {
+    name: "qcril_config_database",
+    enabled: true,
+    srcs: [
+        "//vendor/sony/pdx246:proprietary_rildb_config_sql_files",
+        "//vendor/sony/pdx246:proprietary_rildb_other_sql_files",
+        ":rildb_config_sql_files",
+    ],
+    tools: [
+        "generate_qcril_db",
+    ],
+    cmd: "$(location generate_qcril_db) $(out) $(in)",
+    out: ["qcrilNr.db"],
+}
+
+prebuilt_etc {
+    name: "qcrilNrDb_vendor",
+    filename: "qcrilNr.db",
+    src: ":qcril_config_database",
+    relative_install_path: "qcril_database",
+    vendor: true,
+    required: [
+        "13.1_config.sql",
+    ],
+}
