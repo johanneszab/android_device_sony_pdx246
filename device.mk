@@ -407,6 +407,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/nfc/libnfc-nxp-typef.conf:$(TARGET_COPY_OUT_VENDOR)/etc/libnfc-nxp-typef.conf
 
+# Opens NDEF tags nothing else handles (plain text, other URIs, unknown MIME
+# types); without it those only play the NFC error sound. Stock ships Tag_Vendor.
+PRODUCT_PACKAGES += \
+    Tag
+
 # Overlays
 PRODUCT_ENFORCE_RRO_TARGETS := *
 
