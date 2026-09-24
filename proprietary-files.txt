@@ -2465,6 +2465,15 @@ vendor/lib64/libwfdutils_proprietary.so
 vendor/lib64/qti.video.utils.videobufferlayout.so
 vendor/lib64/vendor.qti.hardware.wifidisplaysessionl@1.0-halimpl.so
 
+# eUICC, as in pdx257: Google's LPA (its privileged permissions are
+# allowlisted in configs/permissions) and Sony's eUICC memory reset, which
+# needs Sony's MiscTA SDK library. The MiscTA HAL itself is listed elsewhere.
+product/etc/permissions/jp.co.sony.mc.euiccmemoryreset.xml
+product/priv-app/EuiccGoogle/EuiccGoogle.apk;PRESIGNED
+product/priv-app/EuiccMemoryReset/EuiccMemoryReset.apk;PRESIGNED
+system_ext/etc/permissions/jp.co.sony.mc.misctasdklibrary.xml
+system_ext/framework/jp.co.sony.mc.misctasdklibrary.jar
+
 # Miscellaneous
 odm/bin/taimport_vendor
 odm/etc/customization/A402SO/config.prop

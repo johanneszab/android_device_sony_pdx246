@@ -412,6 +412,16 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     Tag
 
+# eUICC, as in pdx257 (SonyEuicc there): LineageOS's EuiccPolicy with the slot
+# mapping overlay, and the allowlist for Google's LPA from proprietary-files.txt.
+# The LPA only works with GApps installed.
+PRODUCT_PACKAGES += \
+    EuiccPolicy \
+    SonyPDX246EuiccPolicy
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/permissions/privapp-permissions-euiccgoogle.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-euiccgoogle.xml
+
 # Overlays
 PRODUCT_ENFORCE_RRO_TARGETS := *
 

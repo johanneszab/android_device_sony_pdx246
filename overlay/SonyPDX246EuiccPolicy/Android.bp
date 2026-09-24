@@ -1,0 +1,13 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// hardware/sony's EuiccPolicySony, which pdx257 installs through SonyEuicc,
+// cut down to this device's models. pdx246 does not import the hardware/sony
+// Soong namespace (see device.mk, LiveDisplay).
+runtime_resource_overlay {
+    name: "SonyPDX246EuiccPolicy",
+    product_specific: true,
+}

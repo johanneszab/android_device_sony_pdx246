@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: The LineageOS Project
+     SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!--
+     The SIM slot mapping from hardware/sony/packages/Euicc (commit 1afc99d,
+     "Euicc: Add pdx246 slot mappings"), for the models this port claims: the
+     built-in eUICC is slot 1, the SIM tray slot 0. hardware/sony's
+     illustration mapping is left out: its lottie animations are imported
+     firmware assets, and without them the setup shows the default illustration.
+-->
+<resources>
+    <string name="sim_slot_mappings_json" translatable="false">
+        {
+            \"sim-slot-mappings\": [
+                {
+                    \"devices\": [
+                        \"XQ-ES54\",
+                        \"XQ-ES72\"
+                    ],
+                    \"esim-slot-ids\": [
+                        1
+                    ],
+                    \"psim-slot-ids\": [
+                        0
+                    ]
+                }
+            ]
+        }
+    </string>
+</resources>
