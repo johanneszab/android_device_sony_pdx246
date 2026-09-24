@@ -236,6 +236,9 @@ blob_fixups: blob_fixups_user_type = {
         .add_needed('libhidlbase_compat32.so'),
     'system_ext/lib64/libwfdnative.so': blob_fixup()
         .add_needed('libinput_shim.so'),
+    # Allow the hotspot on the EU indoor channels 36-48, as pdx257 does.
+    'vendor/etc/wifi/adrastea/WCNSS_qcom_cfg.ini': blob_fixup()
+        .regex_replace('gindoor_channel_support=0', 'gindoor_channel_support=1'),
     'vendor/etc/wfdconfig.xml': blob_fixup()
         .regex_replace('<M4Enable>0</M4Enable>', '<M4Enable>1</M4Enable>')
         .regex_replace('<UIBCValid>0</UIBCValid>', '<UIBCValid>1</UIBCValid>')
