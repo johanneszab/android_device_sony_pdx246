@@ -2373,6 +2373,13 @@ vendor/etc/wifi/wpa_supplicant.conf
 vendor/etc/wifi/wpa_supplicant_overlay.conf
 
 # Wi-Fi Display
+# Qualcomm's session stack, as in pdx257. Without WfdCommon (a boot jar),
+# wfdservice64 and libwfdnative, WfdService reports "not available" and casting
+# falls back to AOSP's RemoteDisplay, which has no HDCP and no UIBC.
+system/framework/WfdCommon.jar;BOOT_JAR
+system_ext/bin/wfdservice64
+system_ext/etc/seccomp_policy/wfdservice64.policy
+system_ext/lib64/libwfdnative.so;SYMLINK=system_ext/priv-app/WfdService/lib/arm64/libwfdnative.so
 system_ext/bin/wfdservice
 system_ext/etc/init/wfdservice.rc
 system_ext/lib/libdisplayconfig.system.qti.so

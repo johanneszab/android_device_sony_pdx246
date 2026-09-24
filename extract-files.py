@@ -234,6 +234,8 @@ blob_fixups: blob_fixups_user_type = {
         .add_needed('libhidlbase_shim.so'),
     'vendor/lib/vendor.libdpmframework.so': blob_fixup()
         .add_needed('libhidlbase_compat32.so'),
+    'system_ext/lib64/libwfdnative.so': blob_fixup()
+        .add_needed('libinput_shim.so'),
     'vendor/etc/wfdconfig.xml': blob_fixup()
         .regex_replace('<M4Enable>0</M4Enable>', '<M4Enable>1</M4Enable>')
         .regex_replace('<UIBCValid>0</UIBCValid>', '<UIBCValid>1</UIBCValid>')

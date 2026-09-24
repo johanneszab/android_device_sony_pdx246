@@ -96,6 +96,13 @@
     <string name="config_wlan_network_service_package" translatable="false">vendor.qti.iwlan</string>
     <string name="config_qualified_networks_service_package" translatable="false">vendor.qti.iwlan</string>
 
+    <!-- Qualcomm's Wi-Fi Display stack brings HDCP, so a cast can carry
+         protected content: this sets Display.FLAG_SUPPORTS_PROTECTED_BUFFERS
+         for the wifi display. Stock's FrameworksResCommon_Sys and pdx257's
+         FrameworksResTarget_Vendor both set it; AOSP defaults to false, which
+         would blank DRM video on the TV. -->
+    <bool name="config_wifiDisplaySupportsProtectedBuffers">true</bool>
+
     <!-- LTE <-> Wi-Fi calling handover. The two resources gate different
          checks, and only the first is the one that drops calls:
          config_enhanced_iwlan_handover_check refuses a handover when the
