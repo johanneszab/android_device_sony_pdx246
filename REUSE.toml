@@ -230,10 +230,14 @@ precedence = "aggregate"
 SPDX-License-Identifier = "BSD-3-Clause-Clear"
 
 # AOSP's notice with the Apache licence boilerplate but no SPDX identifier.
+# Stock's SystemUI product RRO is where both 1202px values come from, the power
+# key's and the fingerprint sensor's. The third value, the sensor's X, is this
+# project's: stock leaves it at AOSP's default.
 [[annotations]]
 path = "overlay/SonyPDX246SystemUIRes/res/values/dimens.xml"
 precedence = "aggregate"
-SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileCopyrightText = ["Sony Corporation", "Johannes Meyer zum Alten Borgloh"]
+SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-Sony-Firmware"
 
 # LineageOS's roomservice list from device/sony/pdx257; the one entry left
 # (hardware/sony) is that file's first, unchanged. JSON cannot carry a header.

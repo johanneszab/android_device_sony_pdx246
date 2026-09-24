@@ -18,12 +18,46 @@
         <item>@array/config_sfps_sensor_props_0</item>
     </array>
 
+    <!-- displayId is this panel's uniqueId (dumpsys display).
+         BEWARE: despite the field name, SystemUI reads sensorLocationY as the
+         TOP EDGE of a strip 2*sensorRadius long, not as the centre. See
+         SideFpsSensorInteractor, where it becomes `sensorTop` and rotation 180
+         mirrors it as (displayHeight minus sensorLocationY minus the length). It
+         positions both the enrolment progress bar and the unlock indicator.
+         (SensorLocationInternal.getRect() does treat it as a centre, but
+         nothing on this path calls that.) Feeding it stock's centre value drew
+         the enrolment bar a full radius too low.
+         The numbers were calibrated on the device. The panel is 2520 px over
+         142.4 mm (6.1", 21:9, ~449 ppi) = 17.7 px/mm, and the sensor measures
+         14 mm, so the radius is 124 px and the strip is 248 px long. The centre
+         was calibrated by eye against the power key, in three steps: at 1442
+         (stock's 1202 mistakenly read as a centre) the bar sat low; at 1167
+         (1202 minus the 2 mm the sensor measures above the middle of the key)
+         it sat 2 mm high, so that physical offset does not carry into screen
+         coordinates, since the lit-pixel edge is not the coordinate origin; at 1202
+         it covered the sensor but still sat marginally high, and 9 px lower
+         still left it a little high. Two such steps, 18 px or 1 mm below
+         stock's value, put it on the sensor: the centre is 1220 and the top
+         edge 1220 minus 124 = 1096. One px here is 0.056 mm, so a step of this
+         size is about the smallest that can be judged by eye.
+         The SystemUI dimen physical_fingerprint_sensor_center_screen_location_y
+         deliberately stays at stock's 1202px: it anchors the unlock ripple,
+         which is a large radial animation that 9 px does not move visibly, and
+         leaving it means that file keeps stock's values only.
+         Stock sets no sfps array at all, and neither do pdx235 and pdx257, so
+         there is nothing to copy here. -->
     <array name="config_sfps_sensor_props_0" translatable="false">
-        <item>local:131</item> <!--item>displayId</item-->
+        <item>local:4630946227116744066</item> <!--item>displayId</item-->
         <item>1080</item> <!--item>sensorLocationX</item-->
-        <item>1150</item> <!--item>sensorLocationY</item-->
-        <item>240</item> <!--item>sensorRadius</item-->
+        <item>1096</item> <!--item>sensorLocationY</item-->
+        <item>124</item> <!--item>sensorRadius</item-->
     </array>
+
+    <!-- The fingerprint sensor is in the power key. The HIDL 2.1 HAL cannot
+         report its type, so without this the framework registers it as a rear
+         sensor: rear-sensor enrollment texts, and a power-key press ends an
+         enrollment or BiometricPrompt. Stock's product RRO sets it. -->
+    <bool name="config_is_powerbutton_fps">true</bool>
 
     <!-- The fingerprint HAL is HIDL (android.hardware.biometrics.fingerprint@2.1).
          AuthService registers a HIDL sensor only if it is listed here, as
