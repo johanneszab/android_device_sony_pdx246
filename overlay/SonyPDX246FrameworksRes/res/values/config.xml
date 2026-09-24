@@ -96,6 +96,24 @@
     <string name="config_wlan_network_service_package" translatable="false">vendor.qti.iwlan</string>
     <string name="config_qualified_networks_service_package" translatable="false">vendor.qti.iwlan</string>
 
+    <!-- LTE <-> Wi-Fi calling handover. The two resources gate different
+         checks, and only the first is the one that drops calls:
+         config_enhanced_iwlan_handover_check refuses a handover when the
+         target reports NOT_IN_SERVICE or no VoPS and tears IMS down instead
+         (DataNetworkController, "handover not allowed"), while
+         config_enable_iwlan_handover_policy makes the framework apply the
+         carrier config's IWLAN handover rule array, which can only refuse with
+         NOT_ALLOWED_BY_POLICY. Stock's FrameworksResCommon_Sys and pdx257 turn
+         both off. -->
+    <bool name="config_enable_iwlan_handover_policy">false</bool>
+    <bool name="config_enhanced_iwlan_handover_check">false</bool>
+
+    <!-- MMS User-Agent and UAProf, from stock's product RRO (the same values
+         as pdx257's). %s is Build.MODEL. -->
+    <string name="config_useragentprofile_url" translatable="false">http://uaprof.sonymobile.com/%sR01.xml</string>
+    <string name="config_mms_user_agent" translatable="false">Sony%s</string>
+    <string name="config_mms_user_agent_profile_url" translatable="false">@string/config_useragentprofile_url</string>
+
     <!-- Wired headset detection. The kernel reports the 3.5 mm jack through the
          input device "parrot-qrd-sku1-snd-card Headset Jack" (SW_HEADPHONE_INSERT,
          SW_MICROPHONE_INSERT, SW_LINEOUT_INSERT). With the AOSP default (false),
