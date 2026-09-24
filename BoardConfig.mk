@@ -318,5 +318,17 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
 # stays unset too: hostapd's nl80211 driver defaults to the QCA variant.
 BOARD_HOSTAPD_DRIVER := NL80211
 
+# wpa_supplicant does need QCA's private driver commands. With the stub library
+# every one of them fails: the driver stayed on country code US while the
+# framework asked for DE ("setCountryCode failed"), so 2.4 GHz channels 12 and
+# 13 were missing and FCC rules applied, and SETSUSPENDMODE failed on every
+# screen change. The library is referenced by its namespace path because
+# hardware/qcom-caf/wlan/qcwcn, the namespace that defines it, is not imported
+# (see device.mk, Wi-Fi); lib_driver_cmd_qcwcn depends only on global modules.
+# pdx257 sets the same three variables.
+BOARD_WPA_SUPPLICANT_DRIVER := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := //hardware/qcom-caf/wlan/qcwcn:lib_driver_cmd_qcwcn
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB_EVENT := "ON"
+
 # Inherit the proprietary files
 include vendor/sony/pdx246/BoardConfigVendor.mk
