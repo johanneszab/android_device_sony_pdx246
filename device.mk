@@ -436,6 +436,12 @@ PRODUCT_PACKAGES += \
     SonyPDX246CarrierConfig \
     SonyPDX246WifiRes
 
+# USB tethering over NCM instead of RNDIS, as in pdx257 and, through
+# device/sony/sm6375-common (common.mk), pdx235 (macOS has no RNDIS driver).
+# Note: IPA hardware offload (IPACM_cfg.xml) only knows rndis0.
+PRODUCT_PACKAGES += \
+    NcmTetheringOverlay
+
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay-lineage
 
