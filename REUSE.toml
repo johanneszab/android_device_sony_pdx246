@@ -113,9 +113,15 @@ SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-Sony-Firmware"
 # build.prop; in config.fs, the vendor AIDs from stock's vendor/etc/passwd and
 # the file modes and capabilities from its vendor/etc/fs_config_files; and a
 # selection of stock's ServiceWifiRes overlay values. The comments, the
-# selection and the changed ro.audio.ihaladaptervendorextension_enabled value in
-# system_ext.prop are this project's. odm.prop's ro.product.property_source_order
-# line is the same as in LineageOS's device/sony/pdx257, as its comment says.
+# selection and the lines that are not stock's are this project's: the changed
+# ro.audio.ihaladaptervendorextension_enabled value in system_ext.prop, and
+# persist.vendor.ssr.restart_level in vendor.prop. Three more are one-liners
+# LineageOS's own Sony trees carry: vendor.prop's ro.audio.monitorRotation is
+# verbatim the same in device/sony/pdx235 and pdx257; odm.prop's
+# ro.product.property_source_order is the same as in pdx257, which is the only
+# one of the two that sets it; and bluetooth.device.default_name is the same
+# line in both, with each device's own marketing name as the value, this one's
+# being stock's.
 [[annotations]]
 path = [
     "config.fs",
