@@ -51,6 +51,9 @@ PRODUCT_AAPT_CONFIG := normal
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
 # API levels
+# The vendor is a GRF vendor first shipped with API 31: stock's vendor/build.prop
+# has ro.board.first_api_level=31. ro.vendor.api_level stays 34.
+BOARD_SHIPPING_API_LEVEL := 31
 PRODUCT_SHIPPING_API_LEVEL := 34
 
 # Boot animation
