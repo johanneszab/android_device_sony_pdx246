@@ -192,6 +192,21 @@ persist.vendor.radio.enableadvancedscan=true
 persist.vendor.radio.procedure_bytes=SKIP
 persist.vendor.radio.sib16_support=1
 
+# Subsystem restart
+# A crash of the ADSP, CDSP, modem or Wi-Fi (WPSS) firmware restarts only that
+# processor instead of panicking the kernel (qcom_q6v5.c:115 panics on a fatal
+# or watchdog IRQ while recovery is off, and qcom_q6v5_pas.c:798 disables it in
+# probe, so every remoteproc boots that way).
+# Stock reaches the same state from its system_ext, which this build does not
+# ship: system_ext/etc/init/ssr_dumper.rc runs init.ssr_level.sh, whose SM6450
+# case writes "enabled" to /sys/class/remoteproc/*/recovery for
+# "adsp cdsp slpi mss wlan wpss" -- every subsystem this SoC has. ALL_ENABLE is
+# therefore the same set stock ships, the ADSP included, and not a wider one.
+# The vendor's own ssr_setup (vendor.ssr_setup in init.qcom.rc, started by this
+# property) does the writing here; it enumerates /sys/class/remoteproc itself,
+# so the 5.10 remoteprocN names are what it expects.
+persist.vendor.ssr.restart_level=ALL_ENABLE
+
 # USB
 vendor.usb.diag.func.name=ffs
 vendor.usb.dpl.inst.name=dpl

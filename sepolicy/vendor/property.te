@@ -24,3 +24,11 @@ vendor_public_prop(vendor_somc_variantname_prop)
 # apps), so they are vendor public here.
 vendor_public_prop(vendor_cali_prop)
 vendor_public_prop(vendor_default_status_prop)
+
+# vendor_init loads vendor/build.prop, where persist.vendor.ssr.restart_level
+# sets the subsystem restart level. QTI's policy labels that property
+# vendor_ssr_prop and only lets vendor_subsystem_ramdump set it, so without
+# this the property stays unset ("avc: denied { set } ... scontext=vendor_init
+# tcontext=vendor_ssr_prop") and every firmware crash panics the kernel.
+# Stock does not need it: it enables recovery from a system_ext script instead.
+set_prop(vendor_init, vendor_ssr_prop)

@@ -89,8 +89,9 @@ SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-Sony-Firmware"
 # Property types ported from stock, with stock's names and classes. They are
 # Sony's, except vendor_strongbox_prop: stock's only label for it sits in the
 # section that stock's source marker names as NXP's
-# vendor/nxp/SNxxx/sepolicy/property_contexts. The comments, the selection and
-# the reclassified classes are this project's.
+# vendor/nxp/SNxxx/sepolicy/property_contexts. The comments, the selection, the
+# reclassified classes and the one rule this project wrote itself,
+# set_prop(vendor_init, vendor_ssr_prop), are this project's.
 [[annotations]]
 path = "sepolicy/vendor/property.te"
 precedence = "override"
