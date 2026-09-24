@@ -205,7 +205,6 @@ vendor/etc/audio_policy_volumes.xml
 vendor/etc/bluetooth_qti_audio_policy_configuration.xml
 vendor/etc/bluetooth_qti_hearing_aid_audio_policy_configuration.xml
 vendor/etc/default_volume_tables.xml
-vendor/etc/default_volume_tables.xml
 vendor/etc/r_submix_audio_policy_configuration.xml
 vendor/etc/usb_audio_policy_configuration.xml
 
@@ -675,54 +674,29 @@ vendor/etc/camera/camxoverridesettings.txt
 
 # Camera firmware
 vendor/firmware/CAMERA_ICP.b00
-vendor/firmware/CAMERA_ICP.b00
-vendor/firmware/CAMERA_ICP.b01
 vendor/firmware/CAMERA_ICP.b01
 vendor/firmware/CAMERA_ICP.b02
-vendor/firmware/CAMERA_ICP.b02
-vendor/firmware/CAMERA_ICP.b03
 vendor/firmware/CAMERA_ICP.b03
 vendor/firmware/CAMERA_ICP.b04
-vendor/firmware/CAMERA_ICP.b04
-vendor/firmware/CAMERA_ICP.b05
 vendor/firmware/CAMERA_ICP.b05
 vendor/firmware/CAMERA_ICP.b06
-vendor/firmware/CAMERA_ICP.b06
-vendor/firmware/CAMERA_ICP.b07
 vendor/firmware/CAMERA_ICP.b07
 vendor/firmware/CAMERA_ICP.b08
-vendor/firmware/CAMERA_ICP.b08
-vendor/firmware/CAMERA_ICP.b09
 vendor/firmware/CAMERA_ICP.b09
 vendor/firmware/CAMERA_ICP.b10
-vendor/firmware/CAMERA_ICP.b10
-vendor/firmware/CAMERA_ICP.b11
 vendor/firmware/CAMERA_ICP.b11
 vendor/firmware/CAMERA_ICP.b12
-vendor/firmware/CAMERA_ICP.b12
-vendor/firmware/CAMERA_ICP.b13
 vendor/firmware/CAMERA_ICP.b13
 vendor/firmware/CAMERA_ICP.b14
-vendor/firmware/CAMERA_ICP.b14
-vendor/firmware/CAMERA_ICP.b15
 vendor/firmware/CAMERA_ICP.b15
 vendor/firmware/CAMERA_ICP.b16
-vendor/firmware/CAMERA_ICP.b16
-vendor/firmware/CAMERA_ICP.b17
 vendor/firmware/CAMERA_ICP.b17
 vendor/firmware/CAMERA_ICP.b18
-vendor/firmware/CAMERA_ICP.b18
-vendor/firmware/CAMERA_ICP.b19
 vendor/firmware/CAMERA_ICP.b19
 vendor/firmware/CAMERA_ICP.b20
-vendor/firmware/CAMERA_ICP.b20
-vendor/firmware/CAMERA_ICP.elf
 vendor/firmware/CAMERA_ICP.elf
 vendor/firmware/CAMERA_ICP.mbn
-vendor/firmware/CAMERA_ICP.mbn
 vendor/firmware/CAMERA_ICP.mdt
-vendor/firmware/CAMERA_ICP.mdt
-vendor/firmware/CAMERA_ICP_170.elf
 vendor/firmware/CAMERA_ICP_170.elf
 
 # CAS
@@ -968,48 +942,26 @@ system_ext/lib64/vendor.qti.hardware.cvp@1.0.so
 
 # CVP firmware
 vendor/firmware/evass.b00
-vendor/firmware/evass.b00
-vendor/firmware/evass.b01
 vendor/firmware/evass.b01
 vendor/firmware/evass.b02
-vendor/firmware/evass.b02
-vendor/firmware/evass.b03
 vendor/firmware/evass.b03
 vendor/firmware/evass.b04
-vendor/firmware/evass.b04
-vendor/firmware/evass.b05
 vendor/firmware/evass.b05
 vendor/firmware/evass.b06
-vendor/firmware/evass.b06
-vendor/firmware/evass.b07
 vendor/firmware/evass.b07
 vendor/firmware/evass.b08
-vendor/firmware/evass.b08
-vendor/firmware/evass.b09
 vendor/firmware/evass.b09
 vendor/firmware/evass.b10
-vendor/firmware/evass.b10
-vendor/firmware/evass.b11
 vendor/firmware/evass.b11
 vendor/firmware/evass.b12
-vendor/firmware/evass.b12
-vendor/firmware/evass.b13
 vendor/firmware/evass.b13
 vendor/firmware/evass.b14
-vendor/firmware/evass.b14
-vendor/firmware/evass.b15
 vendor/firmware/evass.b15
 vendor/firmware/evass.b16
-vendor/firmware/evass.b16
-vendor/firmware/evass.b17
 vendor/firmware/evass.b17
 vendor/firmware/evass.b18
-vendor/firmware/evass.b18
-vendor/firmware/evass.b19
 vendor/firmware/evass.b19
 vendor/firmware/evass.mbn
-vendor/firmware/evass.mbn
-vendor/firmware/evass.mdt
 vendor/firmware/evass.mdt
 
 # Display
@@ -1194,60 +1146,32 @@ vendor/etc/display/thermallevel_to_fps.xml
 
 # Display firmware
 vendor/firmware/a610_zap.b00
-vendor/firmware/a610_zap.b00
-vendor/firmware/a610_zap.b01
 vendor/firmware/a610_zap.b01
 vendor/firmware/a610_zap.b02
-vendor/firmware/a610_zap.b02
-vendor/firmware/a610_zap.elf
 vendor/firmware/a610_zap.elf
 vendor/firmware/a610_zap.mdt
-vendor/firmware/a610_zap.mdt
-vendor/firmware/a630_sqe.fw
 vendor/firmware/a630_sqe.fw
 vendor/firmware/a660_sqe.fw
-vendor/firmware/a660_sqe.fw
-vendor/firmware/a662_gmu.bin
 vendor/firmware/a662_gmu.bin
 vendor/firmware/a662_zap.b00
-vendor/firmware/a662_zap.b00
-vendor/firmware/a662_zap.b01
 vendor/firmware/a662_zap.b01
 vendor/firmware/a662_zap.b02
-vendor/firmware/a662_zap.b02
-vendor/firmware/a662_zap.elf
 vendor/firmware/a662_zap.elf
 vendor/firmware/a662_zap.mbn
-vendor/firmware/a662_zap.mbn
-vendor/firmware/a662_zap.mdt
 vendor/firmware/a662_zap.mdt
 vendor/firmware/a710_sqe.fw
-vendor/firmware/a710_sqe.fw
-vendor/firmware/a710_zap.b00
 vendor/firmware/a710_zap.b00
 vendor/firmware/a710_zap.b01
-vendor/firmware/a710_zap.b01
-vendor/firmware/a710_zap.b02
 vendor/firmware/a710_zap.b02
 vendor/firmware/a710_zap.elf
-vendor/firmware/a710_zap.elf
-vendor/firmware/a710_zap.mbn
 vendor/firmware/a710_zap.mbn
 vendor/firmware/a710_zap.mdt
-vendor/firmware/a710_zap.mdt
-vendor/firmware/a730_sqe.fw
 vendor/firmware/a730_sqe.fw
 vendor/firmware/a730_zap.b00
-vendor/firmware/a730_zap.b00
-vendor/firmware/a730_zap.b01
 vendor/firmware/a730_zap.b01
 vendor/firmware/a730_zap.b02
-vendor/firmware/a730_zap.b02
-vendor/firmware/a730_zap.elf
 vendor/firmware/a730_zap.elf
 vendor/firmware/a730_zap.mbn
-vendor/firmware/a730_zap.mbn
-vendor/firmware/a730_zap.mdt
 vendor/firmware/a730_zap.mdt
 vendor/gpu/kbc/sequence_manifest.bin
 vendor/gpu/kbc/unified_kbcs_32.bin
@@ -1363,7 +1287,6 @@ vendor/lib64/libQTEEConnector_vendor.so
 # DSP
 vendor/bin/dspservice
 vendor/etc/init/vendor.qti.hardware.dsp@1.0-service.rc
-vendor/etc/seccomp_policy/vendor.qti.hardware.dsp.policy
 vendor/etc/seccomp_policy/vendor.qti.hardware.dsp.policy
 vendor/lib/vendor.qti.hardware.dsp@1.0.so
 vendor/lib64/vendor.qti.hardware.dsp@1.0.so
@@ -1535,16 +1458,10 @@ vendor/lib64/vendor.qti.gnss-service.so
 
 # GNSS configs
 vendor/etc/apdr.conf
-vendor/etc/apdr.conf
-vendor/etc/gps.conf
 vendor/etc/gps.conf
 vendor/etc/izat.conf
-vendor/etc/izat.conf
-vendor/etc/lowi.conf
 vendor/etc/lowi.conf
 vendor/etc/sap.conf
-vendor/etc/sap.conf
-vendor/etc/xtwifi.conf
 vendor/etc/xtwifi.conf
 
 # Health
@@ -1573,7 +1490,6 @@ vendor/bin/ipacm
 vendor/bin/ipacm-diag
 vendor/etc/init/ipacm-diag.rc
 vendor/etc/init/ipacm.rc
-vendor/etc/IPACM_cfg.xml
 vendor/etc/IPACM_cfg.xml
 vendor/lib64/libipanat.so
 vendor/lib64/liboffloadhal.so
@@ -1706,7 +1622,6 @@ vendor/etc/perf/targetsysnodesconfigs.xml
 vendor/etc/perf/testcommonresourceconfigs.xml
 vendor/etc/vintf/manifest/vendor.qti.hardware.perf.xml
 vendor/etc/powerhint.xml
-vendor/etc/powerhint.xml
 vendor/lib/libperfconfig.so
 vendor/lib/libperfgluelayer.so
 vendor/lib/libqti-perfd-client.so
@@ -1816,7 +1731,6 @@ system_ext/lib64/vendor.qti.qspmhal@1.0.so
 vendor/lib64/vendor.qti.qspmhal@1.0.so;MODULE_SUFFIX=_vendor
 vendor/bin/vendor.qti.qspmhal@1.0-service
 vendor/etc/init/vendor.qti.qspmhal@1.0-service.rc
-vendor/etc/seccomp_policy/qspm.policy
 vendor/etc/seccomp_policy/qspm.policy
 vendor/lib/vendor.qti.qspmhal@1.0-impl.so
 vendor/lib64/vendor.qti.qspmhal@1.0-impl.so
@@ -2222,7 +2136,6 @@ system_ext/priv-app/ims/ims.apk
 vendor/bin/ims_rtp_daemon
 vendor/etc/init/ims_rtp_daemon.rc
 vendor/etc/seccomp_policy/imsrtp.policy
-vendor/etc/seccomp_policy/imsrtp.policy
 vendor/etc/vintf/manifest/vendor.qti.hardware.radio.ims.xml
 vendor/lib/com.qualcomm.qti.imscmservice@1.0.so
 vendor/lib/lib-imscommon.so
@@ -2523,8 +2436,6 @@ vendor/etc/init/wfdvndservice.rc
 vendor/etc/seccomp_policy/wfdhdcphalservice.policy
 vendor/etc/seccomp_policy/wfdvndservice.policy
 vendor/etc/seccomp_policy/wifidisplayhalservice.policy
-vendor/etc/seccomp_policy/wifidisplayhalservice.policy
-vendor/etc/wfdconfig.xml
 vendor/etc/wfdconfig.xml
 vendor/lib/qti.video.utils.videobufferlayout.so
 vendor/lib64/libFileMux_proprietary.so
