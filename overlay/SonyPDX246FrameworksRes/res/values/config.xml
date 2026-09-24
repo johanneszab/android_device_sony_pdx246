@@ -59,6 +59,16 @@
          enrollment or BiometricPrompt. Stock's product RRO sets it. -->
     <bool name="config_is_powerbutton_fps">true</bool>
 
+    <!-- SIM tray hot-swap: the modem reports removal and insertion while the
+         radio is on, so no "restart" dialog is needed. Stock's
+         FrameworksResCommon_Sys sets it. -->
+    <bool name="config_hotswapCapable">true</bool>
+
+    <!-- Let the SoC suspend while the proximity sensor blanks the screen in a
+         call. The default proximity sensor is a wake-up sensor. Stock's product
+         RRO sets it. -->
+    <bool name="config_suspendWhenScreenOffDueToProximity">true</bool>
+
     <!-- The fingerprint HAL is HIDL (android.hardware.biometrics.fingerprint@2.1).
          AuthService registers a HIDL sensor only if it is listed here, as
          "id:modality:strength". Stock's FrameworksResTarget_Vendor.apk uses
@@ -169,6 +179,15 @@
     <item name="config_screenBrightnessSettingMinimumFloat" format="float" type="dimen">0.002</item>
     <item name="config_screenBrightnessSettingMaximumFloat" format="float" type="dimen">1.0</item>
     <item name="config_screenBrightnessDimFloat" format="float" type="dimen">0.02</item>
+    <!-- Screen brightness hysteresis. The display config XML only carries the
+         ambient thresholds, so without these AOSP's 10%/20% apply. Stock's
+         product RRO sets 0 for both. -->
+    <integer-array name="config_screenBrighteningThresholds">
+        <item>0</item>
+    </integer-array>
+    <integer-array name="config_screenDarkeningThresholds">
+        <item>0</item>
+    </integer-array>
 
     <!-- Rounded display corners, from stock's product RRO. -->
     <dimen name="rounded_corner_radius">16dp</dimen>
