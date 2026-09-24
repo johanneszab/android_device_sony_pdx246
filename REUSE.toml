@@ -193,7 +193,6 @@ path = [
     "rootdir/bin/qca6234-service.sh",
     "rootdir/etc/init.qcom.factory.rc",
     "rootdir/etc/init.qti.ufs.rc",
-    "rootdir/etc/init.recovery.qcom.rc",
 ]
 precedence = "aggregate"
 SPDX-License-Identifier = "BSD-3-Clause"
@@ -209,6 +208,18 @@ SPDX-License-Identifier = "BSD-3-Clause"
 path = ["rootdir/etc/init.qcom.rc", "rootdir/etc/init.target.rc"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Johannes Meyer zum Alten Borgloh"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+# Stock's init.recovery.qcom.rc (its Linux Foundation notice stays in the file)
+# with LineageOS's device/sony/pdx257 lines that mount the modem partition,
+# boot the ADSP in recovery and unmount it again for fastbootd, under the
+# file's BSD-3-Clause. The comments explaining that mechanism are this
+# project's; pdx257 has a one-line comment there and none above the fastbootd
+# block.
+[[annotations]]
+path = "rootdir/etc/init.recovery.qcom.rc"
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["The LineageOS Project", "Johannes Meyer zum Alten Borgloh"]
 SPDX-License-Identifier = "BSD-3-Clause"
 
 # Linux Foundation files with Qualcomm Innovation Center changes under

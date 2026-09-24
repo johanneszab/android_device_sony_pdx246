@@ -62,7 +62,11 @@ BOARD_KERNEL_BASE := 0x00000000
 # visibility"). log_buf_len raises the kernel ring from the 256K the stock dtb
 # asks for: with the source kernel the ring wrapped before logd's first read,
 # so the earliest ~106 kernel lines never reached logcat.
-BOARD_KERNEL_CMDLINE := video=vfb:640x400,bpp=32,memsize=3072000 bootconfig log_buf_len=1M
+# force_sysfs_fallback lets recovery load the ADSP firmware from /firmware
+# through ueventd; as a cmdline sysctl it is set before any module loads
+# (pdx257 13d9e37). Normal boot sets the same in init.qti.kernel.rc.
+BOARD_KERNEL_CMDLINE := video=vfb:640x400,bpp=32,memsize=3072000 bootconfig log_buf_len=1M \
+    sysctl.kernel.firmware_config.force_sysfs_fallback=1
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_KERNEL_IMAGE_NAME := Image

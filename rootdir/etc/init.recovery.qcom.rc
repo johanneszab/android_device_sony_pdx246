@@ -38,3 +38,19 @@ on property:ro.boot.usbcontroller=*
 on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
+
+    # The charger and the USB-C port controller run in the ADSP, which only
+    # starts when boot_adsp is written. Mount the modem partition, where its
+    # firmware lives, so recovery gets battery status and USB OTG. As pdx257.
+    mkdir /firmware
+    mount vfat /dev/block/bootdevice/by-name/modem${ro.boot.slot_suffix} /firmware ro context=u:object_r:firmware_file:s0
+
+on property:dev.mnt.blk.firmware=*
+    # The normal-boot path waits for the node first (init.target.rc:159); the
+    # write is one-shot, so without the wait a late remoteproc probe loses it.
+    wait /sys/kernel/boot_adsp/boot
+    write /sys/kernel/boot_adsp/boot 1
+
+# Otherwise `fastboot flash modem` fails while the partition is mounted.
+on property:init.svc.fastbootd=running
+    umount /firmware
