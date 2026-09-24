@@ -211,7 +211,11 @@ blob_fixups: blob_fixups_user_type = {
      'vendor/lib/nfc_nci_nxp_snxxx.so',
      'vendor/lib64/nfc_nci_nxp_snxxx.so'): blob_fixup()
         .add_needed('libbase_shim.so'),
-    ('vendor/bin/poweropt-service', 'vendor/lib64/libdpps.so', 'vendor/lib64/libsnapdragoncolor-manager.so'): blob_fixup()
+    # Built against tinyxml2 v34's struct layout. libapengine and
+    # liblearningmodule are loaded by the perf HAL (LM/QGPE in perfconfigstore);
+    # with 11.0's larger XMLDocument, libapengine overwrites its own mutex.
+    ('vendor/bin/poweropt-service', 'vendor/lib64/libapengine.so', 'vendor/lib64/libdpps.so',
+     'vendor/lib64/liblearningmodule.so', 'vendor/lib64/libsnapdragoncolor-manager.so'): blob_fixup()
         .replace_needed('libtinyxml2.so', 'libtinyxml2-v34.so'),
     # Stock links the V2 AIDL types, but the platform libs it sits on top of
     # (libaudioclient/libaudiofoundation) are built against V4, and soong
