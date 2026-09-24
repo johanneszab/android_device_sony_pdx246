@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: Johannes Meyer zum Alten Borgloh
+     SPDX-License-Identifier: Apache-2.0
+-->
+<!--
+     The swcodec APEX disables the "telephony" codec domain ("These must be
+     opted in by OEMs"), which holds c2.android.gsm.decoder (audio/gsm, GSM
+     06.10). Stock decoded it with the vendor's soft OMX codec, which this port
+     does not ship. Codec2InfoBuilder reads this file after the APEX one, and
+     update="true" is the declared way to override a Setting that is already
+     set (MediaCodecsXmlParser::addGlobal).
+-->
+<MediaCodecs>
+    <Settings>
+        <Domain name="telephony" enabled="true" update="true" />
+    </Settings>
+</MediaCodecs>

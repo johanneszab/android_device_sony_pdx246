@@ -399,6 +399,10 @@ PRODUCT_ENABLE_UFFD_GC := true
 # product.prop collides with the one the build generates.
 PRODUCT_MAX_PAGE_SIZE_SUPPORTED := 4096
 
+# Media
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/media/media_codecs_c2.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2.xml
+
 # NFC
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/nfc/libnfc-nxp-typef.conf:$(TARGET_COPY_OUT_VENDOR)/etc/libnfc-nxp-typef.conf
