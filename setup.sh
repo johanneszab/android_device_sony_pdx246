@@ -5,8 +5,9 @@
 #
 # One-shot setup for a pdx246 (Sony Xperia 10 VI) build.
 #
-# Takes a freshly `repo sync`ed LineageOS 23.2 tree plus a stock firmware dump
-# and leaves you ready to build. Safe to re-run: every step is idempotent.
+# Takes a freshly `repo sync`ed LineageOS tree of the version this branch is for
+# (LINEAGE_VERSION below) plus a stock firmware dump and leaves you ready to
+# build. Safe to re-run: every step is idempotent.
 #
 # See README.md for the local manifest that brings in this device tree, the three
 # kernel repos and hardware/sony.
@@ -18,6 +19,8 @@ set -euo pipefail
 DEVICE=pdx246
 VENDOR=sony
 DEVICE_PATH="device/${VENDOR}/${DEVICE}"
+# Each branch of this repo targets one LineageOS version (branch lineage-<version>).
+LINEAGE_VERSION=23.2
 
 RED=$'\e[31m'; GRN=$'\e[32m'; YLW=$'\e[33m'; RST=$'\e[0m'
 info()  { printf '%s==>%s %s\n'   "$GRN" "$RST" "$*"; }
@@ -29,6 +32,13 @@ die()   { printf '%s[x]%s %s\n'   "$RED" "$RST" "$*" >&2; exit 1; }
     || die "run this from the ROOT of the LineageOS tree (where .repo lives)"
 [ -d "$DEVICE_PATH" ] \
     || die "$DEVICE_PATH missing -- add it to your local manifest and repo sync"
+
+# The blob fixups and the release configuration only fit the LineageOS version
+# this branch is for.
+tree_version=$(sed -n 's/^PRODUCT_VERSION_MAJOR = //p' vendor/lineage/config/version.mk).$(sed -n 's/^PRODUCT_VERSION_MINOR = //p' vendor/lineage/config/version.mk)
+[ "$tree_version" = "$LINEAGE_VERSION" ] \
+    || die "this $DEVICE_PATH branch is for LineageOS $LINEAGE_VERSION, but the tree is $tree_version.
+Check out branch lineage-$tree_version in $DEVICE_PATH and run this script again."
 
 # The kernel, its modules and the device trees are built from source, and
 # BoardConfig.mk includes hardware/sony's sepolicy, so these four have to be in
@@ -135,12 +145,15 @@ done
 [ "$fail" -eq 0 ] || die "setup incomplete -- see the MISSING/WRONG lines above"
 
 # ------------------------------------------------------------------- done --
+# The release configuration LineageOS builds this version with (what breakfast
+# picks).
+source vendor/lineage/vars/aosp_target_release
 cat <<EOF
 
 $(printf '%s==>%s') Setup complete. To build:
 
     source build/envsetup.sh
-    lunch lineage_${DEVICE}-bp4a-userdebug
+    lunch lineage_${DEVICE}-${aosp_target_release}-userdebug
     mka bacon && m superimage
 
 Flashing: see $DEVICE_PATH/README.md and the flash.sh next to the built images.
