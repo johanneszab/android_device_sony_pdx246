@@ -119,7 +119,20 @@ check "$V/proprietary/vendor/lib64/libcld80211.so"                        "libcl
 check "$V/proprietary/vendor/lib64/hw/android.hardware.gnss@2.1-impl-qti.so" "gnss impl"
 check "$V/proprietary/system_ext/etc/permissions/wfd-system-ext-privapp-permissions-qti.xml" "wfd privapp allowlist"
 
-[ "$fail" -eq 0 ] || die "setup incomplete -- see the MISSING lines above"
+# The SKU manifests must declare manifest.xml's FCM level and no <kernel>
+# (see manifest.xml); the build checks only manifest.xml.
+lvl=$(sed -n 's/.*type="device" target-level="\([0-9]*\)".*/\1/p' "$DEVICE_PATH/manifest.xml")
+for m in vendor/etc/vintf/manifest_parrot.xml vendor/etc/vintf/manifest_ravelin.xml \
+         odm/etc/vintf/manifest_ds.xml odm/etc/vintf/manifest_ss.xml; do
+    f="$V/proprietary/$m"
+    if [ -n "$lvl" ] && grep -q "target-level=\"$lvl\"" "$f" && ! grep -q '<kernel' "$f"; then
+        printf '    ok       %s at FCM %s\n' "$m" "$lvl"
+    else
+        printf '    %sWRONG%s    %s: not target-level %s, or has <kernel>\n' "$RED" "$RST" "$m" "$lvl"; fail=1
+    fi
+done
+
+[ "$fail" -eq 0 ] || die "setup incomplete -- see the MISSING/WRONG lines above"
 
 # ------------------------------------------------------------------- done --
 cat <<EOF

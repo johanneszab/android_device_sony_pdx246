@@ -4,16 +4,30 @@
 -->
 <!--
     target-level is the Shipping FCM Version of the *vendor* implementation,
-    not the system. Sony's own vendor/etc/vintf/manifest_parrot.xml and
-    manifest_ravelin.xml declare target-level="6", and the blobs serve the
-    FCM 6 generation of HALs (gnss@2.1, thermal@2.0, usb@1.2, composer@2.4,
-    allocator@4.0), so anything newer fails the deprecation check.
+    not the system. Sony's stock SKU manifests (vendor/etc/vintf/
+    manifest_parrot.xml and manifest_ravelin.xml, odm/etc/vintf/manifest_ds.xml
+    and manifest_ss.xml) declare 6, for which Android 17 ships no framework
+    matrix, so extract-files.py raises all four to 7 and this file matches.
+    The vendor and the ODM manifest must agree: at runtime libvintf merges
+    them and refuses two different levels ("Conflicting target-level"), which
+    leaves no device manifest, so no vendor HAL can register. The build-time
+    check cannot see that, because it runs with an empty sku.
 
-    THIS FILE IS NOT READ ON THE DEVICE. The bootloader sets
-    ro.boot.product.vendor.sku=parrot, so libvintf loads Sony's
-    vendor/etc/vintf/manifest_parrot.xml plus the fragments in
-    vendor/etc/vintf/manifest/, and skips manifest.xml. Only the build-time
-    checkvintf reads this file, because it runs with an empty sku.
+    7 is also the highest level this vendor can claim: the 5.10 kernel has no
+    FCM 8 requirements, FCM 8 drops HIDL HALs the stock blobs serve, and the
+    framework serves netd@1.1, which netmgrd uses, only up to level 7. No
+    <kernel> element: from level 7 on, assemble_vintf rejects an explicit
+    kernel level, and libvintf infers it from target-level.
+
+    THIS FILE IS NOT READ ON THE DEVICE while the vendor sku is set.
+    vendor/etc/init/init.qti.qcv.rc sets ro.boot.product.vendor.sku=parrot at
+    early-init and vendor.prop sets ro.boot.product.hardware.sku=ds, so
+    libvintf loads Sony's vendor/etc/vintf/manifest_parrot.xml plus the
+    fragments in vendor/etc/vintf/manifest/, merges
+    odm/etc/vintf/manifest_ds.xml, and skips manifest.xml. Only with an unset
+    vendor sku does it take this file instead, still merged with
+    manifest_ds.xml. The build-time checkvintf reads it because it runs with
+    an empty sku.
 
     A HAL declared only here is therefore undeclared at runtime, and
     hwservicemanager refuses its registration ("getTransport: Cannot find
@@ -24,7 +38,7 @@
     fingerprint and atrace. Do not declare the same instance here as well:
     checkvintf rejects the duplicate ("Conflicting FqInstance").
 -->
-<manifest version="1.0" type="device" target-level="6">
+<manifest version="1.0" type="device" target-level="7">
     <!-- No android.hardware.cas: the com.android.hardware.cas APEX serves the
          AIDL HAL (android.hardware.cas-service.example, running as
          vendor.cas-default). Sony's HIDL cas@1.2 blob has no .rc and never runs. -->

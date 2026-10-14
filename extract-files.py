@@ -197,6 +197,15 @@ lib_fixups: lib_fixups_user_type = {
 blob_fixups: blob_fixups_user_type = {
     ('odm/etc/customization/XQ-ES44/config.prop', 'odm/etc/customization/XQ-ES54_EEA/config.prop', 'odm/etc/customization/XQ-ES72/config.prop'): blob_fixup()
         .regex_replace('vendor', 'odm'),
+    # Android 17 ships no FCM 6 matrix, so these move to 7 together with
+    # manifest.xml. libvintf merges the vendor and the ODM SKU manifest at
+    # runtime and fails on two different levels: change all four or none. An
+    # explicit <kernel target-level="6"/> would keep checking the kernel
+    # against FCM 6; without it the kernel level follows target-level.
+    ('odm/etc/vintf/manifest_ds.xml', 'odm/etc/vintf/manifest_ss.xml',
+     'vendor/etc/vintf/manifest_parrot.xml', 'vendor/etc/vintf/manifest_ravelin.xml'): blob_fixup()
+        .regex_replace('target-level="6"', 'target-level="7"')
+        .regex_replace(r'[ \t]*<kernel target-level="[0-9]+"/>\r?\n', ''),
     # Android switched these libbase overloads to std::string_view; the blobs
     # still reference the std::string ones. hardware/lineage/compat provides
     # both under libbase_shim.

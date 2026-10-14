@@ -32,11 +32,12 @@ PRODUCT_PACKAGES += \
 # Boot control: QTI's AIDL HAL from hardware/qcom-caf/bootctrl, as on pdx257,
 # plus its recovery variant for adb sideload. update_engine switches slots
 # through it, and update_verifier and vold mark a good boot successful; without
-# it vold logged "not marking slot as successful" on every boot. Stock ships
-# the HIDL @1.2 service, which compatibility_matrix.6.android17 (our target
-# level) no longer lists. It builds unmodified: gpt-utils includes the kernel's
-# generated UAPI headers, and those from kernel/sony/sm6450 no longer define
-# struct sched_param (Sony's 5.10 release did, which clashed with bionic).
+# it vold logged "not marking slot as successful" on every boot. Stock's HIDL
+# @1.2 HAL has its recovery copy only in stock's recovery image, not on vendor,
+# so its blobs would leave our recovery without a boot HAL. It builds
+# unmodified: gpt-utils includes the kernel's generated UAPI headers, and
+# those from kernel/sony/sm6450 no longer define struct sched_param (Sony's
+# 5.10 release did, which clashed with bionic).
 PRODUCT_PACKAGES += \
     android.hardware.boot-service.qti \
     android.hardware.boot-service.qti.recovery
@@ -302,7 +303,7 @@ PRODUCT_PACKAGES += \
 # whenever system_server got that one, its second PAL instance collided with
 # the audio HAL's at the AGM service at boot (AGM or the wrapper crashed). See
 # PORTING-NOTES.md.
-# HIDL soundtrigger@2.3 is still in framework compatibility_matrix 6/7/8.
+# HIDL soundtrigger@2.3 is still in framework compatibility_matrix 7 and 8.
 PRODUCT_PACKAGES += \
     android.hardware.soundtrigger@2.3-impl
 
@@ -329,21 +330,17 @@ PRODUCT_PACKAGES += \
 # all in Android. vendor/qcom/opensource/usb/hal defines the module; it just
 # was never in PRODUCT_PACKAGES. Shipping the stock blob instead collides with
 # that module's install rule, so build it from source as pdx257 does.
-# Android 16 dropped HIDL usb.gadget: compatibility_matrix.7 lists it as
-# format="hidl" version 1.0-2, matrix 8 onwards only has format="aidl". The
-# stock @1.2-service-qti blob is HIDL, so hwservicemanager refuses it --
-#   getTransport: Cannot find entry android.hardware.usb.gadget@1.2::IUsbGadget
-#   Cannot register USB Gadget HAL service
-# and adb never enumerates. Build QTI's AIDL services instead (they ship their
-# own .rc and VINTF fragments), as pdx257 does.
+# The stock usb.gadget@1.2-service-qti blob is HIDL, which matrix 7 (our
+# level) still lists but matrix 8 onwards does not. Build QTI's AIDL services
+# instead (they ship their own .rc and VINTF fragments), as pdx257 does.
 PRODUCT_PACKAGES += \
     android.hardware.usb-service.qti \
     android.hardware.usb.gadget-service.qti \
     usb_compositions.conf
 
 # Thermal
-# The stock android.hardware.thermal@2.0-service.sony blob is HIDL; the matrix
-# only accepts AIDL. Build QTI's AIDL thermal service instead.
+# The stock android.hardware.thermal@2.0-service.sony blob is HIDL, which
+# matrix 8 onwards no longer lists. Build QTI's AIDL thermal service instead.
 PRODUCT_PACKAGES += \
     android.hardware.thermal-service.qti
 

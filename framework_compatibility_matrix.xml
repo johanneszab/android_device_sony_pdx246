@@ -5,8 +5,9 @@
 
     HALs served by the pdx246 vendor blobs that are not covered by
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml.
-    Everything is optional: these are vendor extensions, and the framework
-    must still boot if a given service is absent.
+    Everything is optional: these are vendor extensions or AOSP HALs the
+    current matrices no longer list, and the framework must still boot if a
+    given service is absent.
 -->
 <compatibility-matrix version="1.0" type="framework">
     <hal format="hidl" optional="true">
@@ -14,6 +15,20 @@
         <version>2.1</version>
         <interface>
             <name>IHealth</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <!-- Stock's A2DP offload provider, declared only in Sony's
+         manifest_parrot.xml and manifest_ravelin.xml. From FCM 7 on the AOSP
+         matrices list only the AIDL bluetooth.audio, so without this entry a
+         checkvintf run with the vendor sku reports the HIDL one as unused.
+         23.2 still ships matrix 6, so there checkvintf also calls it
+         deprecated; this entry does not change that. -->
+    <hal format="hidl" optional="true">
+        <name>android.hardware.bluetooth.audio</name>
+        <version>2.0</version>
+        <interface>
+            <name>IBluetoothAudioProvidersFactory</name>
             <instance>default</instance>
         </interface>
     </hal>
