@@ -20,7 +20,7 @@ DEVICE=pdx246
 VENDOR=sony
 DEVICE_PATH="device/${VENDOR}/${DEVICE}"
 # Each branch of this repo targets one LineageOS version (branch lineage-<version>).
-LINEAGE_VERSION=23.2
+LINEAGE_VERSION=24.0
 
 RED=$'\e[31m'; GRN=$'\e[32m'; YLW=$'\e[33m'; RST=$'\e[0m'
 info()  { printf '%s==>%s %s\n'   "$GRN" "$RST" "$*"; }

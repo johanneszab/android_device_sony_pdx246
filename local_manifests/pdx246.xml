@@ -4,9 +4,9 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <!--
-     Sony Xperia 10 VI (pdx246) for LineageOS 23.2.
+     Sony Xperia 10 VI (pdx246) for LineageOS 24.0.
 
-     Copy this file to .repo/local_manifests/pdx246.xml in a LineageOS 23.2
+     Copy this file to .repo/local_manifests/pdx246.xml in a LineageOS 24.0
      tree and run `repo sync`. See README.md for the full build instructions.
 
      The five projects below are everything this port needs on top of the
@@ -26,7 +26,8 @@
      Why the paths say sm6450 while the kernel repos are named the same:
      SM6450 is this device's SoC. The kernel itself is a fork of LineageOS's
      android_kernel_sony_sm8450 (branch lineage-23.2 in that repo is the
-     unchanged upstream; branch pdx246 carries this device's changes). The
+     unchanged upstream, the same commit LineageOS 24.0 builds; branch pdx246
+     carries this device's changes). The
      modules tree hardcodes the directory name sm6450-modules in its Kbuild
      and trace include paths, and the kernel reaches the device trees through
      a relative symlink, so none of these three paths can be renamed freely.
@@ -39,7 +40,7 @@
   <project path="device/sony/pdx246"
            name="android_device_sony_pdx246"
            remote="johanneszab"
-           revision="lineage-23.2" />
+           revision="lineage-24.0" />
 
   <!-- TARGET_KERNEL_SOURCE points here. -->
   <project path="kernel/sony/sm6450"
@@ -51,13 +52,13 @@
   <project path="kernel/sony/sm6450-modules"
            name="android_kernel_sony_sm6450-modules"
            remote="johanneszab"
-           revision="lineage-23.2" />
+           revision="lineage-24.0" />
 
   <!-- kernel/sony/sm6450/arch/arm64/boot/dts/vendor symlinks here. -->
   <project path="kernel/sony/sm6450-devicetrees"
            name="android_kernel_sony_sm6450-devicetrees"
            remote="johanneszab"
-           revision="lineage-23.2" />
+           revision="lineage-24.0" />
 
   <project path="hardware/sony"
            name="LineageOS/android_hardware_sony"

@@ -1,4 +1,4 @@
-# LineageOS 23.2 for the Sony Xperia 10 VI (pdx246)
+# LineageOS 24.0 for the Sony Xperia 10 VI (pdx246)
 
 An unofficial port, as close to the official LineageOS charter as possible. The kernel,
 the vendor modules and the device trees are built from source; the proprietary
@@ -49,7 +49,7 @@ identity for everyone and it is the author's:
 
 ## What you need
 
-1. **A LineageOS 23.2 tree.** About 220 GB for `.repo` plus the checkout, and
+1. **A LineageOS 24.0 tree.** About 220 GB for `.repo` plus the checkout, and
    another ~210 GB for `out/`, so plan for roughly 450 GB free. A full build
    takes about three hours on a 20-core machine.
 2. **This device tree and the three kernel repos**, via the local manifest
@@ -70,15 +70,15 @@ The kernel repos are separate because the kernel is built from source:
 
 | Path | Repo | Branch |
 |---|---|---|
-| `device/sony/pdx246` | `android_device_sony_pdx246` | `lineage-23.2` |
+| `device/sony/pdx246` | `android_device_sony_pdx246` | `lineage-24.0` |
 | `kernel/sony/sm6450` | `android_kernel_sony_sm6450` | `pdx246` |
-| `kernel/sony/sm6450-modules` | `android_kernel_sony_sm6450-modules` | `lineage-23.2` |
-| `kernel/sony/sm6450-devicetrees` | `android_kernel_sony_sm6450-devicetrees` | `lineage-23.2` |
+| `kernel/sony/sm6450-modules` | `android_kernel_sony_sm6450-modules` | `lineage-24.0` |
+| `kernel/sony/sm6450-devicetrees` | `android_kernel_sony_sm6450-devicetrees` | `lineage-24.0` |
 
 The kernel is a fork of LineageOS's `android_kernel_sony_sm8450` (its
-`lineage-23.2` branch is that upstream unchanged; `pdx246` adds this device's
-drivers and config). The modules repo holds Sony's vendor module sources plus
-LineageOS's WLAN driver. The devicetrees repo is Sony's copyleft device tree
+`lineage-23.2` branch is that upstream unchanged, and LineageOS 24.0 builds the
+same commit; `pdx246` adds this device's drivers and config). The modules repo
+holds Sony's vendor module sources plus LineageOS's WLAN driver. The devicetrees repo is Sony's copyleft device tree
 release; the kernel picks it up through `arch/arm64/boot/dts/vendor`, so it has
 to sit next to the kernel under that exact name. SM6450 is this device's SoC —
 do not confuse it with the sm8450 devices (Xperia 1 IV, 5 IV).
@@ -86,7 +86,7 @@ do not confuse it with the sm8450 devices (Xperia 1 IV, 5 IV).
 ## Checkout
 
 ```bash
-repo init -u https://github.com/LineageOS/android.git -b lineage-23.2 --git-lfs
+repo init -u https://github.com/LineageOS/android.git -b lineage-24.0 --git-lfs
 mkdir -p .repo/local_manifests
 cp /path/to/pdx246.xml .repo/local_manifests/pdx246.xml   # see below
 repo sync -c -j8
@@ -101,13 +101,13 @@ in this repo; its content is:
   <remote name="johanneszab" fetch="https://github.com/johanneszab" />
 
   <project path="device/sony/pdx246" name="android_device_sony_pdx246"
-           remote="johanneszab" revision="lineage-23.2" />
+           remote="johanneszab" revision="lineage-24.0" />
   <project path="kernel/sony/sm6450" name="android_kernel_sony_sm6450"
            remote="johanneszab" revision="pdx246" />
   <project path="kernel/sony/sm6450-modules" name="android_kernel_sony_sm6450-modules"
-           remote="johanneszab" revision="lineage-23.2" />
+           remote="johanneszab" revision="lineage-24.0" />
   <project path="kernel/sony/sm6450-devicetrees" name="android_kernel_sony_sm6450-devicetrees"
-           remote="johanneszab" revision="lineage-23.2" />
+           remote="johanneszab" revision="lineage-24.0" />
 
   <project path="hardware/sony" name="LineageOS/android_hardware_sony"
            remote="github" />
@@ -127,7 +127,7 @@ does not.
 ```bash
 ./device/sony/pdx246/setup.sh /path/to/stock/dump
 source build/envsetup.sh
-lunch lineage_pdx246-bp4a-userdebug
+lunch lineage_pdx246-cp2a-userdebug
 mka bacon && m superimage
 ```
 
@@ -137,13 +137,13 @@ blobs that used to break the boot are present. The port changes nothing outside
 its own four repositories, so a `repo sync` leaves it intact and other devices in
 the same tree build exactly as upstream.
 
-`bp4a` is the release configuration LineageOS itself builds 23.2 with (it is what
+`cp2a` is the release configuration LineageOS itself builds 24.0 with (it is what
 `breakfast` picks, from `vendor/lineage/vars/aosp_target_release`).
 
 ## Installing
 
 The build produces two things you can install: a flashable zip
-(`lineage-23.2-<date>-UNOFFICIAL-pdx246.zip`, an A/B payload) and the raw
+(`lineage-24.0-<date>-UNOFFICIAL-pdx246.zip`, an A/B payload) and the raw
 partition images.
 
 ### Once per device, before the first install
@@ -183,7 +183,7 @@ Copy the active slot's firmware onto the inactive one, once:
 From LineageOS Recovery, with the phone showing *Apply from ADB*:
 
 ```bash
-adb -d sideload lineage-23.2-<date>-UNOFFICIAL-pdx246.zip
+adb -d sideload lineage-24.0-<date>-UNOFFICIAL-pdx246.zip
 ```
 
 Then *Reboot system now*. Coming from stock, factory reset first
