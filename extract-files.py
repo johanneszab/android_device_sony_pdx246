@@ -226,11 +226,18 @@ blob_fixups: blob_fixups_user_type = {
     ('vendor/bin/poweropt-service', 'vendor/lib64/libapengine.so', 'vendor/lib64/libdpps.so',
      'vendor/lib64/liblearningmodule.so', 'vendor/lib64/libsnapdragoncolor-manager.so'): blob_fixup()
         .replace_needed('libtinyxml2.so', 'libtinyxml2-v34.so'),
-    # Stock links the V2 AIDL types, but the platform libs it sits on top of
-    # (libaudioclient/libaudiofoundation) are built against V4, and soong
+    # Sony's Wi-Fi Display blobs are built for Android 16. Stock links the V4
+    # AIDL audio types, but libaudioclient is built against V5, and soong
     # rejects depending on two versions of one aidl_interface.
-    ('system_ext/lib/libmiracastsystem.so', 'system_ext/lib64/libmiracastsystem.so'): blob_fixup()
-        .replace_needed('android.media.audio.common.types-V2-cpp.so', 'android.media.audio.common.types-V4-cpp.so'),
+    ('system_ext/lib/libwfdservice.so', 'system_ext/lib64/libwfdservice.so'): blob_fixup()
+        .replace_needed('android.media.audio.common.types-V4-cpp.so', 'android.media.audio.common.types-V5-cpp.so'),
+    # Imports SurfaceComposerClient::createVirtualDisplay without the owner
+    # uid Android 17 added; libgui_shim still provides that overload.
+    ('system_ext/lib/libwfdmmsrc_system.so', 'system_ext/lib64/libwfdmmsrc_system.so'): blob_fixup()
+        .add_needed('libgui_shim.so'),
+    # Android 17 removed libheif; stock links it but uses none of its symbols.
+    ('system_ext/lib/libwfdcommonutils.so', 'system_ext/lib64/libwfdcommonutils.so'): blob_fixup()
+        .remove_needed('libheif.so'),
     # Stock's QCC HAL implementation needs stock's protobuf, which
     # proprietary-files.txt ships renamed next to it.
     'system_ext/lib64/vendor.qti.hardware.qccsyshal@1.2-halimpl.so': blob_fixup()
