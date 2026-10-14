@@ -159,7 +159,6 @@ qemu.hw.mainkeys=0
 remote_provisioning.hostname=remoteprovisioning.googleapis.com
 ro.actionable_compatible_property.enabled=true
 ro.boot.wificountrycode=00
-ro.build.backported_fixes.alias_bitset.long_list=18
 ro.com.google.ime.config_file=/product/app/gboard/gboard.rc
 ro.config.media_vol_steps=30
 ro.config.mv_volume_steps=3

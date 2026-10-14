@@ -61,10 +61,9 @@ PRODUCT_SHIPPING_API_LEVEL := 34
 TARGET_SCREEN_HEIGHT := 2520
 TARGET_SCREEN_WIDTH := 1080
 
-# fastbootd
+# fastbootd's HAL; LineageOS adds fastbootd itself.
 PRODUCT_PACKAGES += \
-    android.hardware.fastboot@1.1-impl-mock \
-    fastbootd
+    android.hardware.fastboot@1.1-impl-mock
 
 # Power
 # The stock blob implements AIDL power V1, which no framework
@@ -394,8 +393,6 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.qccsyshal@1.2-service.xml
 
 # Kernel
-PRODUCT_ENABLE_UFFD_GC := true
-
 # The kernel uses 4K pages (stock reports ro.product.cpu.pagesize.max=4096).
 # This has to come from the product variable; setting the property directly in
 # product.prop collides with the one the build generates.
