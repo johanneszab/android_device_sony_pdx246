@@ -72,6 +72,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.power-service-qti
 
+# The power HAL includes IDisplayConfig.h, whose headers it finds through this
+# namespace. Only BoardConfigQcom.mk sets it, and this device does not use
+# BOARD_USES_QCOM_HARDWARE.
+$(call soong_config_set,qtidisplay,headers_namespace,vendor/qcom/opensource/commonsys-intf/display)
+
 # Mount points
 # rootdir/etc/fstab.default mounts modem/dsp/bluetooth firmware and vm-system
 # under /vendor. The mount-point directories have to exist in the vendor image
