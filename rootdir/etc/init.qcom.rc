@@ -723,6 +723,14 @@ on property:sys.boot_completed=1
     start qcom-post-boot
     start qti-testscripts
 
+# The camera provider starts about 2 s before the ADSP sensor hub is reachable,
+# and its camera sensor service (NCS) probes the gyro only once, at startup
+# ("Sensor probe failed during boot"): the camera then gets no gyro data and
+# runs without EIS. Restart it once the boot has completed; cameraserver picks
+# up the new instance.
+on property:sys.boot_completed=1
+    restart vendor.camera-provider-2-7
+
 on property:ro.vendor.ril.mbn_copy_completed=1
     write /data/vendor/radio/copy_complete 1
 
