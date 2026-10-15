@@ -71,10 +71,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.power-service-qti
 
-# The power HAL includes IDisplayConfig.h, whose headers it finds through this
-# namespace. Only BoardConfigQcom.mk sets it, and this device does not use
-# BOARD_USES_QCOM_HARDWARE.
+# The power HAL includes IDisplayConfig.h and links its V12 NDK library, both
+# found through this namespace. Only BoardConfigQcom.mk sets it, and this device
+# does not use BOARD_USES_QCOM_HARDWARE. Like BoardConfigQcom.mk, export the
+# namespace too: otherwise the library's vendor variant is linked but never
+# installed, the power HAL cannot start, and the boot hangs waiting for it.
 $(call soong_config_set,qtidisplay,headers_namespace,vendor/qcom/opensource/commonsys-intf/display)
+PRODUCT_SOONG_NAMESPACES += vendor/qcom/opensource/commonsys-intf/display
 
 # Mount points
 # rootdir/etc/fstab.default mounts modem/dsp/bluetooth firmware and vm-system
