@@ -228,13 +228,17 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('libtinyxml2.so', 'libtinyxml2-v34.so'),
     # Sony's Wi-Fi Display blobs are built for Android 16. Stock links the V4
     # AIDL audio types, but libaudioclient is built against V5, and soong
-    # rejects depending on two versions of one aidl_interface.
+    # rejects depending on two versions of one aidl_interface. Android 17
+    # also moved AudioSystem from libaudioclient into libaudiobase (same
+    # symbols); check_elf only searches direct dependencies.
     ('system_ext/lib/libwfdservice.so', 'system_ext/lib64/libwfdservice.so'): blob_fixup()
-        .replace_needed('android.media.audio.common.types-V4-cpp.so', 'android.media.audio.common.types-V5-cpp.so'),
+        .replace_needed('android.media.audio.common.types-V4-cpp.so', 'android.media.audio.common.types-V5-cpp.so')
+        .add_needed('libaudiobase.so'),
     # Imports SurfaceComposerClient::createVirtualDisplay without the owner
     # uid Android 17 added; libgui_shim still provides that overload.
     ('system_ext/lib/libwfdmmsrc_system.so', 'system_ext/lib64/libwfdmmsrc_system.so'): blob_fixup()
-        .add_needed('libgui_shim.so'),
+        .add_needed('libgui_shim.so')
+        .add_needed('libaudiobase.so'),
     # Android 17 removed libheif; stock links it but uses none of its symbols.
     ('system_ext/lib/libwfdcommonutils.so', 'system_ext/lib64/libwfdcommonutils.so'): blob_fixup()
         .remove_needed('libheif.so'),
