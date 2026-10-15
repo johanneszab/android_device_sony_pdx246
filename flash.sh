@@ -12,6 +12,13 @@ IMG="${1:-out/target/product/pdx246}"
 [ -d "$IMG" ] || { echo "no image dir: $IMG"; exit 1; }
 cd "$IMG" || exit 1
 
+# All or nothing: flashing only some images would mix two builds on the phone
+# (say a new boot chain and its kernel modules over an older super), which does
+# not boot.
+for f in super.img vbmeta.img vbmeta_system.img boot.img dtbo.img recovery.img vendor_boot.img; do
+    [ -f "$f" ] || { echo "missing $IMG/$f -- nothing flashed"; exit 1; }
+done
+
 # The Sony bootloader truncates getvar names ("max-downlo not supported"), so
 # fastboot cannot negotiate max-download-size and tries to send super.img whole,
 # which the bootloader rejects. -S forces resparsing into chunks.
@@ -30,7 +37,7 @@ wait_fastboot() {
 
 flash() {   # flash <partition> <image> [extra fastboot args...]
     local part="$1" img="$2"; shift 2
-    [ -f "$img" ] || { echo "  SKIP $part (no $img)"; return 0; }
+    [ -f "$img" ] || { echo "  MISSING $img"; return 1; }
     local try out rc
     for try in 1 2 3 4 5; do
         wait_fastboot || return 1
