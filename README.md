@@ -25,7 +25,7 @@ is enforcing.
 | Model | Market | Tested |
 |---|---|---|
 | `XQ-ES54` | EEA (Europe) | yes, this is the author's device |
-| `XQ-ES72` | Hong Kong, Taiwan, Singapore, Malaysia, Thailand, Vietnam, Macau | no, see below |
+| `XQ-ES72` | Hong Kong, Taiwan, Singapore, Malaysia, Thailand, Vietnam, Macau | reported working by a user: calls work, and it identifies itself as `XQ-ES72` |
 
 One build serves both, because the two are the same device with a different
 sticker. Comparing Sony's `70.2.A.4.168` firmware for each, byte for byte:
@@ -37,15 +37,15 @@ phone picks the right one by itself at runtime: the NFC HAL reads
 `/vendor/etc/libnfc-nxp_RF_C2.conf` on an `XQ-ES72` instead of
 `/vendor/libnfc-nxp_RF.conf`. Both files ship.
 
-What an `XQ-ES72` does **not** get right, because the build carries one
-identity for everyone and it is the author's:
-
-- *Settings > About phone* reports the model as `XQ-ES54`.
-- Sony's carrier configuration is keyed on the model, so nine settings meant
-  for the `XQ-ES72` are missed: VoNR stays enabled where stock disables it on
-  Hong Kong (454-12/13/30), Malaysia (502-12), Thailand (520-01/03) and
-  Singapore (525-03/05), and 5G NR availability is not cleared on Vietnam
-  (452). Everything else about mobile data and calls is shared.
+The model name is picked at runtime too. The bootloader hands each unit its
+market code in `ro.boot.hardware.sku`, and `odm.prop` imports Sony's matching
+`odm/etc/customization/<sku>/config.prop`, so an `XQ-ES72` reports itself as
+one in *Settings > About phone*. Sony's carrier configuration is keyed on the
+model, so the same step makes its 20 `XQ-ES72` entries apply instead of the 9
+for the `XQ-ES54`. Among other things, they disable VoNR on Hong Kong
+(454-12/13/30), Malaysia (502-12), Thailand (520-01/03) and Singapore
+(525-03/05), and clear 5G NR availability on Vietnam (452). The flashable zip
+accepts both models.
 
 ## What you need
 
